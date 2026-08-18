@@ -40,7 +40,7 @@
     <p>Your Life. Your Skills. Your Opportunities.</p>
     <p>A unified platform where students organize their lives, exchange knowledge, and discover opportunities.</p>
     <div>
-        <a href="auth/login" class="btn">Get Started</a>
+        <a href="auth/signin" class="btn">Get Started</a>
         <a href="#explore" class="btn" style="background-color: #e0e0e0; color: #111; margin-left: 1rem;">Explore Platform</a>
     </div>
 </body>

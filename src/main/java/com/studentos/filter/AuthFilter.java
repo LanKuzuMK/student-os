@@ -18,7 +18,7 @@ public class AuthFilter implements Filter {
         if (loggedIn) {
             chain.doFilter(request, response);
         } else {
-            response.sendRedirect(request.getContextPath() + "/auth/login");
+            response.sendRedirect(request.getContextPath() + "/auth/signin");
         }
     }
 }

@@ -19,9 +19,9 @@ public class AuthController extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String path = req.getPathInfo();
         if (path == null) path = "";
-        path = path.trim().replaceAll("[\u200B-\u200D\uFEFF]", ""); // Remove zero-width spaces
+        path = path.trim().replaceAll("[\u200B-\u200D\uFEFF]", "");
         
-        if (path.startsWith("/login")) {
+        if (path.startsWith("/login") || path.startsWith("/signin")) {
             req.getRequestDispatcher("/views/auth/login.jsp").forward(req, resp);
         } else if (path.startsWith("/register")) {
             req.getRequestDispatcher("/views/auth/register.jsp").forward(req, resp);
@@ -29,7 +29,7 @@ public class AuthController extends HttpServlet {
             req.getRequestDispatcher("/views/auth/verify.jsp").forward(req, resp);
         } else if (path.startsWith("/logout")) {
             req.getSession().invalidate();
-            resp.sendRedirect(req.getContextPath() + "/auth/login");
+            resp.sendRedirect(req.getContextPath() + "/auth/signin");
         } else {
             resp.sendError(404, "Path not found: " + path);
         }
@@ -41,7 +41,7 @@ public class AuthController extends HttpServlet {
         if (path == null) path = "";
         path = path.trim().replaceAll("[\u200B-\u200D\uFEFF]", "");
         
-        if (path.startsWith("/login")) {
+        if (path.startsWith("/login") || path.startsWith("/signin")) {
             User user = authService.login(req.getParameter("email"), req.getParameter("password"));
             if (user != null) {
                 req.getSession().setAttribute("user", user);
@@ -100,7 +100,7 @@ public class AuthController extends HttpServlet {
             }
         } else if (path.startsWith("/logout")) {
             req.getSession().invalidate();
-            resp.sendRedirect(req.getContextPath() + "/views/auth/login.jsp");
+            resp.sendRedirect(req.getContextPath() + "/views/auth/signin");
         }
     }
 }

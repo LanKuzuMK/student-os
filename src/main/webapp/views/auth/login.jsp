@@ -1,4 +1,4 @@
-ï»¿<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -23,14 +23,14 @@
             <% if (request.getParameter("registered") != null) { %>
                 <div class="success-msg">Account created! Please log in.</div>
             <% } %>
-            <form action="/auth/login" method="POST">
+            <form action="/auth/signin" method="POST">
                 <div class="form-group">
                     <label class="form-label">Email</label>
                     <input type="email" name="email" class="form-control" required placeholder="name@university.edu">
                 </div>
                 <div class="form-group">
                     <label class="form-label">Password</label>
-                    <input type="password" name="password" class="form-control" required placeholder="â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢">
+                    <input type="password" name="password" class="form-control" required placeholder="••••••••">
                 </div>
                 <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 8px;">Sign In</button>
             </form>

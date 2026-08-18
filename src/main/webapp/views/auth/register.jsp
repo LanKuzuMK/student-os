@@ -1,4 +1,4 @@
-ï»¿<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -27,12 +27,12 @@
                 </div>
                 <div class="form-group">
                     <label class="form-label">Password</label>
-                    <input type="password" name="password" class="form-control" required placeholder="â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢">
+                    <input type="password" name="password" class="form-control" required placeholder="••••••••">
                 </div>
                 <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 8px;">Create Account</button>
             </form>
             <div style="text-align: center; margin-top: 24px; font-size: 14px; color: var(--text-secondary);">
-                Already have an account? <a href="/auth/login" style="color: var(--text-primary); font-weight: 500;">Log In</a>
+                Already have an account? <a href="/auth/signin" style="color: var(--text-primary); font-weight: 500;">Log In</a>
             </div>
         </div>
     </div>
