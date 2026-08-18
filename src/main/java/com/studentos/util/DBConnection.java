@@ -1,28 +1,60 @@
 package com.studentos.util;
 
+import com.zaxxer.hikari.HikariConfig;
+import com.zaxxer.hikari.HikariDataSource;
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.SQLException;
-import java.io.File;
+import java.net.URI;
 
 public class DBConnection {
-    // For SQLite, we don't strictly need HikariCP for a local demo.
-    // We'll use standard JDBC connection to a local sqlite file.
-    
-    private static String getDbUrl() {
-        // Find absolute path to database/studentos.db
-        // In Tomcat, user.dir is often Tomcat's bin dir.
-        // It's safer to use a temp dir or absolute path.
-        String tempDir = System.getProperty("java.io.tmpdir");
-        return "jdbc:sqlite:" + tempDir + File.separator + "studentos.db";
+    private static HikariDataSource dataSource;
+
+    static {
+        try {
+            Class.forName("org.postgresql.Driver");
+            HikariConfig config = new HikariConfig();
+            
+            String dbUrl = System.getenv("DATABASE_URL");
+            
+            if (dbUrl == null || dbUrl.isEmpty()) {
+                // Fallback for local development if needed
+                config.setJdbcUrl("jdbc:postgresql://localhost:5432/studentos");
+                config.setUsername("postgres");
+                config.setPassword("postgres");
+            } else if (dbUrl.startsWith("postgresql://") || dbUrl.startsWith("postgres://")) {
+                // Parse standard Postgres URI format into JDBC format
+                URI uri = new URI(dbUrl.replace("postgresql://", "http://").replace("postgres://", "http://"));
+                String host = uri.getHost();
+                int port = uri.getPort() != -1 ? uri.getPort() : 5432;
+                String path = uri.getPath();
+                String query = uri.getQuery() != null ? "?" + uri.getQuery() : "";
+                String[] auth = uri.getUserInfo().split(":");
+                
+                config.setJdbcUrl("jdbc:postgresql://" + host + ":" + port + path + query);
+                config.setUsername(auth[0]);
+                if (auth.length > 1) {
+                    config.setPassword(auth[1]);
+                }
+            } else {
+                // Assume it's already a JDBC url
+                config.setJdbcUrl(dbUrl);
+            }
+
+            // Connection pooling optimizations
+            config.setMaximumPoolSize(10);
+            config.setMinimumIdle(2);
+            config.setIdleTimeout(30000);
+            config.setMaxLifetime(1800000);
+            config.setConnectionTimeout(30000);
+            
+            dataSource = new HikariDataSource(config);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException("Failed to initialize connection pool", e);
+        }
     }
 
     public static Connection getConnection() throws SQLException {
-        try {
-            Class.forName("org.sqlite.JDBC");
-            return DriverManager.getConnection(getDbUrl());
-        } catch (ClassNotFoundException e) {
-            throw new SQLException(e);
-        }
+        return dataSource.getConnection();
     }
 }
