@@ -16,6 +16,21 @@ public class AuthController extends HttpServlet {
     private AuthService authService = new AuthService();
 
     @Override
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        String path = req.getPathInfo();
+        if ("/login".equals(path)) {
+            req.getRequestDispatcher("/views/auth/login.jsp").forward(req, resp);
+        } else if ("/register".equals(path)) {
+            req.getRequestDispatcher("/views/auth/register.jsp").forward(req, resp);
+        } else if ("/logout".equals(path)) {
+            req.getSession().invalidate();
+            resp.sendRedirect(req.getContextPath() + "/auth/login");
+        } else {
+            resp.sendError(404);
+        }
+    }
+
+    @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String path = req.getPathInfo();
         
