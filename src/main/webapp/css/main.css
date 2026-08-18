@@ -1,0 +1,97 @@
+﻿:root {
+    --bg-primary: #fcfcfc;
+    --bg-secondary: #f4f4f5;
+    --text-primary: #111827;
+    --text-secondary: #6b7280;
+    --border-color: #e5e7eb;
+    --accent-color: #0f172a;
+    --accent-hover: #1e293b;
+    --success: #10b981;
+    --warning: #f59e0b;
+    --danger: #ef4444;
+    --radius: 8px;
+    --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+@media (prefers-color-scheme: dark) {
+    :root {
+        --bg-primary: #0a0a0a;
+        --bg-secondary: #171717;
+        --text-primary: #f9fafb;
+        --text-secondary: #9ca3af;
+        --border-color: #262626;
+        --accent-color: #ffffff;
+        --accent-hover: #e5e5e5;
+    }
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+    font-family: 'Inter', -apple-system, sans-serif;
+    background-color: var(--bg-primary);
+    color: var(--text-primary);
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+}
+a { text-decoration: none; color: inherit; }
+
+/* Buttons */
+.btn {
+    display: inline-flex; align-items: center; justify-content: center;
+    padding: 8px 16px; border-radius: var(--radius); font-weight: 500;
+    font-size: 14px; cursor: pointer; transition: all 0.2s ease; border: none;
+}
+.btn-primary { background-color: var(--accent-color); color: var(--bg-primary); }
+.btn-primary:hover { background-color: var(--accent-hover); }
+.btn-secondary { background-color: var(--bg-secondary); border: 1px solid var(--border-color); color: var(--text-primary); }
+.btn-secondary:hover { background-color: var(--border-color); }
+
+/* Forms */
+.form-group { margin-bottom: 16px; }
+.form-label { display: block; font-size: 14px; font-weight: 500; margin-bottom: 6px; color: var(--text-secondary); }
+.form-control {
+    width: 100%; padding: 10px 12px; border-radius: var(--radius);
+    border: 1px solid var(--border-color); background-color: var(--bg-primary);
+    color: var(--text-primary); font-family: inherit; font-size: 14px;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+.form-control:focus { outline: none; border-color: var(--accent-color); box-shadow: 0 0 0 2px rgba(15, 23, 42, 0.1); }
+
+/* Layout */
+.app-container { display: flex; min-height: 100vh; }
+.sidebar {
+    width: 260px; background-color: var(--bg-secondary); border-right: 1px solid var(--border-color);
+    padding: 24px; display: flex; flex-direction: column;
+}
+.sidebar-logo { font-size: 18px; font-weight: 700; margin-bottom: 32px; letter-spacing: -0.5px; }
+.nav-group { margin-bottom: 24px; }
+.nav-title { font-size: 12px; font-weight: 600; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px; }
+.nav-link {
+    display: block; padding: 8px 12px; border-radius: 6px; color: var(--text-primary);
+    font-size: 14px; font-weight: 500; transition: background-color 0.2s;
+}
+.nav-link:hover { background-color: var(--border-color); }
+
+.main-content { flex: 1; padding: 48px; max-width: 1000px; margin: 0 auto; }
+.page-header { margin-bottom: 32px; display: flex; justify-content: space-between; align-items: flex-end; }
+.page-title { font-size: 28px; font-weight: 700; letter-spacing: -0.5px; }
+.page-subtitle { color: var(--text-secondary); font-size: 16px; margin-top: 4px; }
+
+/* Cards */
+.card {
+    background-color: var(--bg-primary); border: 1px solid var(--border-color);
+    border-radius: var(--radius); padding: 20px; box-shadow: var(--shadow-sm);
+    transition: box-shadow 0.2s, transform 0.2s;
+}
+.card:hover { box-shadow: var(--shadow-md); transform: translateY(-1px); }
+.card-header { display: flex; justify-content: space-between; margin-bottom: 12px; }
+.card-title { font-size: 16px; font-weight: 600; }
+.badge {
+    padding: 4px 8px; border-radius: 999px; font-size: 12px; font-weight: 500;
+}
+.badge-todo { background-color: var(--bg-secondary); color: var(--text-secondary); }
+.badge-completed { background-color: rgba(16, 185, 129, 0.1); color: var(--success); }
+
+/* Grid */
+.grid-2 { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px; }
