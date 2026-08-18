@@ -18,25 +18,30 @@ public class AuthController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String path = req.getPathInfo();
-        if ("/login".equals(path)) {
+        if (path == null) path = "";
+        path = path.trim().replaceAll("[\u200B-\u200D\uFEFF]", ""); // Remove zero-width spaces
+        
+        if (path.startsWith("/login")) {
             req.getRequestDispatcher("/views/auth/login.jsp").forward(req, resp);
-        } else if ("/register".equals(path)) {
+        } else if (path.startsWith("/register")) {
             req.getRequestDispatcher("/views/auth/register.jsp").forward(req, resp);
-        } else if ("/verify".equals(path)) {
+        } else if (path.startsWith("/verify")) {
             req.getRequestDispatcher("/views/auth/verify.jsp").forward(req, resp);
-        } else if ("/logout".equals(path)) {
+        } else if (path.startsWith("/logout")) {
             req.getSession().invalidate();
             resp.sendRedirect(req.getContextPath() + "/auth/login");
         } else {
-            resp.sendError(404);
+            resp.sendError(404, "Path not found: " + path);
         }
     }
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String path = req.getPathInfo();
+        if (path == null) path = "";
+        path = path.trim().replaceAll("[\u200B-\u200D\uFEFF]", "");
         
-        if ("/login".equals(path)) {
+        if (path.startsWith("/login")) {
             User user = authService.login(req.getParameter("email"), req.getParameter("password"));
             if (user != null) {
                 req.getSession().setAttribute("user", user);
@@ -48,8 +53,7 @@ public class AuthController extends HttpServlet {
             } else {
                 resp.sendRedirect(req.getContextPath() + "/views/auth/login.jsp?error=1");
             }
-        } else if ("/register".equals(path)) {
-            // Initiate OTP Flow
+        } else if (path.startsWith("/register")) {
             String email = req.getParameter("email");
             String password = req.getParameter("password");
             String firstName = req.getParameter("firstName");
@@ -67,7 +71,7 @@ public class AuthController extends HttpServlet {
             session.setAttribute("pendingRole", role);
             
             resp.sendRedirect(req.getContextPath() + "/auth/verify");
-        } else if ("/verify".equals(path)) {
+        } else if (path.startsWith("/verify")) {
             HttpSession session = req.getSession();
             String expectedOtp = (String) session.getAttribute("otpCode");
             String enteredOtp = req.getParameter("otp");
@@ -94,7 +98,7 @@ public class AuthController extends HttpServlet {
                 req.setAttribute("error", "Invalid OTP code. Please try again.");
                 req.getRequestDispatcher("/views/auth/verify.jsp").forward(req, resp);
             }
-        } else if ("/logout".equals(path)) {
+        } else if (path.startsWith("/logout")) {
             req.getSession().invalidate();
             resp.sendRedirect(req.getContextPath() + "/views/auth/login.jsp");
         }
