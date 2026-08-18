@@ -13,9 +13,9 @@ public class AppContextListener implements ServletContextListener {
         try {
             InitDB.init();
             System.out.println("Database Initialized Successfully.");
-        } catch (Exception e) {
+        } catch (Throwable t) {
             System.err.println("WARNING: Database failed to initialize on startup. This is common if the free tier DB is asleep.");
-            e.printStackTrace();
+            t.printStackTrace();
             // Do NOT throw an exception here, otherwise Tomcat will abort the entire deployment!
         }
     }
