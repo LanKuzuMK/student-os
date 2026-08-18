@@ -22,6 +22,8 @@ public class AuthController extends HttpServlet {
             req.getRequestDispatcher("/views/auth/login.jsp").forward(req, resp);
         } else if ("/register".equals(path)) {
             req.getRequestDispatcher("/views/auth/register.jsp").forward(req, resp);
+        } else if ("/verify".equals(path)) {
+            req.getRequestDispatcher("/views/auth/verify.jsp").forward(req, resp);
         } else if ("/logout".equals(path)) {
             req.getSession().invalidate();
             resp.sendRedirect(req.getContextPath() + "/auth/login");
@@ -54,10 +56,8 @@ public class AuthController extends HttpServlet {
             String lastName = req.getParameter("lastName");
             String role = req.getParameter("role") != null ? req.getParameter("role") : "STUDENT";
             
-            // Generate 6-digit OTP
             String otpCode = String.format("%06d", new Random().nextInt(999999));
             
-            // Store temporarily in session
             HttpSession session = req.getSession();
             session.setAttribute("otpCode", otpCode);
             session.setAttribute("pendingEmail", email);
@@ -66,8 +66,34 @@ public class AuthController extends HttpServlet {
             session.setAttribute("pendingLastName", lastName);
             session.setAttribute("pendingRole", role);
             
-            // Redirect to verify page
             resp.sendRedirect(req.getContextPath() + "/auth/verify");
+        } else if ("/verify".equals(path)) {
+            HttpSession session = req.getSession();
+            String expectedOtp = (String) session.getAttribute("otpCode");
+            String enteredOtp = req.getParameter("otp");
+
+            if (expectedOtp != null && expectedOtp.equals(enteredOtp)) {
+                String email = (String) session.getAttribute("pendingEmail");
+                String password = (String) session.getAttribute("pendingPassword");
+                String firstName = (String) session.getAttribute("pendingFirstName");
+                String lastName = (String) session.getAttribute("pendingLastName");
+                String role = (String) session.getAttribute("pendingRole");
+
+                User user = authService.registerUser(email, password, role, firstName, lastName);
+                if (user != null) {
+                    session.setAttribute("user", user);
+                    session.removeAttribute("otpCode");
+                    session.removeAttribute("pendingEmail");
+                    session.removeAttribute("pendingPassword");
+                    
+                    resp.sendRedirect(req.getContextPath() + "/dashboard");
+                } else {
+                    resp.sendRedirect(req.getContextPath() + "/views/auth/register.jsp?error=RegistrationFailed");
+                }
+            } else {
+                req.setAttribute("error", "Invalid OTP code. Please try again.");
+                req.getRequestDispatcher("/views/auth/verify.jsp").forward(req, resp);
+            }
         } else if ("/logout".equals(path)) {
             req.getSession().invalidate();
             resp.sendRedirect(req.getContextPath() + "/views/auth/login.jsp");
