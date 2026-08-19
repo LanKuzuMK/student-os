@@ -12,6 +12,6 @@ COPY --from=build /app/target/student-os.war /usr/local/tomcat/webapps/ROOT.war
 COPY docker-entrypoint.sh /usr/local/bin/student-os-entrypoint
 RUN chmod +x /usr/local/bin/student-os-entrypoint
 
-ENV PORT=10000
-EXPOSE 10000
+ENV PORT=8080
+EXPOSE 8080
 ENTRYPOINT ["/usr/local/bin/student-os-entrypoint"]
