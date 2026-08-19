@@ -57,7 +57,7 @@ button, input, textarea, select { font: inherit; }
 .auth-wrapper::after { right: -130px; bottom: -180px; background: radial-gradient(circle, #a9a6ff, transparent 67%); }
 .auth-card { position: relative; z-index: 1; background: rgba(255,255,255,.94) !important; border: 1px solid rgba(225,232,243,.94) !important; border-radius: 22px !important; box-shadow: var(--shadow-lg) !important; }
 .auth-logo { display: flex; align-items: center; justify-content: center; gap: 11px; color: var(--ink); font-family: 'Plus Jakarta Sans', sans-serif; font-size: 18px !important; font-weight: 800 !important; letter-spacing: -.8px; }
-.auth-logo::before { display: block; width: 46px; height: 46px; content: ''; background: url('/assets/studentos-logo-transparent.png') center / contain no-repeat; filter: drop-shadow(0 8px 13px rgba(62,75,220,.22)); }
+.auth-logo::before { display: block; width: 46px; height: 46px; content: ''; background: url('/favicon.png') center / 46px 46px no-repeat; filter: drop-shadow(0 8px 13px rgba(62,75,220,.22)); }
 .auth-logo a { color: inherit; }
 
 .app-container { display: flex; min-height: 100vh; }
