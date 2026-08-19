@@ -6,6 +6,16 @@
 
     <display-name>Student OS</display-name>
 
+    <servlet>
+        <servlet-name>signInController</servlet-name>
+        <servlet-class>com.studentos.controller.SignInController</servlet-class>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>signInController</servlet-name>
+        <url-pattern>/auth/signin</url-pattern>
+    </servlet-mapping>
+
     <welcome-file-list>
         <welcome-file>index.jsp</welcome-file>
     </welcome-file-list>

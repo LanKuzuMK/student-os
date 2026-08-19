@@ -3,7 +3,6 @@ package com.studentos.controller;
 import com.studentos.model.User;
 import com.studentos.service.AuthService;
 import jakarta.servlet.ServletException;
-import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -13,7 +12,6 @@ import java.io.IOException;
 /**
  * Dedicated endpoint for the deployed sign-in form.
  */
-@WebServlet(name = "signInController", urlPatterns = "/auth/signin")
 public class SignInController extends HttpServlet {
     private final AuthService authService = new AuthService();
 
