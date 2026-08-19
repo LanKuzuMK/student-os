@@ -8,99 +8,120 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
+
 import java.io.IOException;
 import java.util.Random;
 
-@WebServlet("/auth/*")
+/**
+ * Handles the application's explicit authentication endpoints.
+ * Exact mappings avoid relying on a wildcard-path resolution in the deployed container.
+ */
+@WebServlet(
+        name = "authController",
+        urlPatterns = {
+                "/auth/login",
+                "/auth/signin",
+                "/auth/register",
+                "/auth/verify",
+                "/auth/logout"
+        }
+)
 public class AuthController extends HttpServlet {
-    private AuthService authService = new AuthService();
+    private final AuthService authService = new AuthService();
 
     @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        String path = req.getPathInfo();
-        if (path == null) path = "";
-        path = path.trim().replaceAll("[\u200B-\u200D\uFEFF]", "");
-        
-        if (path.startsWith("/login") || path.startsWith("/signin")) {
-            req.getRequestDispatcher("/views/auth/login.jsp").forward(req, resp);
-        } else if (path.startsWith("/register")) {
-            req.getRequestDispatcher("/views/auth/register.jsp").forward(req, resp);
-        } else if (path.startsWith("/verify")) {
-            req.getRequestDispatcher("/views/auth/verify.jsp").forward(req, resp);
-        } else if (path.startsWith("/logout")) {
-            req.getSession().invalidate();
-            resp.sendRedirect(req.getContextPath() + "/auth/signin");
-        } else {
-            resp.sendError(404, "Path not found: " + path);
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        String route = getRoute(request);
+
+        switch (route) {
+            case "/auth/login", "/auth/signin" ->
+                    request.getRequestDispatcher("/views/auth/login.jsp").forward(request, response);
+            case "/auth/register" ->
+                    request.getRequestDispatcher("/views/auth/register.jsp").forward(request, response);
+            case "/auth/verify" ->
+                    request.getRequestDispatcher("/views/auth/verify.jsp").forward(request, response);
+            case "/auth/logout" -> {
+                request.getSession().invalidate();
+                response.sendRedirect(request.getContextPath() + "/auth/signin");
+            }
+            default -> response.sendError(HttpServletResponse.SC_NOT_FOUND, "Authentication route not found");
         }
     }
 
     @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        String path = req.getPathInfo();
-        if (path == null) path = "";
-        path = path.trim().replaceAll("[\u200B-\u200D\uFEFF]", "");
-        
-        if (path.startsWith("/login") || path.startsWith("/signin")) {
-            User user = authService.login(req.getParameter("email"), req.getParameter("password"));
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        String route = getRoute(request);
+
+        switch (route) {
+            case "/auth/login", "/auth/signin" -> handleLogin(request, response);
+            case "/auth/register" -> handleRegistrationRequest(request, response);
+            case "/auth/verify" -> handleVerification(request, response);
+            case "/auth/logout" -> {
+                request.getSession().invalidate();
+                response.sendRedirect(request.getContextPath() + "/auth/signin");
+            }
+            default -> response.sendError(HttpServletResponse.SC_NOT_FOUND, "Authentication route not found");
+        }
+    }
+
+    private String getRoute(HttpServletRequest request) {
+        String route = request.getServletPath();
+        if (route == null || route.isBlank()) {
+            route = request.getPathInfo();
+        }
+        return route == null ? "" : route.trim().replaceAll("[\\u200B-\\u200D\\uFEFF]", "");
+    }
+
+    private void handleLogin(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        User user = authService.login(request.getParameter("email"), request.getParameter("password"));
+        if (user != null) {
+            request.getSession().setAttribute("user", user);
+            response.sendRedirect(request.getContextPath() + ("ADMIN".equals(user.getRole()) ? "/admin" : "/dashboard"));
+        } else {
+            response.sendRedirect(request.getContextPath() + "/auth/signin?error=1");
+        }
+    }
+
+    private void handleRegistrationRequest(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        HttpSession session = request.getSession();
+        session.setAttribute("otpCode", String.format("%06d", new Random().nextInt(1_000_000)));
+        session.setAttribute("pendingEmail", request.getParameter("email"));
+        session.setAttribute("pendingPassword", request.getParameter("password"));
+        session.setAttribute("pendingFirstName", request.getParameter("firstName"));
+        session.setAttribute("pendingLastName", request.getParameter("lastName"));
+        session.setAttribute("pendingRole", request.getParameter("role") != null ? request.getParameter("role") : "STUDENT");
+        response.sendRedirect(request.getContextPath() + "/auth/verify");
+    }
+
+    private void handleVerification(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        HttpSession session = request.getSession();
+        String expectedOtp = (String) session.getAttribute("otpCode");
+        String enteredOtp = request.getParameter("otp");
+
+        if (expectedOtp != null && expectedOtp.equals(enteredOtp)) {
+            User user = authService.registerUser(
+                    (String) session.getAttribute("pendingEmail"),
+                    (String) session.getAttribute("pendingPassword"),
+                    (String) session.getAttribute("pendingRole"),
+                    (String) session.getAttribute("pendingFirstName"),
+                    (String) session.getAttribute("pendingLastName")
+            );
+
             if (user != null) {
-                req.getSession().setAttribute("user", user);
-                if ("ADMIN".equals(user.getRole())) {
-                    resp.sendRedirect(req.getContextPath() + "/admin");
-                } else {
-                    resp.sendRedirect(req.getContextPath() + "/dashboard");
-                }
+                session.setAttribute("user", user);
+                session.removeAttribute("otpCode");
+                session.removeAttribute("pendingEmail");
+                session.removeAttribute("pendingPassword");
+                response.sendRedirect(request.getContextPath() + "/dashboard");
             } else {
-                resp.sendRedirect(req.getContextPath() + "/views/auth/login.jsp?error=1");
+                response.sendRedirect(request.getContextPath() + "/auth/register?error=RegistrationFailed");
             }
-        } else if (path.startsWith("/register")) {
-            String email = req.getParameter("email");
-            String password = req.getParameter("password");
-            String firstName = req.getParameter("firstName");
-            String lastName = req.getParameter("lastName");
-            String role = req.getParameter("role") != null ? req.getParameter("role") : "STUDENT";
-            
-            String otpCode = String.format("%06d", new Random().nextInt(999999));
-            
-            HttpSession session = req.getSession();
-            session.setAttribute("otpCode", otpCode);
-            session.setAttribute("pendingEmail", email);
-            session.setAttribute("pendingPassword", password);
-            session.setAttribute("pendingFirstName", firstName);
-            session.setAttribute("pendingLastName", lastName);
-            session.setAttribute("pendingRole", role);
-            
-            resp.sendRedirect(req.getContextPath() + "/auth/verify");
-        } else if (path.startsWith("/verify")) {
-            HttpSession session = req.getSession();
-            String expectedOtp = (String) session.getAttribute("otpCode");
-            String enteredOtp = req.getParameter("otp");
-
-            if (expectedOtp != null && expectedOtp.equals(enteredOtp)) {
-                String email = (String) session.getAttribute("pendingEmail");
-                String password = (String) session.getAttribute("pendingPassword");
-                String firstName = (String) session.getAttribute("pendingFirstName");
-                String lastName = (String) session.getAttribute("pendingLastName");
-                String role = (String) session.getAttribute("pendingRole");
-
-                User user = authService.registerUser(email, password, role, firstName, lastName);
-                if (user != null) {
-                    session.setAttribute("user", user);
-                    session.removeAttribute("otpCode");
-                    session.removeAttribute("pendingEmail");
-                    session.removeAttribute("pendingPassword");
-                    
-                    resp.sendRedirect(req.getContextPath() + "/dashboard");
-                } else {
-                    resp.sendRedirect(req.getContextPath() + "/views/auth/register.jsp?error=RegistrationFailed");
-                }
-            } else {
-                req.setAttribute("error", "Invalid OTP code. Please try again.");
-                req.getRequestDispatcher("/views/auth/verify.jsp").forward(req, resp);
-            }
-        } else if (path.startsWith("/logout")) {
-            req.getSession().invalidate();
-            resp.sendRedirect(req.getContextPath() + "/views/auth/signin");
+        } else {
+            request.setAttribute("error", "Invalid OTP code. Please try again.");
+            request.getRequestDispatcher("/views/auth/verify.jsp").forward(request, response);
         }
     }
 }
