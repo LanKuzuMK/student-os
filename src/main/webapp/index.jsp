@@ -25,14 +25,13 @@
         .topbar, .hero, .footer-note { position: relative; z-index: 1; }
         .topbar { display: flex; align-items: center; justify-content: space-between; }
         .brand { display: inline-flex; align-items: center; gap: 10px; color: var(--ink); font-family: 'Plus Jakarta Sans', sans-serif; font-size: 16px; font-weight: 800; letter-spacing: -.65px; text-decoration: none; }
-        .brand-mark { display: inline-block; width: 37px; height: 37px; background: url('/assets/studentos-logo-transparent.png') center / contain no-repeat; filter: drop-shadow(0 7px 12px rgba(58, 74, 201, .2)); }
+        .brand-mark { display: inline-block; width: 37px; height: 37px; background: url('/assets/studentos-logo-transparent.png') center / 37px 37px no-repeat; filter: drop-shadow(0 7px 12px rgba(58, 74, 201, .2)); }
         .topbar-link { padding: 9px 13px; color: #4d5b76; border: 1px solid var(--line); border-radius: 10px; font-size: 13px; font-weight: 700; text-decoration: none; transition: border-color .2s, color .2s, transform .2s; }
         .topbar-link:hover { color: var(--brand); border-color: #cccdf8; transform: translateY(-1px); }
         .hero { display: grid; flex: 1; place-items: center; padding: 56px 0 40px; text-align: center; }
         .hero-copy { max-width: 790px; }
-        .logo-orbit { position: relative; display: grid; width: 96px; height: 96px; margin: 0 auto 25px; place-items: center; border-radius: 30px; background: linear-gradient(145deg, #ffffff, #f4f5ff); border: 1px solid rgba(223, 228, 245, .9); box-shadow: 0 20px 45px rgba(41, 56, 111, .12), inset 0 1px 0 rgba(255,255,255,.9); }
+        .logo-orbit { position: relative; width: 96px; height: 96px; margin: 0 auto 25px; border: 1px solid rgba(223, 228, 245, .9); border-radius: 30px; background: url('/assets/studentos-logo-transparent.png') center / 67px 67px no-repeat, linear-gradient(145deg, #ffffff, #f4f5ff); box-shadow: 0 20px 45px rgba(41, 56, 111, .12), inset 0 1px 0 rgba(255,255,255,.9); }
         .logo-orbit::before { position: absolute; inset: -8px; border: 1px solid rgba(91, 92, 226, .18); border-radius: 35px; content: ''; }
-        .logo-orbit::after { width: 67px; height: 67px; content: ''; background: url('/assets/studentos-logo-transparent.png') center / contain no-repeat; filter: drop-shadow(0 9px 14px rgba(50, 66, 196, .24)); }
         .eyebrow { margin-bottom: 14px; color: var(--brand); font-size: 11px; font-weight: 800; letter-spacing: .13em; text-transform: uppercase; }
         h1 { max-width: 740px; margin: 0 auto; color: #10203e; font-family: 'Plus Jakarta Sans', sans-serif; font-size: clamp(42px, 6vw, 68px); font-weight: 800; letter-spacing: -3.6px; line-height: 1.04; }
         .tagline { margin: 19px auto 0; color: #465671; font-size: clamp(17px, 2vw, 20px); font-weight: 600; }
