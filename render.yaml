@@ -1,0 +1,10 @@
+services:
+  - type: web
+    name: student-os
+    runtime: docker
+    healthCheckPath: /
+    envVars:
+      - key: DATABASE_URL
+        sync: false
+      - key: DB_POOL_SIZE
+        value: "5"
