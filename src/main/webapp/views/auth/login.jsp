@@ -31,7 +31,7 @@
                 </div>
                 <div class="form-group">
                     <label class="form-label">Password</label>
-                    <input type="password" name="password" class="form-control" required placeholder="••••••••">
+                    <input type="password" name="password" class="form-control" required placeholder="Enter your password" autocomplete="current-password">
                 </div>
                 <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 8px;">Sign In</button>
             </form>
