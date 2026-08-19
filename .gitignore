@@ -9,3 +9,6 @@ tomcat.log
 maven.zip
 maven/
 cloudflared.exe
+.env
+.env.*
+!.env.example
