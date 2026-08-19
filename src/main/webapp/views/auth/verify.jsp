@@ -21,6 +21,7 @@
             letter-spacing: 2px;
         }
     </style>
+    <link rel="icon" type="image/png" href="/favicon.png">
 </head>
 <body>
     <div class="auth-container">

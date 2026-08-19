@@ -13,6 +13,7 @@
         .stat-value { font-size: 36px; font-weight: 700; margin-bottom: 8px; }
         .stat-label { color: var(--text-secondary); font-size: 14px; text-transform: uppercase; letter-spacing: 1px; }
     </style>
+    <link rel="icon" type="image/png" href="/favicon.png">
 </head>
 <body>
     <div class="app-container">

@@ -11,6 +11,7 @@
         .auth-logo { font-size: 24px; font-weight: 700; text-align: center; margin-bottom: 32px; }
         .error-msg { color: var(--danger); font-size: 14px; margin-bottom: 16px; text-align: center; }
     </style>
+    <link rel="icon" type="image/png" href="/favicon.png">
 </head>
 <body>
     <div class="auth-wrapper">

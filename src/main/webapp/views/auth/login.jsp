@@ -12,6 +12,7 @@
         .error-msg { color: var(--danger); font-size: 14px; margin-bottom: 16px; text-align: center; }
         .success-msg { color: var(--success); font-size: 14px; margin-bottom: 16px; text-align: center; }
     </style>
+    <link rel="icon" type="image/png" href="/favicon.png">
 </head>
 <body>
     <div class="auth-wrapper">

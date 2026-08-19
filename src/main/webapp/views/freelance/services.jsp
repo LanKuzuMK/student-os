@@ -1,6 +1,7 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <!DOCTYPE html>
-<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Services - Student OS</title><link rel="stylesheet" href="/css/main.css"></head>
+<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Services - Student OS</title><link rel="stylesheet" href="/css/main.css">    <link rel="icon" type="image/png" href="/favicon.png">
+</head>
 <body><div class="app-container">
 <aside class="sidebar"><div class="sidebar-logo">STUDENT OS</div>
 <div class="nav-group"><div class="nav-title">My Life</div><a href="/dashboard" class="nav-link">Overview</a><a href="/goals" class="nav-link">Goals</a><a href="/schedule" class="nav-link">Schedule</a></div>
