@@ -20,7 +20,6 @@ import java.util.Random;
         name = "authController",
         urlPatterns = {
                 "/auth/login",
-                "/auth/signin",
                 "/auth/register",
                 "/auth/verify",
                 "/auth/logout"
@@ -35,7 +34,7 @@ public class AuthController extends HttpServlet {
         String route = getRoute(request);
 
         switch (route) {
-            case "/auth/login", "/auth/signin" ->
+            case "/auth/login" ->
                     request.getRequestDispatcher("/views/auth/login.jsp").forward(request, response);
             case "/auth/register" ->
                     request.getRequestDispatcher("/views/auth/register.jsp").forward(request, response);
@@ -55,7 +54,7 @@ public class AuthController extends HttpServlet {
         String route = getRoute(request);
 
         switch (route) {
-            case "/auth/login", "/auth/signin" -> handleLogin(request, response);
+            case "/auth/login" -> handleLogin(request, response);
             case "/auth/register" -> handleRegistrationRequest(request, response);
             case "/auth/verify" -> handleVerification(request, response);
             case "/auth/logout" -> {
