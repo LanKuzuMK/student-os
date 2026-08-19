@@ -21,9 +21,10 @@ public final class InitDB {
                         + "created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP, "
                         + "updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP"
                         + ")",
-                "UPDATE users SET password_hash = '$2b$12$f92XfVIePffZBEmB82qgkO.fx5ejqoqZEDRovE0xg.X.1D10M8KuK' "
+                "UPDATE users SET password_hash = '$2a$10$hAZHFcGYO4y32HJ.bPPGIemUljIzF2XGeW7HDCEJBwb4Ygnuv4Vny' "
                         + "WHERE email IN ('admin@example.com', 'student@example.com', 'mong@example.com', 'dara@example.com', 'sokha@example.com') "
-                        + "AND password_hash NOT LIKE '$2%'",
+                        + "AND (password_hash NOT LIKE '$2%' "
+                        + "OR password_hash = '$2b$12$f92XfVIePffZBEmB82qgkO.fx5ejqoqZEDRovE0xg.X.1D10M8KuK')",
                 "CREATE TABLE IF NOT EXISTS profiles ("
                         + "user_id INTEGER PRIMARY KEY REFERENCES users(id) ON DELETE CASCADE, "
                         + "first_name VARCHAR(100), "
