@@ -67,9 +67,10 @@ public class AuthController extends HttpServlet {
     }
 
     private String getRoute(HttpServletRequest request) {
-        String route = request.getServletPath();
-        if (route == null || route.isBlank()) {
-            route = request.getPathInfo();
+        String route = request.getRequestURI();
+        String contextPath = request.getContextPath();
+        if (route != null && contextPath != null && route.startsWith(contextPath)) {
+            route = route.substring(contextPath.length());
         }
         return route == null ? "" : route.trim().replaceAll("[\\u200B-\\u200D\\uFEFF]", "");
     }
