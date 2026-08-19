@@ -20,8 +20,9 @@
         </div>
         <div class="nav-group">
             <div class="nav-title">Skills</div>
-            <a href="/skills/discover" class="nav-link">Discover</a>
-            <a href="/skills" class="nav-link">My Skills</a>
+            <a href="/skills/discover" class="nav-link">Discover talent</a>
+            <a href="/skills" class="nav-link">My skills</a>
+            <a href="/messages" class="nav-link">Messages</a>
         </div>
         <div class="nav-group">
             <div class="nav-title">Work</div>

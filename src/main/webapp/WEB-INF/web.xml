@@ -36,6 +36,16 @@
         <url-pattern>/schedule</url-pattern>
     </servlet-mapping>
 
+    <servlet>
+        <servlet-name>messageController</servlet-name>
+        <servlet-class>com.studentos.controller.MessageController</servlet-class>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>messageController</servlet-name>
+        <url-pattern>/messages</url-pattern>
+    </servlet-mapping>
+
     <welcome-file-list>
         <welcome-file>index.jsp</welcome-file>
     </welcome-file-list>
