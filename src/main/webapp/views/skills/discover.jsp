@@ -11,4 +11,5 @@
 <div style="margin-top:auto"><a href="/auth/logout" class="nav-link" style="color:var(--danger)">Logout</a></div></aside>
 <main class="main-content"><header class="page-header"><div><h1 class="page-title">Discover Matches</h1><p class="page-subtitle">Find students to swap skills with.</p></div></header>
 <section class="grid-2"><c:choose><c:when test="${empty allSkills}"><div class="card">No skills exist in the community yet.</div></c:when><c:otherwise><c:forEach var="skill" items="${allSkills}"><article class="card"><div class="card-header"><div class="card-title"><c:out value="${skill.skillName}"/></div><span class="badge badge-todo"><c:out value="${skill.type}"/></span></div><p style="color:var(--text-secondary)">Level: <c:out value="${skill.skillLevel}"/></p><p style="color:var(--text-secondary)">Student #<c:out value="${skill.userId}"/></p><a href="/messages?to=<c:out value='${skill.userId}'/>" class="btn btn-primary contact-btn">Message student <svg class="icon" aria-hidden="true"><use href="/assets/icons.svg#arrow-right"></use></svg></a></article></c:forEach></c:otherwise></c:choose></section>
-</main></div></body></html>
+</main>
+<footer class="mkv-footer">© 2026 MKV Team</footer></div></body></html>

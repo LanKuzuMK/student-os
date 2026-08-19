@@ -78,38 +78,30 @@
         </section>
 
         <section class="stats-grid" aria-label="Workspace statistics">
-            <div class="stat-card">
-                <div class="stat-icon stat-icon-blue"><svg class="icon" aria-hidden="true"><use href="/assets/icons.svg#arrow-up-right"></use></svg></div>
-                <div>
-                    <span class="stat-label">Active focus</span>
-                    <strong class="stat-value"><c:out value="${activeTasks}"/> task<c:if test="${activeTasks ne 1}">s</c:if></strong>
-                    <span class="stat-note">Ready for your attention</span>
-                </div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-icon stat-icon-mint"><svg class="icon" aria-hidden="true"><use href="/assets/icons.svg#check"></use></svg></div>
-                <div>
-                    <span class="stat-label">Progress made</span>
-                    <strong class="stat-value"><c:out value="${completedTasks}"/> complete</strong>
-                    <span class="stat-note">Every finished task matters</span>
-                </div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-icon stat-icon-amber"><svg class="icon" aria-hidden="true"><use href="/assets/icons.svg#compass"></use></svg></div>
-                <div>
-                    <span class="stat-label">Community</span>
-                    <strong class="stat-value">Skills hub</strong>
-                    <span class="stat-note">Find your next collaborator</span>
-                </div>
-            </div>
+            <article class="stat-card stat-card-focus">
+                <div class="stat-card-header"><span class="stat-label">Active focus</span><span class="stat-mark">01</span></div>
+                <div class="stat-card-value"><strong><c:out value="${activeTasks}"/></strong><span>open task<c:if test="${activeTasks ne 1}">s</c:if></span></div>
+                <p class="stat-note">Choose one meaningful next step.</p>
+            </article>
+            <article class="stat-card stat-card-progress">
+                <div class="stat-card-header"><span class="stat-label">Progress made</span><span class="stat-mark">02</span></div>
+                <div class="stat-card-value"><strong><c:out value="${completedTasks}"/></strong><span>complete</span></div>
+                <p class="stat-note">Small wins build real momentum.</p>
+            </article>
+            <article class="stat-card stat-card-community">
+                <div class="stat-card-header"><span class="stat-label">Community</span><span class="stat-mark">03</span></div>
+                <div class="stat-card-value"><strong>Skills</strong><span>exchange</span></div>
+                <p class="stat-note">Find a classmate to learn or build with.</p>
+            </article>
         </section>
 
         <section class="dashboard-columns">
             <div class="panel">
                 <div class="panel-heading">
                     <div>
+                        <div class="panel-kicker">Today’s shortlist</div>
                         <h2 class="panel-title">Your focus list</h2>
-                        <p class="panel-subtitle">The tasks that keep your day moving forward.</p>
+                        <p class="panel-subtitle">The work worth making time for today.</p>
                     </div>
                     <a class="panel-link" href="/schedule">View schedule</a>
                 </div>
@@ -143,13 +135,14 @@
             </div>
 
             <aside class="panel network-card">
-                <div class="network-icon"><svg class="icon" aria-hidden="true"><use href="/assets/icons.svg#sparkles"></use></svg></div>
-                <h3>Talent is closer than you think.</h3>
-                <p>Find peers who can share knowledge, exchange feedback, and collaborate on the next opportunity.</p>
-                <a href="/skills/discover" class="btn btn-primary">Explore talent</a>
+                <div class="network-eyebrow"><span>Peer exchange</span><svg class="icon" aria-hidden="true"><use href="/assets/icons.svg#arrow-up-right"></use></svg></div>
+                <h3>Good collaborators are already in your community.</h3>
+                <p>Browse skills, find the right classmate, and start with a clear reason to connect.</p>
+                <a href="/skills/discover" class="btn btn-primary">Find a collaborator</a>
             </aside>
         </section>
     </main>
+<footer class="mkv-footer">© 2026 MKV Team</footer>
 </div>
 
 <div id="taskModal" style="display:none;position:fixed;z-index:20;inset:0;padding:20px;background:rgba(13,25,52,.48);align-items:center;justify-content:center;backdrop-filter:blur(5px);">

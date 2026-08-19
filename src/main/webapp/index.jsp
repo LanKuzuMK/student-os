@@ -22,7 +22,7 @@
         }
         .landing { position: relative; display: flex; flex-direction: column; min-height: 100vh; padding: 26px clamp(24px, 6vw, 90px) 36px; }
         .landing::before { position: absolute; inset: 0; z-index: 0; background-image: linear-gradient(rgba(99, 113, 153, .035) 1px, transparent 1px), linear-gradient(90deg, rgba(99, 113, 153, .035) 1px, transparent 1px); background-size: 52px 52px; content: ''; mask-image: linear-gradient(to bottom, rgba(0,0,0,.45), transparent 60%); }
-        .topbar, .hero, .footer-note { position: relative; z-index: 1; }
+        .topbar, .hero, .landing-footer { position: relative; z-index: 1; }
         .topbar { display: flex; align-items: center; justify-content: space-between; }
         .brand { display: inline-flex; align-items: center; gap: 10px; color: var(--ink); font-family: 'Plus Jakarta Sans', sans-serif; font-size: 16px; font-weight: 800; letter-spacing: -.65px; text-decoration: none; }
         .brand-mark { display: inline-block; width: 37px; height: 37px; object-fit: contain; filter: drop-shadow(0 7px 12px rgba(58, 74, 201, .2)); }
@@ -47,7 +47,7 @@
         .value-strip { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px 20px; margin-top: 31px; color: #6e7a90; font-size: 12px; font-weight: 700; }
         .value-strip span { display: inline-flex; align-items: center; gap: 7px; }
         .value-strip i { display: inline-block; width: 5px; height: 5px; background: #56c6a3; border-radius: 50%; box-shadow: 0 0 0 4px rgba(86, 198, 163, .13); }
-        .footer-note { color: #9aa4b7; font-size: 11px; font-weight: 600; text-align: center; }
+        .landing-footer { padding-top: 16px; color: #9aa4b7; border-top: 1px solid rgba(220, 226, 239, .75); font-size: 11px; font-weight: 700; letter-spacing: .035em; text-align: center; }
         @media (max-width: 620px) { .landing { padding: 20px 20px 28px; } .topbar-link { display: none; } .hero { padding: 46px 0 28px; } h1 { letter-spacing: -2.5px; } .description { font-size: 15px; } .actions { flex-direction: column; } .btn { width: 100%; } .value-strip { justify-content: flex-start; } }
     </style>
 </head>
@@ -73,7 +73,7 @@
             </div>
         </section>
 
-        <div class="footer-note">StudentOS · Designed for focused student progress</div>
+        <footer class="landing-footer">© 2026 MKV Team</footer>
     </main>
 </body>
 </html>

@@ -54,5 +54,6 @@
             </p>
         </div>
     </div>
+<footer class="mkv-footer">© 2026 MKV Team</footer>
 </body>
 </html>
