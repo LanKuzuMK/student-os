@@ -11,10 +11,16 @@ public class AuthService {
 
     public User login(String email, String password) {
         User user = userDAO.findByEmail(email);
-        if (user != null && BCrypt.checkpw(password, user.getPasswordHash())) {
-            return user;
+        if (user == null) {
+            return null;
         }
-        return null;
+
+        try {
+            return BCrypt.checkpw(password, user.getPasswordHash()) ? user : null;
+        } catch (IllegalArgumentException exception) {
+            // Legacy malformed hashes are rejected safely; InitDB repairs the known demo records at startup.
+            return null;
+        }
     }
 
     public User registerUser(String email, String password, String role, String firstName, String lastName) {

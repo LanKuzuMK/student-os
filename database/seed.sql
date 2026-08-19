@@ -7,11 +7,11 @@
 -- For demo purposes using direct SQL seed, you might need to register via the UI, 
 -- or we will insert a pre-hashed string for 'password'
 INSERT INTO users (id, email, password_hash, role) VALUES 
-(1, 'admin@example.com', '\\\.o1QzK467I7tP0dI2J.c.D.6lX.R37mXnE.Sg.0l3o/uJ.IeX3c6', 'ADMIN'),
-(2, 'student@example.com', '\\\.o1QzK467I7tP0dI2J.c.D.6lX.R37mXnE.Sg.0l3o/uJ.IeX3c6', 'STUDENT'),
-(3, 'mong@example.com', '\\\.o1QzK467I7tP0dI2J.c.D.6lX.R37mXnE.Sg.0l3o/uJ.IeX3c6', 'STUDENT'),
-(4, 'dara@example.com', '\\\.o1QzK467I7tP0dI2J.c.D.6lX.R37mXnE.Sg.0l3o/uJ.IeX3c6', 'STUDENT'),
-(5, 'sokha@example.com', '\\\.o1QzK467I7tP0dI2J.c.D.6lX.R37mXnE.Sg.0l3o/uJ.IeX3c6', 'STUDENT');
+(1, 'admin@example.com', '$2b$12$f92XfVIePffZBEmB82qgkO.fx5ejqoqZEDRovE0xg.X.1D10M8KuK', 'ADMIN'),
+(2, 'student@example.com', '$2b$12$f92XfVIePffZBEmB82qgkO.fx5ejqoqZEDRovE0xg.X.1D10M8KuK', 'STUDENT'),
+(3, 'mong@example.com', '$2b$12$f92XfVIePffZBEmB82qgkO.fx5ejqoqZEDRovE0xg.X.1D10M8KuK', 'STUDENT'),
+(4, 'dara@example.com', '$2b$12$f92XfVIePffZBEmB82qgkO.fx5ejqoqZEDRovE0xg.X.1D10M8KuK', 'STUDENT'),
+(5, 'sokha@example.com', '$2b$12$f92XfVIePffZBEmB82qgkO.fx5ejqoqZEDRovE0xg.X.1D10M8KuK', 'STUDENT');
 
 -- Reset sequence for users
 SELECT setval('users_id_seq', 5);
