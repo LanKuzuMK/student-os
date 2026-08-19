@@ -15,18 +15,18 @@
         <div class="nav-group">
             <div class="nav-title">My Life</div>
             <a href="/dashboard" class="nav-link" style="background-color: var(--border-color)">Overview</a>
-            <a href="#" class="nav-link">Goals</a>
-            <a href="#" class="nav-link">Schedule</a>
+            <a href="/goals" class="nav-link">Goals</a>
+            <a href="/schedule" class="nav-link">Schedule</a>
         </div>
         <div class="nav-group">
             <div class="nav-title">Skills</div>
-            <a href="#" class="nav-link">Discover</a>
-            <a href="#" class="nav-link">My Skills</a>
+            <a href="/skills/discover" class="nav-link">Discover</a>
+            <a href="/skills" class="nav-link">My Skills</a>
         </div>
         <div class="nav-group">
             <div class="nav-title">Work</div>
-            <a href="#" class="nav-link">Freelance Jobs</a>
-            <a href="#" class="nav-link">Services</a>
+            <a href="/freelance" class="nav-link">Freelance Jobs</a>
+            <a href="/freelance/services" class="nav-link">Services</a>
         </div>
         <div style="margin-top: auto;">
             <div class="nav-link" style="color: var(--text-secondary); font-size: 12px; margin-bottom: 8px;">

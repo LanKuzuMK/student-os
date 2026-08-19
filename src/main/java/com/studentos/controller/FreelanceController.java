@@ -13,6 +13,11 @@ public class FreelanceController extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        if ("/services".equals(request.getPathInfo())) {
+            request.getRequestDispatcher("/views/freelance/services.jsp").forward(request, response);
+            return;
+        }
+
         request.setAttribute("jobs", jobDAO.getAllJobs());
         request.getRequestDispatcher("/views/freelance/index.jsp").forward(request, response);
     }

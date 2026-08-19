@@ -1,39 +1,47 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib uri="jakarta.tags.core" prefix="c" %>
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Goals - Life OS</title>
-    <link rel="stylesheet" href="\/css/main.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Goals - Student OS</title>
+    <link rel="stylesheet" href="/css/main.css">
 </head>
 <body>
-    <nav class="navbar">
-        <div class="logo">Student OS</div>
-        <div class="nav-links">
-            <a href="\/dashboard">Dashboard</a>
-            <a href="\/goals">Goals</a>
+<div class="app-container">
+    <aside class="sidebar">
+        <div class="sidebar-logo">STUDENT OS</div>
+        <div class="nav-group"><div class="nav-title">My Life</div>
+            <a href="/dashboard" class="nav-link">Overview</a><a href="/goals" class="nav-link" style="background-color:var(--border-color)">Goals</a><a href="/schedule" class="nav-link">Schedule</a>
         </div>
-    </nav>
-    <div class="container" style="margin-top: 4rem;">
-        <h1 class="heading-xl">My Goals</h1>
-        <form action="\/goals" method="POST" class="auth-form" style="max-width: 600px; margin-bottom: 2rem;">
-            <input type="text" name="title" placeholder="Goal Title" required class="input-field">
-            <textarea name="description" placeholder="Goal Description" required class="input-field"></textarea>
-            <input type="number" name="progress" placeholder="Progress %" min="0" max="100" required class="input-field">
-            <button type="submit" class="btn">Create Goal</button>
-        </form>
-        <div class="skills-grid">
-            <c:forEach var="goal" items="\">
-                <div class="skill-card">
-                    <h3>\</h3>
-                    <p style="color: var(--text-secondary);">\</p>
-                    <div style="margin-top: 1rem; background: #333; height: 10px; border-radius: 5px;">
-                        <div style="width: \%; background: var(--primary); height: 100%; border-radius: 5px;"></div>
-                    </div>
-                    <small>\% Complete</small>
-                </div>
-            </c:forEach>
+        <div class="nav-group"><div class="nav-title">Skills</div>
+            <a href="/skills/discover" class="nav-link">Discover</a><a href="/skills" class="nav-link">My Skills</a>
         </div>
-    </div>
+        <div class="nav-group"><div class="nav-title">Work</div>
+            <a href="/freelance" class="nav-link">Freelance Jobs</a><a href="/freelance/services" class="nav-link">Services</a>
+        </div>
+        <div style="margin-top:auto;"><a href="/auth/logout" class="nav-link" style="color:var(--danger)">Logout</a></div>
+    </aside>
+    <main class="main-content">
+        <header class="page-header"><div><h1 class="page-title">Goals</h1><p class="page-subtitle">Track your learning and personal milestones.</p></div></header>
+        <section class="card" style="margin-bottom:20px;">
+            <form action="/goals" method="post">
+                <div class="form-group"><label class="form-label" for="goalTitle">New goal</label><input id="goalTitle" class="form-control" name="title" required></div>
+                <div class="form-group"><label class="form-label" for="goalDescription">Description</label><textarea id="goalDescription" class="form-control" name="description" rows="3"></textarea></div>
+                <div class="form-group"><label class="form-label" for="goalProgress">Progress</label><input id="goalProgress" class="form-control" type="number" name="progress" min="0" max="100" value="0" required></div>
+                <button class="btn btn-primary" type="submit">Add Goal</button>
+            </form>
+        </section>
+        <section class="grid-2">
+            <c:choose>
+                <c:when test="${empty goals}"><div class="card">No goals yet. Add your first goal above.</div></c:when>
+                <c:otherwise><c:forEach var="goal" items="${goals}">
+                    <article class="card"><h3><c:out value="${goal.title}"/></h3><p style="color:var(--text-secondary)"><c:out value="${goal.description}"/></p><p><strong><c:out value="${goal.progress}"/>%</strong> complete</p></article>
+                </c:forEach></c:otherwise>
+            </c:choose>
+        </section>
+    </main>
+</div>
 </body>
 </html>
