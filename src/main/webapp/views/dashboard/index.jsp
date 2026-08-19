@@ -79,7 +79,7 @@
 
         <section class="stats-grid" aria-label="Workspace statistics">
             <div class="stat-card">
-                <div class="stat-icon stat-icon-blue">↗</div>
+                <div class="stat-icon stat-icon-blue"><svg class="icon" aria-hidden="true"><use href="/assets/icons.svg#arrow-up-right"></use></svg></div>
                 <div>
                     <span class="stat-label">Active focus</span>
                     <strong class="stat-value"><c:out value="${activeTasks}"/> task<c:if test="${activeTasks ne 1}">s</c:if></strong>
@@ -87,7 +87,7 @@
                 </div>
             </div>
             <div class="stat-card">
-                <div class="stat-icon stat-icon-mint">✓</div>
+                <div class="stat-icon stat-icon-mint"><svg class="icon" aria-hidden="true"><use href="/assets/icons.svg#check"></use></svg></div>
                 <div>
                     <span class="stat-label">Progress made</span>
                     <strong class="stat-value"><c:out value="${completedTasks}"/> complete</strong>
@@ -95,7 +95,7 @@
                 </div>
             </div>
             <div class="stat-card">
-                <div class="stat-icon stat-icon-amber">◎</div>
+                <div class="stat-icon stat-icon-amber"><svg class="icon" aria-hidden="true"><use href="/assets/icons.svg#compass"></use></svg></div>
                 <div>
                     <span class="stat-label">Community</span>
                     <strong class="stat-value">Skills hub</strong>
@@ -143,7 +143,7 @@
             </div>
 
             <aside class="panel network-card">
-                <div class="network-icon">✦</div>
+                <div class="network-icon"><svg class="icon" aria-hidden="true"><use href="/assets/icons.svg#sparkles"></use></svg></div>
                 <h3>Talent is closer than you think.</h3>
                 <p>Find peers who can share knowledge, exchange feedback, and collaborate on the next opportunity.</p>
                 <a href="/skills/discover" class="btn btn-primary">Explore talent</a>

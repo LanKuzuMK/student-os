@@ -130,7 +130,8 @@ button, input, textarea, select { font: inherit; }
     box-shadow: inset 3px 0 0 var(--brand);
 }
 .nav-link-danger, .nav-link[style*="--danger"] { color: var(--danger) !important; }
-.sidebar-footer { margin-top: auto; padding-top: 15px; border-top: 1px solid var(--border); }
+.sidebar-footer, .sidebar > div[style*="margin-top:auto"] { position: relative; margin-top: auto; padding-top: 15px; border-top: 1px solid var(--border); }
+.sidebar-footer::before, .sidebar > div[style*="margin-top:auto"]::before { display: block; padding: 11px 12px; margin: 0 1px 10px; color: #4c4fbd; content: 'MK TEAM  ·  STUDENT COMMUNITY'; background: linear-gradient(115deg, #f2f1ff, #f7faff); border: 1px solid #e4e4fb; border-radius: 12px; font-size: 10px; font-weight: 800; letter-spacing: .08em; }
 .account-chip {
     display: flex;
     align-items: center;
@@ -172,6 +173,8 @@ button, input, textarea, select { font: inherit; }
 .eyebrow, .section-kicker { margin-bottom: 8px; color: var(--brand); font-size: 10px; font-weight: 800; letter-spacing: .13em; text-transform: uppercase; }
 .page-title { color: #101f3d; font-family: 'Plus Jakarta Sans', sans-serif; font-size: clamp(31px, 3.3vw, 44px); font-weight: 800; letter-spacing: -2.2px; line-height: 1.06; }
 .page-subtitle { max-width: 620px; margin-top: 10px; color: var(--ink-soft); font-size: 15px; }
+.icon { display: inline-block; width: 1.1em; height: 1.1em; flex: 0 0 auto; vertical-align: -0.16em; }
+.icon use { pointer-events: none; }
 .btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 42px; padding: 10px 16px; border: 1px solid transparent; border-radius: 12px; cursor: pointer; font-size: 13px; font-weight: 800; transition: box-shadow .2s ease, transform .2s ease, background .2s ease; }
 .btn:hover { transform: translateY(-2px); }
 .btn-primary { color: #fff; background: linear-gradient(135deg, #6c6fec, #4a4aca); box-shadow: 0 12px 22px rgba(82, 82, 205, .25); }
@@ -232,7 +235,8 @@ button, input, textarea, select { font: inherit; }
 
 .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin-bottom: 25px; }
 .stat-card { display: flex; align-items: center; gap: 14px; min-height: 102px; padding: 17px; background: rgba(255,255,255,.90); border: 1px solid rgba(225, 232, 243, .93); border-radius: 17px; box-shadow: var(--shadow-sm); }
-.stat-icon { display: grid; flex: 0 0 43px; width: 43px; height: 43px; place-items: center; border-radius: 14px; font-size: 18px; font-weight: 800; }
+.stat-icon { display: grid; flex: 0 0 43px; width: 43px; height: 43px; place-items: center; border-radius: 14px; }
+.stat-icon .icon { width: 19px; height: 19px; }
 .stat-icon-blue { color: #504ed1; background: var(--brand-soft); }
 .stat-icon-mint { color: #0b9875; background: var(--mint-soft); }
 .stat-icon-amber { color: #c37614; background: var(--amber-soft); }
@@ -259,10 +263,15 @@ button, input, textarea, select { font: inherit; }
 .network-card { position: relative; overflow: hidden; color: #243654; background: linear-gradient(142deg, #f0f3ff, #f9f7ff); border-color: #e1e2fd; }
 .network-card::after { position: absolute; right: -14px; bottom: -26px; width: 128px; height: 128px; content: ''; background: url('/assets/studentos-logo-transparent.png') center / contain no-repeat; opacity: .13; }
 .network-card > * { position: relative; z-index: 1; }
-.network-icon { display: grid; width: 41px; height: 41px; place-items: center; margin-bottom: 15px; color: #fff; background: linear-gradient(135deg, #45bdf0, #5b58da); border-radius: 13px; box-shadow: 0 9px 16px rgba(85, 98, 216, .20); font-size: 18px; font-weight: 800; }
+.network-icon { display: grid; width: 41px; height: 41px; place-items: center; margin-bottom: 15px; color: #fff; background: linear-gradient(135deg, #45bdf0, #5b58da); border-radius: 13px; box-shadow: 0 9px 16px rgba(85, 98, 216, .20); }
+.network-icon .icon { width: 20px; height: 20px; }
 .network-card h3 { max-width: 225px; font-family: 'Plus Jakarta Sans', sans-serif; font-size: 18px; font-weight: 800; letter-spacing: -.7px; line-height: 1.25; }
 .network-card p { max-width: 240px; margin: 8px 0 18px; color: #62718c; font-size: 12.5px; }
 
+.modal-backdrop { position: fixed; z-index: 20; inset: 0; display: flex; align-items: center; justify-content: center; padding: 20px; background: rgba(13, 25, 52, .52); backdrop-filter: blur(6px); }
+.modal-card { width: 100%; max-width: 440px; padding: 28px; background: #fff; border: 1px solid #e5eaf3; border-radius: 20px; box-shadow: 0 28px 62px rgba(20, 30, 60, .25); }
+.modal-card h2 { color: var(--ink); font-family: 'Plus Jakarta Sans', sans-serif; font-size: 22px; letter-spacing: -.8px; }
+.modal-actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 24px; }
 .form-group { margin-bottom: 17px; }
 .form-label { display: block; margin-bottom: 7px; color: #42506c; font-size: 13px; font-weight: 700; }
 .form-control { width: 100%; padding: 11px 13px; color: var(--ink); background: #fff; border: 1px solid #dfe6f1; border-radius: 11px; font-size: 14px; outline: none; transition: border-color .2s, box-shadow .2s; }
@@ -294,6 +303,10 @@ textarea.form-control { resize: vertical; }
 .empty-state h3 { margin: 6px 0; color: #334155; font-size: 16px; }
 .empty-state p { max-width: 290px; margin: 0 auto 16px; font-size: 14px; }
 .empty-icon { display: grid; width: 40px; height: 40px; margin: 0 auto; place-items: center; color: var(--brand); background: var(--brand-soft); border-radius: 13px; }
+.empty-icon .icon { width: 19px; height: 19px; }
+
+.contact-btn .icon { width: 17px; height: 17px; transition: transform .2s ease; }
+.contact-btn:hover .icon { transform: translateX(3px); }
 
 @media (max-width: 1030px) { .dashboard-hero { grid-template-columns: 1fr; } .hero-aside { max-width: 285px; } .dashboard-columns { grid-template-columns: 1fr; } .network-card { max-width: 500px; } }
 @media (max-width: 860px) { .sidebar { position: fixed; width: 238px; transform: translateX(-100%); } .main-content { width: min(100% - 28px, 1180px); padding-top: 30px; } .messages-layout { grid-template-columns: 1fr; } }
