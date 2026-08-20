@@ -27,51 +27,61 @@
     </aside>
 
     <main class="main-content">
-        <header class="page-header goals-page-header">
+        <header class="page-header goals-toolbar">
             <div>
                 <div class="eyebrow">Personal planning</div>
                 <h1 class="page-title">Goals</h1>
-                <p class="page-subtitle">Set a direction, break it into progress, and keep your next milestone visible.</p>
+                <p class="page-subtitle">Keep the outcomes that matter visible, measurable, and easy to update.</p>
             </div>
-            <div class="goals-count"><strong><c:out value="${empty goals ? 0 : goals.size()}"/></strong><span>tracked goals</span></div>
+            <button class="btn btn-primary" type="button" onclick="document.getElementById('addGoalModal').style.display='flex'">Add goal</button>
         </header>
 
-        <section class="goal-workspace" aria-labelledby="new-goal-heading">
-            <div class="goal-form-intro">
-                <div class="section-kicker">Create a goal</div>
-                <h2 id="new-goal-heading">Start with a clear outcome.</h2>
-                <p>Write what you want to accomplish, add a short reason, then update the percentage as you make progress.</p>
-                <div class="goal-guidance"><span>1. Define the outcome</span><span>2. Set your starting progress</span><span>3. Review it regularly</span></div>
-            </div>
-            <form class="goal-form" action="/goals" method="post">
-                <div class="form-group"><label class="form-label" for="goalTitle">What do you want to achieve?</label><input id="goalTitle" class="form-control" name="title" maxlength="120" placeholder="e.g. Complete my Java web application" required></div>
-                <div class="form-group"><label class="form-label" for="goalDescription">Why does this matter? <span class="form-label-optional">Optional</span></label><textarea id="goalDescription" class="form-control" name="description" rows="3" maxlength="500" placeholder="A short note to keep this goal meaningful and specific."></textarea></div>
-                <div class="goal-progress-row"><div class="form-group"><label class="form-label" for="goalProgress">Current progress</label><div class="progress-input"><input id="goalProgress" class="form-control" type="number" name="progress" min="0" max="100" value="0" required><span>%</span></div></div><p class="goal-progress-help">Starting from zero is completely fine. Update the percentage as you move forward.</p></div>
-                <button class="btn btn-primary" type="submit">Save goal</button>
-            </form>
+        <c:if test="${not empty param.success}"><div class="alert alert-success"><c:out value="${param.success}"/></div></c:if>
+        <c:if test="${not empty param.error}"><div class="alert alert-error"><c:out value="${param.error}"/></div></c:if>
+
+        <section class="goals-overview" aria-label="Goal summary">
+            <div><span class="goals-overview-label">Tracked goals</span><strong><c:out value="${goalCount}"/></strong></div>
+            <div class="goals-overview-copy"><strong>Manage goals your way.</strong><span>Use <b>Update progress</b> for quick changes, <b>Edit</b> to revise details, or <b>Delete</b> when a goal is no longer relevant.</span></div>
         </section>
 
-        <section class="goal-list-section" aria-labelledby="tracked-goals-heading">
-            <div class="section-heading"><div><div class="section-kicker">Your direction</div><h2 id="tracked-goals-heading">Tracked goals</h2></div><span class="section-heading-note">Keep the next step simple.</span></div>
+        <section class="goal-manager" aria-labelledby="goals-heading">
+            <div class="goal-manager-heading"><div><div class="section-kicker">Your goals</div><h2 id="goals-heading">What you are working toward</h2></div><span>Changes save immediately</span></div>
             <c:choose>
                 <c:when test="${empty goals}">
-                    <div class="goals-empty-state">
-                        <div class="goals-empty-line"></div>
+                    <div class="goal-manager-empty">
                         <h3>No goals yet.</h3>
-                        <p>Choose one thing you want to make progress on this semester, then save it above to begin tracking it.</p>
-                        <button class="btn btn-secondary" type="button" onclick="document.getElementById('goalTitle').focus()">Add your first goal</button>
+                        <p>Add one clear outcome, then return here to update the progress as you move forward.</p>
+                        <button class="btn btn-secondary" type="button" onclick="document.getElementById('addGoalModal').style.display='flex'">Create your first goal</button>
                     </div>
                 </c:when>
                 <c:otherwise>
-                    <div class="goal-grid">
+                    <div class="goal-manager-grid">
                         <c:forEach var="goal" items="${goals}">
-                            <article class="goal-card">
-                                <div class="goal-card-top"><span class="goal-status">In progress</span><strong><c:out value="${goal.progress}"/>%</strong></div>
-                                <h3><c:out value="${goal.title}"/></h3>
-                                <p><c:choose><c:when test="${empty goal.description}">Add a short note next time you review this goal.</c:when><c:otherwise><c:out value="${goal.description}"/></c:otherwise></c:choose></p>
-                                <div class="goal-progress-bar" aria-label="<c:out value='${goal.progress}'/> percent complete"><span style="width:<c:out value='${goal.progress}'/>%"></span></div>
-                                <div class="goal-card-footer"><span>Progress recorded</span><span><c:out value="${goal.progress}"/>% complete</span></div>
+                            <article class="managed-goal-card">
+                                <div class="managed-goal-top"><div><span class="managed-goal-status"><c:choose><c:when test="${goal.progress eq 100}">Complete</c:when><c:otherwise>In progress</c:otherwise></c:choose></span><h3><c:out value="${goal.title}"/></h3></div><strong class="managed-goal-percent"><c:out value="${goal.progress}"/>%</strong></div>
+                                <p class="managed-goal-description"><c:choose><c:when test="${empty goal.description}">No description yet. Use Edit to add context.</c:when><c:otherwise><c:out value="${goal.description}"/></c:otherwise></c:choose></p>
+                                <div class="managed-goal-bar" aria-label="<c:out value='${goal.progress}'/> percent complete"><span style="width:<c:out value='${goal.progress}'/>%"></span></div>
+                                <form class="managed-progress-form" action="/goals" method="post">
+                                    <input type="hidden" name="action" value="progress"><input type="hidden" name="goalId" value="<c:out value='${goal.id}'/>">
+                                    <label for="progress-<c:out value='${goal.id}'/>">Progress</label><div><input id="progress-<c:out value='${goal.id}'/>" class="form-control" type="number" name="progress" min="0" max="100" value="<c:out value='${goal.progress}'/>" required><span>%</span></div><button class="btn btn-secondary" type="submit">Update progress</button>
+                                </form>
+                                <div class="managed-goal-actions">
+                                    <button class="text-action" type="button" onclick="document.getElementById('editGoal-<c:out value='${goal.id}'/>').style.display='flex'">Edit</button>
+                                    <form action="/goals" method="post" onsubmit="return confirm('Delete this goal? This cannot be undone.');"><input type="hidden" name="action" value="delete"><input type="hidden" name="goalId" value="<c:out value='${goal.id}'/>"><button class="text-action text-action-danger" type="submit">Delete</button></form>
+                                </div>
                             </article>
+
+                            <div id="editGoal-<c:out value='${goal.id}'/>" class="goal-modal" style="display:none;">
+                                <div class="goal-modal-card" role="dialog" aria-modal="true" aria-labelledby="edit-title-<c:out value='${goal.id}'/>">
+                                    <div class="goal-modal-header"><div><div class="section-kicker">Edit goal</div><h2 id="edit-title-<c:out value='${goal.id}'/>">Update your goal</h2></div><button class="modal-close" type="button" aria-label="Close" onclick="document.getElementById('editGoal-<c:out value='${goal.id}'/>').style.display='none'">×</button></div>
+                                    <form action="/goals" method="post"><input type="hidden" name="action" value="update"><input type="hidden" name="goalId" value="<c:out value='${goal.id}'/>">
+                                        <div class="form-group"><label class="form-label" for="edit-title-input-<c:out value='${goal.id}'/>">Goal title</label><input id="edit-title-input-<c:out value='${goal.id}'/>" class="form-control" name="title" maxlength="120" value="<c:out value='${goal.title}'/>" required></div>
+                                        <div class="form-group"><label class="form-label" for="edit-description-<c:out value='${goal.id}'/>">Description</label><textarea id="edit-description-<c:out value='${goal.id}'/>" class="form-control" name="description" rows="3" maxlength="500"><c:out value="${goal.description}"/></textarea></div>
+                                        <div class="form-group"><label class="form-label" for="edit-progress-<c:out value='${goal.id}'/>">Progress</label><div class="progress-input"><input id="edit-progress-<c:out value='${goal.id}'/>" class="form-control" type="number" name="progress" min="0" max="100" value="<c:out value='${goal.progress}'/>" required><span>%</span></div></div>
+                                        <div class="modal-actions"><button class="btn btn-secondary" type="button" onclick="document.getElementById('editGoal-<c:out value='${goal.id}'/>').style.display='none'">Cancel</button><button class="btn btn-primary" type="submit">Save changes</button></div>
+                                    </form>
+                                </div>
+                            </div>
                         </c:forEach>
                     </div>
                 </c:otherwise>
@@ -79,6 +89,18 @@
         </section>
         <footer class="mkv-footer">© 2026 MKV Team</footer>
     </main>
+</div>
+
+<div id="addGoalModal" class="goal-modal" style="display:none;">
+    <div class="goal-modal-card" role="dialog" aria-modal="true" aria-labelledby="add-goal-title">
+        <div class="goal-modal-header"><div><div class="section-kicker">New goal</div><h2 id="add-goal-title">Add a goal</h2></div><button class="modal-close" type="button" aria-label="Close" onclick="document.getElementById('addGoalModal').style.display='none'">×</button></div>
+        <form action="/goals" method="post"><input type="hidden" name="action" value="create">
+            <div class="form-group"><label class="form-label" for="newGoalTitle">What do you want to achieve?</label><input id="newGoalTitle" class="form-control" name="title" maxlength="120" placeholder="e.g. Complete my Java web application" required></div>
+            <div class="form-group"><label class="form-label" for="newGoalDescription">Description <span class="form-label-optional">Optional</span></label><textarea id="newGoalDescription" class="form-control" name="description" rows="3" maxlength="500" placeholder="A short note that explains why this matters."></textarea></div>
+            <div class="form-group"><label class="form-label" for="newGoalProgress">Starting progress</label><div class="progress-input"><input id="newGoalProgress" class="form-control" type="number" name="progress" min="0" max="100" value="0" required><span>%</span></div></div>
+            <div class="modal-actions"><button class="btn btn-secondary" type="button" onclick="document.getElementById('addGoalModal').style.display='none'">Cancel</button><button class="btn btn-primary" type="submit">Save goal</button></div>
+        </form>
+    </div>
 </div>
 </body>
 </html>
