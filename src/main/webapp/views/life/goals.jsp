@@ -7,7 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="theme-color" content="#5a5ce2">
     <title>Goals - StudentOS</title>
-    <link rel="stylesheet" href="/css/main.css">
+    <link rel="stylesheet" href="/css/main.css?v=goals-manager-2">
     <link rel="icon" type="image/png" href="/favicon.png">
 </head>
 <body>
