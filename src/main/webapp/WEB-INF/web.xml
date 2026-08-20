@@ -46,6 +46,28 @@
         <url-pattern>/messages</url-pattern>
     </servlet-mapping>
 
+    <servlet>
+        <servlet-name>authController</servlet-name>
+        <servlet-class>com.studentos.controller.AuthController</servlet-class>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>authController</servlet-name>
+        <url-pattern>/auth/register</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>authController</servlet-name>
+        <url-pattern>/auth/verify</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>authController</servlet-name>
+        <url-pattern>/auth/login</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>authController</servlet-name>
+        <url-pattern>/auth/logout</url-pattern>
+    </servlet-mapping>
+
     <welcome-file-list>
         <welcome-file>index.jsp</welcome-file>
     </welcome-file-list>

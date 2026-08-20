@@ -1,59 +1,53 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib uri="jakarta.tags.core" prefix="c" %>
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Verify Email - Student OS</title>
-    <link rel="stylesheet" href="\/css/main.css">
-    <style>
-        .demo-alert {
-            background-color: rgba(99, 102, 241, 0.1);
-            border: 1px solid var(--primary);
-            color: #fff;
-            padding: 1rem;
-            border-radius: 8px;
-            margin-bottom: 2rem;
-            text-align: center;
-        }
-        .demo-alert strong {
-            color: var(--primary);
-            font-size: 1.2rem;
-            letter-spacing: 2px;
-        }
-    </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#5a5ce2">
+    <title>Verify Email - StudentOS</title>
+    <link rel="stylesheet" href="/css/main.css?v=verify-auth-2">
     <link rel="icon" type="image/png" href="/favicon.png">
+    <style>
+        .verify-wrapper { display:flex;align-items:center;justify-content:center;min-height:100vh;padding:24px;background:var(--bg-secondary); }
+        .verify-card { width:100%;max-width:430px;padding:36px;background:rgba(255,255,255,.95);border:1px solid var(--border-color);border-radius:20px;box-shadow:var(--shadow-lg);text-align:center; }
+        .verify-kicker { color:var(--brand);font-size:10px;font-weight:800;letter-spacing:.12em;text-transform:uppercase; }
+        .verify-card h1 { margin:8px 0 10px;color:var(--ink);font-family:'Plus Jakarta Sans',sans-serif;font-size:24px;letter-spacing:-.8px; }
+        .verify-card p { color:var(--ink-soft);font-size:14px;line-height:1.55; }
+        .verify-code { padding:13px 15px;margin:20px 0;color:#4c4fbd;background:#f2f1ff;border:1px solid #dddffc;border-radius:12px;font-size:13px;line-height:1.45; }
+        .verify-code strong { display:block;margin-top:5px;color:#4749bf;font-size:21px;letter-spacing:.24em; }
+        .verify-otp { text-align:center;font-size:20px !important;font-weight:800;letter-spacing:.32em; }
+        .verify-back { display:block;margin-top:19px;color:var(--ink-soft);font-size:13px;text-decoration:none; }
+        .verify-back:hover { color:var(--brand); }
+    </style>
 </head>
 <body>
-    <div class="auth-container">
-        <div class="auth-card">
-            <h1 class="heading-lg" style="text-align: center; margin-bottom: 1rem;">Verify Your Email</h1>
-            <p style="text-align: center; color: var(--text-secondary); margin-bottom: 2rem;">
-                We've sent a 6-digit code to <strong>\</strong>.
-            </p>
-            
-            <!-- Mock Email Notification for Demo Purposes -->
-            <c:if test="\">
-                <div class="demo-alert">
-                    <span style="display: block; font-size: 0.8rem; text-transform: uppercase; margin-bottom: 0.5rem; opacity: 0.8;">[Demo Mode - Simulated Email Inbox]</span>
-                    Your Student OS Verification Code is:<br>
-                    <strong>\</strong>
-                </div>
-            </c:if>
-
-            <c:if test="\">
-                <div style="color: #ef4444; text-align: center; margin-bottom: 1rem;">\</div>
-            </c:if>
-
-            <form action="\/auth/verify" method="POST" class="auth-form">
-                <input type="text" name="otp" placeholder="Enter 6-digit code" required class="input-field" maxlength="6" style="text-align: center; font-size: 1.5rem; letter-spacing: 5px;">
-                <button type="submit" class="btn">Verify & Create Account</button>
-            </form>
-            
-            <p style="text-align: center; margin-top: 1.5rem;">
-                <a href="\/views/auth/register.jsp" style="color: var(--text-secondary);">Cancel and go back</a>
-            </p>
-        </div>
+    <div class="verify-wrapper">
+        <section class="verify-card" aria-labelledby="verify-title">
+            <div class="auth-logo"><a href="/">STUDENT OS</a></div>
+            <div class="verify-kicker">Account security</div>
+            <h1 id="verify-title">Verify your email</h1>
+            <c:choose>
+                <c:when test="${empty sessionScope.pendingEmail}">
+                    <p>Start by creating an account. We will then send you to this verification step.</p>
+                    <a href="/auth/register" class="btn btn-primary" style="margin-top:18px;">Create an account</a>
+                </c:when>
+                <c:otherwise>
+                    <p>Enter the six-digit code for <strong><c:out value="${sessionScope.pendingEmail}"/></strong>.</p>
+                    <c:if test="${not empty sessionScope.otpCode}">
+                        <div class="verify-code">Demo verification code<strong><c:out value="${sessionScope.otpCode}"/></strong></div>
+                    </c:if>
+                    <c:if test="${not empty requestScope.error}"><div class="alert alert-error"><c:out value="${requestScope.error}"/></div></c:if>
+                    <form action="/auth/verify" method="POST" style="margin-top:18px;">
+                        <div class="form-group"><label class="form-label" for="otp">Verification code</label><input id="otp" type="text" inputmode="numeric" pattern="[0-9]{6}" name="otp" placeholder="123456" required maxlength="6" autocomplete="one-time-code" class="form-control verify-otp"></div>
+                        <button type="submit" class="btn btn-primary" style="width:100%;">Verify account</button>
+                    </form>
+                    <a href="/auth/register" class="verify-back">Cancel and return to registration</a>
+                </c:otherwise>
+            </c:choose>
+        </section>
     </div>
-<footer class="mkv-footer">© 2026 MKV Team</footer>
+    <footer class="mkv-footer">© 2026 MKV Team</footer>
 </body>
 </html>
