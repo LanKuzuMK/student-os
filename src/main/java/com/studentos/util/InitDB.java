@@ -90,6 +90,11 @@ public final class InitDB {
                         + "created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP, "
                         + "updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP"
                         + ")",
+                "ALTER TABLE profiles ADD COLUMN IF NOT EXISTS portfolio_url VARCHAR(500)",
+                "ALTER TABLE profiles ADD COLUMN IF NOT EXISTS linkedin_url VARCHAR(500)",
+                "ALTER TABLE profiles ADD COLUMN IF NOT EXISTS telegram_url VARCHAR(500)",
+                "ALTER TABLE profiles ADD COLUMN IF NOT EXISTS avatar_data BYTEA",
+                "ALTER TABLE profiles ADD COLUMN IF NOT EXISTS avatar_content_type VARCHAR(100)",
                 "CREATE INDEX IF NOT EXISTS idx_tasks_user_id ON tasks(user_id)",
                 "CREATE INDEX IF NOT EXISTS idx_user_skills_user_id ON user_skills(user_id)",
                 "CREATE INDEX IF NOT EXISTS idx_jobs_created_at ON jobs(created_at DESC)",

@@ -15,7 +15,9 @@ public class SkillController extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String path = request.getPathInfo();
         if ("/discover".equals(path)) {
+            User user = (User) request.getSession().getAttribute("user");
             request.setAttribute("allSkills", skillDAO.getAllSkills());
+            request.setAttribute("currentUserId", user.getId());
             request.getRequestDispatcher("/views/skills/discover.jsp").forward(request, response);
         } else {
             User user = (User) request.getSession().getAttribute("user");

@@ -18,7 +18,9 @@ public class FreelanceController extends HttpServlet {
             return;
         }
 
+        User user = (User) request.getSession().getAttribute("user");
         request.setAttribute("jobs", jobDAO.getAllJobs());
+        request.setAttribute("currentUserId", user.getId());
         request.getRequestDispatcher("/views/freelance/index.jsp").forward(request, response);
     }
 
