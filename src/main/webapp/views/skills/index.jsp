@@ -55,8 +55,8 @@
                 </c:otherwise>
             </c:choose>
         </section>
+    <footer class="mkv-footer">© 2026 MKV Team</footer>
     </main>
-<footer class="mkv-footer">© 2026 MKV Team</footer>
 </div>
 
 <div id="skillModal" class="modal-backdrop" style="display:none;" role="dialog" aria-modal="true" aria-labelledby="skillModalTitle">

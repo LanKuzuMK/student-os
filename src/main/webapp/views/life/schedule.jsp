@@ -61,8 +61,8 @@
                 </c:choose>
             </div>
         </section>
+    <footer class="mkv-footer">© 2026 MKV Team</footer>
     </main>
-<footer class="mkv-footer">© 2026 MKV Team</footer>
 </div>
 </body>
 </html>

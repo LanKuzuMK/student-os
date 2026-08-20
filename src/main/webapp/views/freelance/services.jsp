@@ -10,5 +10,5 @@
 <div style="margin-top:auto"><a href="/auth/logout" class="nav-link" style="color:var(--danger)">Logout</a></div></aside>
 <main class="main-content"><header class="page-header"><div><h1 class="page-title">Services</h1><p class="page-subtitle">Offer skills and find help from other students.</p></div></header>
 <section class="grid-2"><article class="card"><h3>Share a service</h3><p style="color:var(--text-secondary)">Create a service listing to offer your skills to the student community.</p><a href="/skills" class="btn btn-primary">Manage My Skills</a></article><article class="card"><h3>Find collaborators</h3><p style="color:var(--text-secondary)">Browse student skills to find people who can help with your projects.</p><a href="/skills/discover" class="btn btn-secondary">Discover Skills</a></article></section>
-</main>
-<footer class="mkv-footer">© 2026 MKV Team</footer></div></body></html>
+<footer class="mkv-footer">© 2026 MKV Team</footer>
+    </main></div></body></html>

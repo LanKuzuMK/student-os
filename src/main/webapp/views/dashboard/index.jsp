@@ -141,8 +141,8 @@
                 <a href="/skills/discover" class="btn btn-primary">Find a collaborator</a>
             </aside>
         </section>
+    <footer class="mkv-footer">© 2026 MKV Team</footer>
     </main>
-<footer class="mkv-footer">© 2026 MKV Team</footer>
 </div>
 
 <div id="taskModal" style="display:none;position:fixed;z-index:20;inset:0;padding:20px;background:rgba(13,25,52,.48);align-items:center;justify-content:center;backdrop-filter:blur(5px);">

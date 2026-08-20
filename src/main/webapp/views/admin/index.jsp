@@ -52,8 +52,8 @@
                     <div class="stat-label">Freelance Jobs</div>
                 </div>
             </section>
-        </main>
-<footer class="mkv-footer">© 2026 MKV Team</footer>
+        <footer class="mkv-footer">© 2026 MKV Team</footer>
+    </main>
     </div>
 </body>
 </html>
