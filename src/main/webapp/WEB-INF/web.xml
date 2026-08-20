@@ -6,6 +6,16 @@
 
     <display-name>Student OS</display-name>
 
+    <filter>
+        <filter-name>unreadMessageFilter</filter-name>
+        <filter-class>com.studentos.filter.UnreadMessageFilter</filter-class>
+    </filter>
+    <filter-mapping>
+        <filter-name>unreadMessageFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+        <dispatcher>REQUEST</dispatcher>
+    </filter-mapping>
+
     <servlet>
         <servlet-name>signInController</servlet-name>
         <servlet-class>com.studentos.controller.SignInController</servlet-class>

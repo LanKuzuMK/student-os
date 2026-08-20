@@ -123,6 +123,7 @@ button, input, textarea, select { font: inherit; }
     transition: background .2s ease, border-color .2s ease, color .2s ease, transform .2s ease;
 }
 .nav-link:hover { color: var(--brand); background: #f6f7fe; transform: translateX(3px); }
+.notification-badge { display: inline-grid; min-width: 17px; height: 17px; margin-left: 7px; padding: 0 4px; place-items: center; color: #fff; background: #e26270; border-radius: 999px; box-shadow: 0 3px 8px rgba(214,83,99,.22); font-size: 9px; font-weight: 800; line-height: 1; vertical-align: 1px; }
 .nav-link.active, .nav-link[style*="background-color"] {
     color: var(--brand) !important;
     background: linear-gradient(100deg, #efefff, #f5f4ff) !important;

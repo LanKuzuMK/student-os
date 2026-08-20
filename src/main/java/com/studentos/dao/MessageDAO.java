@@ -43,6 +43,35 @@ public class MessageDAO {
         return messages;
     }
 
+    public int countUnreadMessagesForUser(int userId) {
+        String sql = "SELECT COUNT(*) FROM messages WHERE receiver_id = ? "
+                + "AND COALESCE(receiver_deleted, FALSE) = FALSE AND is_read = FALSE";
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, userId);
+            try (ResultSet rs = ps.executeQuery()) {
+                return rs.next() ? rs.getInt(1) : 0;
+            }
+        } catch (SQLException e) {
+            System.err.println("Unable to count unread messages: " + e.getMessage());
+            return 0;
+        }
+    }
+
+    public boolean markMessagesReadForUser(int userId) {
+        String sql = "UPDATE messages SET is_read = TRUE WHERE receiver_id = ? "
+                + "AND COALESCE(receiver_deleted, FALSE) = FALSE AND is_read = FALSE";
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, userId);
+            ps.executeUpdate();
+            return true;
+        } catch (SQLException e) {
+            System.err.println("Unable to mark messages read: " + e.getMessage());
+            return false;
+        }
+    }
+
     public boolean sendMessage(Message message) {
         String sql = "INSERT INTO messages (sender_id, receiver_id, content) VALUES (?, ?, ?)";
         try (Connection conn = DBConnection.getConnection();
