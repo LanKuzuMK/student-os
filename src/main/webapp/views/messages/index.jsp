@@ -42,12 +42,14 @@
                     <c:choose>
                         <c:when test="${empty messages}"><div class="empty-state"><h3>No messages yet</h3><p>Use Discover to find students with complementary skills and start the first conversation.</p><a href="/skills/discover" class="btn btn-secondary">Discover students</a></div></c:when>
                         <c:otherwise>
+                            <c:set var="previousCounterpart" value="" />
                             <c:forEach var="msg" items="${messages}">
                                 <article class="message-item">
                                     <div class="message-avatar">S</div>
                                     <div class="message-content"><div class="message-meta"><strong><c:out value="${msg.counterpartEmail}"/></strong><span>Student conversation</span></div><p><c:out value="${msg.content}"/></p></div>
-                                    <form class="message-clear-form" action="/messages" method="post" onsubmit="return confirm('Remove this entire conversation from your history? The other student will keep their copy.');"><input type="hidden" name="action" value="clear"><input type="hidden" name="counterpartEmail" value="<c:out value='${msg.counterpartEmail}'/>"><button class="message-clear" type="submit">Delete history</button></form>
+                                    <c:if test="${msg.counterpartEmail ne previousCounterpart}"><form class="message-clear-form" action="/messages" method="post" onsubmit="return confirm('Remove this entire conversation from your history? The other student will keep their copy.');"><input type="hidden" name="action" value="clear"><input type="hidden" name="counterpartEmail" value="<c:out value='${msg.counterpartEmail}'/>"><button class="message-clear" type="submit">Delete history</button></form></c:if>
                                 </article>
+                                <c:set var="previousCounterpart" value="${msg.counterpartEmail}" />
                             </c:forEach>
                         </c:otherwise>
                     </c:choose>
