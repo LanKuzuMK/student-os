@@ -87,19 +87,40 @@ public class MessageDAO {
     }
 
     public boolean clearConversationForUser(int userId, int counterpartId) {
-        String sql = "UPDATE messages SET "
+        String hideSql = "UPDATE messages SET "
                 + "sender_deleted = CASE WHEN sender_id = ? THEN TRUE ELSE sender_deleted END, "
                 + "receiver_deleted = CASE WHEN receiver_id = ? THEN TRUE ELSE receiver_deleted END "
                 + "WHERE (sender_id = ? AND receiver_id = ?) OR (sender_id = ? AND receiver_id = ?)";
-        try (Connection conn = DBConnection.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setInt(1, userId);
-            ps.setInt(2, userId);
-            ps.setInt(3, userId);
-            ps.setInt(4, counterpartId);
-            ps.setInt(5, counterpartId);
-            ps.setInt(6, userId);
-            return ps.executeUpdate() > 0;
+        String purgeSql = "DELETE FROM messages WHERE sender_deleted = TRUE AND receiver_deleted = TRUE "
+                + "AND ((sender_id = ? AND receiver_id = ?) OR (sender_id = ? AND receiver_id = ?))";
+
+        try (Connection conn = DBConnection.getConnection()) {
+            boolean originalAutoCommit = conn.getAutoCommit();
+            conn.setAutoCommit(false);
+            try (PreparedStatement hideStatement = conn.prepareStatement(hideSql);
+                 PreparedStatement purgeStatement = conn.prepareStatement(purgeSql)) {
+                hideStatement.setInt(1, userId);
+                hideStatement.setInt(2, userId);
+                hideStatement.setInt(3, userId);
+                hideStatement.setInt(4, counterpartId);
+                hideStatement.setInt(5, counterpartId);
+                hideStatement.setInt(6, userId);
+                int hiddenMessages = hideStatement.executeUpdate();
+
+                purgeStatement.setInt(1, userId);
+                purgeStatement.setInt(2, counterpartId);
+                purgeStatement.setInt(3, counterpartId);
+                purgeStatement.setInt(4, userId);
+                purgeStatement.executeUpdate();
+
+                conn.commit();
+                return hiddenMessages > 0;
+            } catch (SQLException e) {
+                conn.rollback();
+                throw e;
+            } finally {
+                conn.setAutoCommit(originalAutoCommit);
+            }
         } catch (SQLException e) {
             System.err.println("Unable to clear conversation: " + e.getMessage());
             return false;
