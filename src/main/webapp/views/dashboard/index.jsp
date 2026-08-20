@@ -119,7 +119,7 @@
                                         <div class="focus-task-copy"><c:out value="${task.description}" default="Add a short note to keep the task clear."/></div>
                                     </div>
                                     <c:choose>
-                                        <c:when test="${task.status eq 'COMPLETED'}"><div class="focus-action-group"><span class="focus-badge">Done</span><form action="/tasks/delete" method="post" onsubmit="return confirm('Delete this completed task? This cannot be undone.');"><input type="hidden" name="id" value="<c:out value='${task.id}'/>"><button type="submit" class="focus-delete">Delete</button></form></div></c:when>
+                                        <c:when test="${task.status eq 'COMPLETED'}"><span class="focus-badge">Done</span></c:when>
                                         <c:otherwise>
                                             <form action="/tasks/complete" method="post">
                                                 <input type="hidden" name="id" value="<c:out value='${task.id}'/>">

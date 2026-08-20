@@ -71,6 +71,8 @@ CREATE TABLE IF NOT EXISTS messages (
     receiver_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
     content TEXT NOT NULL,
     is_read BOOLEAN DEFAULT FALSE,
+    sender_deleted BOOLEAN NOT NULL DEFAULT FALSE,
+    receiver_deleted BOOLEAN NOT NULL DEFAULT FALSE,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 

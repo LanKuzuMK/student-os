@@ -93,6 +93,8 @@ public final class InitDB {
                 "CREATE INDEX IF NOT EXISTS idx_tasks_user_id ON tasks(user_id)",
                 "CREATE INDEX IF NOT EXISTS idx_user_skills_user_id ON user_skills(user_id)",
                 "CREATE INDEX IF NOT EXISTS idx_jobs_created_at ON jobs(created_at DESC)",
+                "ALTER TABLE messages ADD COLUMN IF NOT EXISTS sender_deleted BOOLEAN NOT NULL DEFAULT FALSE",
+                "ALTER TABLE messages ADD COLUMN IF NOT EXISTS receiver_deleted BOOLEAN NOT NULL DEFAULT FALSE",
                 "CREATE INDEX IF NOT EXISTS idx_messages_receiver_id ON messages(receiver_id)",
                 "CREATE INDEX IF NOT EXISTS idx_goals_user_id ON goals(user_id)"
         };
