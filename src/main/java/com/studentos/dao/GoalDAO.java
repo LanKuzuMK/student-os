@@ -13,7 +13,7 @@ import java.util.List;
 public class GoalDAO {
     public List<Goal> getGoalsByUserId(int userId) {
         List<Goal> goals = new ArrayList<>();
-        String sql = "SELECT id, user_id, title, description, progress FROM goals WHERE user_id = ? ORDER BY updated_at DESC, id DESC";
+        String sql = "SELECT id, user_id, title, description, progress FROM goals WHERE user_id = ? ORDER BY id DESC";
 
         try (Connection connection = DBConnection.getConnection();
              PreparedStatement statement = connection.prepareStatement(sql)) {
@@ -45,7 +45,7 @@ public class GoalDAO {
     }
 
     public boolean updateGoal(Goal goal) {
-        String sql = "UPDATE goals SET title = ?, description = ?, progress = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ? AND user_id = ?";
+        String sql = "UPDATE goals SET title = ?, description = ?, progress = ? WHERE id = ? AND user_id = ?";
         try (Connection connection = DBConnection.getConnection();
              PreparedStatement statement = connection.prepareStatement(sql)) {
             statement.setString(1, goal.getTitle());
@@ -61,7 +61,7 @@ public class GoalDAO {
     }
 
     public boolean updateProgress(int goalId, int userId, int progress) {
-        String sql = "UPDATE goals SET progress = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ? AND user_id = ?";
+        String sql = "UPDATE goals SET progress = ? WHERE id = ? AND user_id = ?";
         try (Connection connection = DBConnection.getConnection();
              PreparedStatement statement = connection.prepareStatement(sql)) {
             statement.setInt(1, progress);
