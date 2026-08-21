@@ -11,7 +11,7 @@ public class AuthService {
 
     public User login(String email, String password) {
         User user = userDAO.findByEmail(email);
-        if (user == null) {
+        if (user == null || "BANNED".equals(user.getStatus())) {
             return null;
         }
 
