@@ -27,6 +27,11 @@
         <c:if test="${param.saved eq '1'}"><div class="alert alert-success">Your profile was updated successfully.</div></c:if>
         <c:if test="${param.error eq 'photo'}"><div class="alert alert-error">Upload a valid JPG or PNG image smaller than 5 MB.</div></c:if>
         <c:if test="${param.error eq 'save'}"><div class="alert alert-error">Your profile could not be saved. Please try again.</div></c:if>
+        <c:if test="${param.linkAdded eq '1'}"><div class="alert alert-success">Your custom link was added.</div></c:if>
+        <c:if test="${param.linkAdded eq '0'}"><div class="alert alert-error">Your custom link could not be added. Please try again.</div></c:if>
+        <c:if test="${param.linkDeleted eq '1'}"><div class="alert alert-success">The link was permanently deleted.</div></c:if>
+        <c:if test="${param.linkDeleted eq '0' or param.error eq 'linkDelete'}"><div class="alert alert-error">That link could not be deleted.</div></c:if>
+        <c:if test="${param.error eq 'link'}"><div class="alert alert-error">Enter a link name and a valid URL beginning with http:// or https://.</div></c:if>
 
         <form class="profile-editor" action="/profile/save" method="post" enctype="multipart/form-data">
             <section class="profile-identity-card">
@@ -60,6 +65,28 @@
             </section>
             <div class="profile-save-row"><p>Your StudentOS email is shown only to signed-in students for collaboration.</p><button class="btn btn-primary" type="submit">Save profile</button></div>
         </form>
+
+        <section class="profile-form-card profile-link-manager">
+            <div class="profile-section-heading"><div><p class="section-kicker">Custom links</p><h2>Add any platform</h2></div><p>Add GitHub, Instagram, Behance, Discord, or any public social-media link classmates can use to find you.</p></div>
+            <form class="custom-link-add-form" action="/profile/links/add" method="post">
+                <div class="form-group"><label class="form-label" for="linkLabel">Link name</label><input class="form-control" id="linkLabel" name="linkLabel" maxlength="80" required placeholder="For example, GitHub or Instagram"></div>
+                <div class="form-group"><label class="form-label" for="linkUrl">Link URL</label><input class="form-control" id="linkUrl" name="linkUrl" type="url" maxlength="500" required placeholder="https://github.com/your-name"></div>
+                <button class="btn btn-primary" type="submit">Add link</button>
+            </form>
+            <div class="custom-link-list">
+                <c:choose>
+                    <c:when test="${not empty profileLinks}">
+                        <c:forEach items="${profileLinks}" var="customLink">
+                            <article class="custom-profile-link-row">
+                                <a href="<c:out value='${customLink.url}'/>" target="_blank" rel="noopener noreferrer"><strong><c:out value="${customLink.label}"/></strong><span><c:out value="${customLink.url}"/></span></a>
+                                <form action="/profile/links/delete" method="post" onsubmit="return confirm('Permanently delete this link from your profile?');"><input type="hidden" name="linkId" value="<c:out value='${customLink.id}'/>"><button class="text-action text-action-danger" type="submit">Delete</button></form>
+                            </article>
+                        </c:forEach>
+                    </c:when>
+                    <c:otherwise><p class="profile-empty-copy custom-link-empty">No custom links yet. Add one above to show it on your public profile.</p></c:otherwise>
+                </c:choose>
+            </div>
+        </section>
         <footer class="mkv-footer">© 2026 MKV Team</footer>
     </main>
 </div>

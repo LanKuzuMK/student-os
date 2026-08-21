@@ -462,6 +462,17 @@ textarea.form-control { resize: vertical; }
 .owner-meta { margin: 12px 0 0; color: var(--text-secondary); font-size: 13px; }
 .owner-actions { display: flex; flex-wrap: wrap; gap: 9px; margin-top: 16px; }
 .owner-actions .btn { padding: 9px 12px; font-size: 12px; }
+.profile-link-manager { margin-top: 0; }
+.custom-link-add-form { display: grid; grid-template-columns: 1fr 1fr auto; gap: 12px; align-items: flex-end; padding: 18px 0; border-bottom: 1px solid #edf0f6; }
+.custom-link-add-form .form-group { margin: 0; }
+.custom-link-add-form .btn { min-height: 44px; white-space: nowrap; }
+.custom-link-list { display: grid; gap: 10px; margin-top: 16px; }
+.custom-profile-link-row { display: flex; align-items: center; justify-content: space-between; gap: 14px; padding: 12px 14px; background: #fafaff; border: 1px solid #e6e7fa; border-radius: 12px; }
+.custom-profile-link-row a { flex: 1; min-width: 0; }
+.custom-profile-link-row a strong { display: block; color: var(--brand); font-size: 13px; font-weight: 750; }
+.custom-profile-link-row a span { display: block; color: #8689bb; font-size: 11px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.custom-profile-link-row form { flex: 0 0 auto; margin: 0; }
+.custom-link-empty { margin-top: 14px; }
 @media (max-width: 760px) {
   .profile-identity-card, .public-profile-hero { align-items: flex-start; flex-direction: column; padding: 22px; }
   .public-profile-actions { align-self: stretch; width: 100%; }
@@ -470,6 +481,7 @@ textarea.form-control { resize: vertical; }
   .profile-section-heading, .profile-save-row { align-items: flex-start; flex-direction: column; }
   .profile-section-heading > p { text-align: left; }
 }
+@media (max-width: 660px) { .custom-link-add-form { grid-template-columns: 1fr; } .custom-link-add-form .btn { width: 100%; } }
 
 .profile-modal { position: fixed; inset: 0; z-index: 20; align-items: center; justify-content: center; padding: 20px; background: rgba(19, 29, 55, .38); backdrop-filter: blur(5px); }
 .profile-modal-card { width: min(100%, 520px); padding: 26px; background: #fff; border: 1px solid #e5e9f2; border-radius: 20px; box-shadow: var(--shadow-lg); }

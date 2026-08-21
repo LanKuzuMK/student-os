@@ -95,6 +95,14 @@ public final class InitDB {
                 "ALTER TABLE profiles ADD COLUMN IF NOT EXISTS telegram_url VARCHAR(500)",
                 "ALTER TABLE profiles ADD COLUMN IF NOT EXISTS avatar_data BYTEA",
                 "ALTER TABLE profiles ADD COLUMN IF NOT EXISTS avatar_content_type VARCHAR(100)",
+                "CREATE TABLE IF NOT EXISTS profile_links ("
+                        + "id SERIAL PRIMARY KEY, "
+                        + "user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE, "
+                        + "label VARCHAR(80) NOT NULL, "
+                        + "url VARCHAR(500) NOT NULL, "
+                        + "created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP"
+                        + ")",
+                "CREATE INDEX IF NOT EXISTS idx_profile_links_user_id ON profile_links(user_id)",
                 "CREATE INDEX IF NOT EXISTS idx_tasks_user_id ON tasks(user_id)",
                 "CREATE INDEX IF NOT EXISTS idx_user_skills_user_id ON user_skills(user_id)",
                 "CREATE INDEX IF NOT EXISTS idx_jobs_created_at ON jobs(created_at DESC)",

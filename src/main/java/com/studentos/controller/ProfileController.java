@@ -38,6 +38,7 @@ public class ProfileController extends HttpServlet {
         }
 
         request.setAttribute("profile", profileDAO.getByUserId(signedInUser.getId()));
+        request.setAttribute("profileLinks", profileDAO.getLinksByUserId(signedInUser.getId()));
         request.getRequestDispatcher("/views/profile/manage.jsp").forward(request, response);
     }
 
@@ -47,7 +48,16 @@ public class ProfileController extends HttpServlet {
         if (signedInUser == null) {
             return;
         }
-        if (!"/save".equals(request.getPathInfo())) {
+        String path = request.getPathInfo();
+        if ("/links/add".equals(path)) {
+            addCustomLink(request, response, signedInUser);
+            return;
+        }
+        if ("/links/delete".equals(path)) {
+            deleteCustomLink(request, response, signedInUser);
+            return;
+        }
+        if (!"/save".equals(path)) {
             response.sendError(HttpServletResponse.SC_NOT_FOUND);
             return;
         }
@@ -83,6 +93,25 @@ public class ProfileController extends HttpServlet {
         }
     }
 
+    private void addCustomLink(HttpServletRequest request, HttpServletResponse response, User signedInUser) throws IOException {
+        String label = limit(request.getParameter("linkLabel"), 80);
+        String url = normalizeLink(request.getParameter("linkUrl"));
+        if (label == null || url == null) {
+            response.sendRedirect(request.getContextPath() + "/profile?error=link");
+            return;
+        }
+        response.sendRedirect(request.getContextPath() + "/profile?linkAdded=" + (profileDAO.addLink(signedInUser.getId(), label, url) ? "1" : "0"));
+    }
+
+    private void deleteCustomLink(HttpServletRequest request, HttpServletResponse response, User signedInUser) throws IOException {
+        Integer linkId = parseId(request.getParameter("linkId"));
+        if (linkId == null) {
+            response.sendRedirect(request.getContextPath() + "/profile?error=linkDelete");
+            return;
+        }
+        response.sendRedirect(request.getContextPath() + "/profile?linkDeleted=" + (profileDAO.deleteLink(linkId, signedInUser.getId()) ? "1" : "0"));
+    }
+
     private void showPublicProfile(HttpServletRequest request, HttpServletResponse response, User signedInUser)
             throws ServletException, IOException {
         Integer profileId = parseId(request.getParameter("id"));
@@ -96,6 +125,7 @@ public class ProfileController extends HttpServlet {
             return;
         }
         request.setAttribute("profile", profile);
+        request.setAttribute("profileLinks", profileDAO.getLinksByUserId(profileId));
         request.setAttribute("isOwnProfile", profileId == signedInUser.getId());
         request.getRequestDispatcher("/views/profile/view.jsp").forward(request, response);
     }

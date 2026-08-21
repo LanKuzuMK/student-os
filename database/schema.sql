@@ -17,8 +17,23 @@ CREATE TABLE IF NOT EXISTS profiles (
     bio TEXT,
     university VARCHAR(255),
     major VARCHAR(255),
+    portfolio_url VARCHAR(500),
+    linkedin_url VARCHAR(500),
+    telegram_url VARCHAR(500),
+    avatar_data BYTEA,
+    avatar_content_type VARCHAR(100),
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
+
+CREATE TABLE IF NOT EXISTS profile_links (
+    id SERIAL PRIMARY KEY,
+    user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    label VARCHAR(80) NOT NULL,
+    url VARCHAR(500) NOT NULL,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE INDEX IF NOT EXISTS idx_profile_links_user_id ON profile_links(user_id);
 
 CREATE TABLE IF NOT EXISTS tasks (
     id SERIAL PRIMARY KEY,

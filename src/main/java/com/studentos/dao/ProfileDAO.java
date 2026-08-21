@@ -1,12 +1,15 @@
 package com.studentos.dao;
 
 import com.studentos.model.Profile;
+import com.studentos.model.ProfileLink;
 import com.studentos.util.DBConnection;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ProfileDAO {
     private static final String PROFILE_SELECT = "SELECT u.id AS user_id, u.email, p.first_name, p.last_name, p.bio, "
@@ -59,6 +62,55 @@ public class ProfileDAO {
             return ps.executeUpdate() == 1;
         } catch (SQLException e) {
             System.err.println("Unable to update profile: " + e.getMessage());
+            return false;
+        }
+    }
+
+    public List<ProfileLink> getLinksByUserId(int userId) {
+        String sql = "SELECT id, user_id, label, url FROM profile_links WHERE user_id = ? ORDER BY id ASC";
+        List<ProfileLink> links = new ArrayList<>();
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, userId);
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    ProfileLink link = new ProfileLink();
+                    link.setId(rs.getInt("id"));
+                    link.setUserId(rs.getInt("user_id"));
+                    link.setLabel(rs.getString("label"));
+                    link.setUrl(rs.getString("url"));
+                    links.add(link);
+                }
+            }
+        } catch (SQLException e) {
+            System.err.println("Unable to load profile links: " + e.getMessage());
+        }
+        return links;
+    }
+
+    public boolean addLink(int userId, String label, String url) {
+        String sql = "INSERT INTO profile_links (user_id, label, url) VALUES (?, ?, ?)";
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, userId);
+            ps.setString(2, label);
+            ps.setString(3, url);
+            return ps.executeUpdate() == 1;
+        } catch (SQLException e) {
+            System.err.println("Unable to add profile link: " + e.getMessage());
+            return false;
+        }
+    }
+
+    public boolean deleteLink(int linkId, int userId) {
+        String sql = "DELETE FROM profile_links WHERE id = ? AND user_id = ?";
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, linkId);
+            ps.setInt(2, userId);
+            return ps.executeUpdate() == 1;
+        } catch (SQLException e) {
+            System.err.println("Unable to delete profile link: " + e.getMessage());
             return false;
         }
     }
