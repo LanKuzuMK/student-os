@@ -480,7 +480,7 @@ textarea.form-control { resize: vertical; }
 /* Mobile navigation: hidden on desktop, overlay only for compact screens. */
 .mobile-nav-toggle, .mobile-nav-backdrop { display: none; }
 @media (max-width: 860px) {
-  .mobile-nav-toggle { position: fixed; z-index: 72; top: calc(14px + env(safe-area-inset-top)); left: calc(14px + env(safe-area-inset-left)); display: inline-grid; width: 44px; height: 44px; place-items: center; padding: 0; color: #293855; background: rgba(255,255,255,.94); border: 1px solid rgba(220,226,239,.96); border-radius: 14px; box-shadow: 0 10px 24px rgba(25,38,72,.14); cursor: pointer; backdrop-filter: blur(14px); }
+  .mobile-nav-toggle { position: fixed; z-index: 72; top: calc(14px + env(safe-area-inset-top)); left: calc(14px + env(safe-area-inset-left)); display: inline-grid; width: 44px; height: 44px; place-items: center; padding: 0; color: #293855; background: rgba(255,255,255,.94); border: 1px solid rgba(220,226,239,.96); border-radius: 14px; box-shadow: 0 10px 24px rgba(25,38,72,.14); cursor: pointer; transition: left .28s cubic-bezier(.2,.8,.2,1), color .2s ease, background .2s ease; backdrop-filter: blur(14px); }
   .mobile-nav-toggle:hover { color: var(--brand); background: #fff; }
   .mobile-nav-toggle:focus-visible { outline: 3px solid rgba(91,92,226,.28); outline-offset: 2px; }
   .mobile-nav-dots { display: flex; flex-direction: column; gap: 3px; }
@@ -489,6 +489,7 @@ textarea.form-control { resize: vertical; }
   .sidebar { z-index: 70; width: min(84vw, 310px); height: 100dvh; padding-top: calc(24px + env(safe-area-inset-top)); padding-bottom: calc(18px + env(safe-area-inset-bottom)); box-shadow: 18px 0 48px rgba(18,31,65,.18); transition: transform .28s cubic-bezier(.2,.8,.2,1); }
   body.mobile-nav-open { overflow: hidden; }
   body.mobile-nav-open .sidebar { transform: translateX(0); }
+  body.mobile-nav-open .mobile-nav-toggle { left: calc(min(84vw, 310px) - 58px); }
   body.mobile-nav-open .mobile-nav-backdrop { opacity: 1; pointer-events: auto; }
   .main-content { padding-top: 78px; }
 }
