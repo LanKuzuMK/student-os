@@ -485,7 +485,7 @@ textarea.form-control { resize: vertical; }
   .mobile-nav-toggle:focus-visible { outline: 3px solid rgba(91,92,226,.28); outline-offset: 2px; }
   .mobile-nav-dots { display: flex; flex-direction: column; gap: 3px; }
   .mobile-nav-dots span { display: block; width: 4px; height: 4px; background: currentColor; border-radius: 50%; }
-  .mobile-nav-backdrop { position: fixed; z-index: 61; inset: 0; background: rgba(19,30,58,.34); opacity: 0; pointer-events: none; transition: opacity .24s ease; backdrop-filter: blur(2px); }
+  .mobile-nav-backdrop { position: fixed; z-index: 61; inset: 0; display: block; background: rgba(19,30,58,.34); opacity: 0; pointer-events: none; transition: opacity .24s ease; backdrop-filter: blur(2px); }
   .sidebar { z-index: 70; width: min(84vw, 310px); height: 100dvh; padding-top: calc(24px + env(safe-area-inset-top)); padding-bottom: calc(18px + env(safe-area-inset-bottom)); box-shadow: 18px 0 48px rgba(18,31,65,.18); transition: transform .28s cubic-bezier(.2,.8,.2,1); }
   body.mobile-nav-open { overflow: hidden; }
   body.mobile-nav-open .sidebar { transform: translateX(0); }
