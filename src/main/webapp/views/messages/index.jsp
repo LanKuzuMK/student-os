@@ -31,6 +31,7 @@
                 <div class="section-kicker">New message</div><h2>Reach out with context</h2><p>Use a classmate’s StudentOS email to start a conversation. Discover links will prefill this field for you.</p>
                 <form action="/messages" method="post">
                     <input type="hidden" name="action" value="send">
+                    <input type="hidden" name="csrfToken" value="<c:out value='${csrfToken}'/>">
                     <div class="form-group"><label class="form-label" for="recipientEmail">Classmate email</label><input id="recipientEmail" class="form-control" type="email" name="recipientEmail" value="<c:out value='${recipientEmail}'/>" placeholder="classmate@example.com" required autocomplete="email"></div>
                     <div class="form-group"><label class="form-label" for="content">Message</label><textarea id="content" class="form-control" name="content" rows="6" placeholder="Hi! I saw your skill profile and would love to connect about…" required></textarea></div>
                     <button class="btn btn-primary" type="submit">Send message</button>
@@ -47,7 +48,7 @@
                                 <article class="message-item">
                                     <div class="message-avatar">S</div>
                                     <div class="message-content"><div class="message-meta"><strong><c:out value="${msg.counterpartEmail}"/></strong><span>Student conversation</span></div><p><c:out value="${msg.content}"/></p></div>
-                                    <c:if test="${msg.counterpartEmail ne previousCounterpart}"><form class="message-clear-form" action="/messages" method="post" onsubmit="return confirm('Remove this entire conversation from your history? The other student will keep their copy.');"><input type="hidden" name="action" value="clear"><input type="hidden" name="counterpartEmail" value="<c:out value='${msg.counterpartEmail}'/>"><button class="message-clear" type="submit">Delete history</button></form></c:if>
+                                    <c:if test="${msg.counterpartEmail ne previousCounterpart}"><form class="message-clear-form" action="/messages" method="post" onsubmit="return confirm('Remove this entire conversation from your history? The other student will keep their copy.');"><input type="hidden" name="action" value="clear"><input type="hidden" name="counterpartEmail" value="<c:out value='${msg.counterpartEmail}'/>"><input type="hidden" name="csrfToken" value="<c:out value='${csrfToken}'/>"><button class="message-clear" type="submit">Delete history</button></form></c:if>
                                 </article>
                                 <c:set var="previousCounterpart" value="${msg.counterpartEmail}" />
                             </c:forEach>

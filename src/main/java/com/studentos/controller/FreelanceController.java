@@ -2,6 +2,7 @@ package com.studentos.controller;
 import com.studentos.dao.JobDAO;
 import com.studentos.model.Job;
 import com.studentos.model.User;
+import com.studentos.util.InputValidator;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.*;
@@ -30,13 +31,22 @@ public class FreelanceController extends HttpServlet {
         String path = request.getPathInfo();
         
         if ("/post".equals(path)) {
+            String title = InputValidator.trimToLength(request.getParameter("title"), 255);
+            String description = InputValidator.trimToLength(request.getParameter("description"), 4000);
+            Double budget = InputValidator.parseNonNegativeBudget(request.getParameter("budget"));
+            if (user == null || title == null || description == null || budget == null) {
+                response.sendRedirect(request.getContextPath() + "/freelance?error=invalid");
+                return;
+            }
             Job job = new Job();
             job.setUserId(user.getId());
-            job.setTitle(request.getParameter("title"));
-            job.setDescription(request.getParameter("description"));
-            job.setBudget(Double.parseDouble(request.getParameter("budget")));
-            jobDAO.createJob(job);
-            response.sendRedirect(request.getContextPath() + "/freelance");
+            job.setTitle(title);
+            job.setDescription(description);
+            job.setBudget(budget);
+            response.sendRedirect(request.getContextPath() + (jobDAO.createJob(job) ? "/freelance" : "/freelance?error=invalid"));
+            return;
         }
+        response.sendError(HttpServletResponse.SC_NOT_FOUND);
     }
+
 }

@@ -1,4 +1,8 @@
 package com.studentos.filter;
+
+import com.studentos.dao.UserDAO;
+import com.studentos.model.User;
+import com.studentos.util.CsrfUtil;
 import jakarta.servlet.*;
 import jakarta.servlet.annotation.WebFilter;
 import jakarta.servlet.http.HttpServletRequest;
@@ -6,19 +10,32 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import java.io.IOException;
 
-@WebFilter(urlPatterns = {"/dashboard/*", "/tasks/*", "/skills/*", "/freelance/*", "/messages/*", "/profile/*", "/admin/*"})
+@WebFilter(urlPatterns = {"/dashboard", "/dashboard/*", "/schedule", "/goals", "/tasks", "/tasks/*", "/skills", "/skills/*", "/freelance", "/freelance/*", "/messages", "/messages/*", "/profile", "/profile/*", "/admin", "/admin/*"})
 public class AuthFilter implements Filter {
+    private final UserDAO userDAO = new UserDAO();
+
     @Override
     public void doFilter(ServletRequest req, ServletResponse res, FilterChain chain) throws IOException, ServletException {
         HttpServletRequest request = (HttpServletRequest) req;
         HttpServletResponse response = (HttpServletResponse) res;
         HttpSession session = request.getSession(false);
         
-        boolean loggedIn = session != null && session.getAttribute("user") != null;
-        if (loggedIn) {
-            chain.doFilter(request, response);
-        } else {
+        User sessionUser = session == null ? null : (User) session.getAttribute("user");
+        User currentUser = sessionUser == null ? null : userDAO.findById(sessionUser.getId());
+        if (currentUser == null || !"ACTIVE".equals(currentUser.getStatus())) {
+            if (session != null) {
+                session.invalidate();
+            }
             response.sendRedirect(request.getContextPath() + "/auth/signin");
+            return;
         }
+
+        session.setAttribute("user", currentUser);
+        if ("POST".equalsIgnoreCase(request.getMethod()) && !CsrfUtil.hasValidToken(request)) {
+            response.sendError(HttpServletResponse.SC_FORBIDDEN);
+            return;
+        }
+        CsrfUtil.getOrCreateToken(request);
+        chain.doFilter(request, response);
     }
 }

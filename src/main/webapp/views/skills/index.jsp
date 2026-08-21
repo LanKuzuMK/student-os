@@ -64,6 +64,7 @@
         <div class="section-kicker">Build your profile</div>
         <h2 id="skillModalTitle">Add a skill</h2>
         <form action="/skills/add" method="post">
+            <input type="hidden" name="csrfToken" value="<c:out value='${csrfToken}'/>">
             <div class="form-group" style="margin-top:22px;"><label class="form-label" for="skillName">Skill name</label><input id="skillName" class="form-control" name="skillName" placeholder="e.g. Java, UI design, public speaking" required></div>
             <div class="form-group"><label class="form-label" for="skillLevel">Skill level</label><select id="skillLevel" class="form-control" name="skillLevel"><option value="BEGINNER">Beginner</option><option value="INTERMEDIATE">Intermediate</option><option value="ADVANCED">Advanced</option><option value="EXPERT">Expert</option></select></div>
             <div class="form-group"><label class="form-label" for="skillType">I want to</label><select id="skillType" class="form-control" name="type"><option value="TEACH">Teach this skill</option><option value="LEARN">Learn this skill</option></select></div>

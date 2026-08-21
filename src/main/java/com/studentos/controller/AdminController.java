@@ -4,21 +4,17 @@ import com.studentos.dao.AdminDAO;
 import com.studentos.dao.UserDAO;
 import com.studentos.model.User;
 import com.studentos.util.BCryptUtil;
+import com.studentos.util.CsrfUtil;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.*;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.security.MessageDigest;
-import java.security.SecureRandom;
-import java.util.Base64;
 
 @WebServlet("/admin/*")
 public class AdminController extends HttpServlet {
 
     private final AdminDAO adminDAO = new AdminDAO();
     private final UserDAO userDAO = new UserDAO();
-    private static final String CSRF_ATTRIBUTE = "adminCsrfToken";
 
     // ── Guard helper ─────────────────────────────────────────────────────────
 
@@ -35,26 +31,6 @@ public class AdminController extends HttpServlet {
         return currentUser;
     }
 
-    private String getOrCreateCsrfToken(HttpServletRequest req) {
-        HttpSession session = req.getSession();
-        String token = (String) session.getAttribute(CSRF_ATTRIBUTE);
-        if (token == null) {
-            byte[] bytes = new byte[32];
-            new SecureRandom().nextBytes(bytes);
-            token = Base64.getUrlEncoder().withoutPadding().encodeToString(bytes);
-            session.setAttribute(CSRF_ATTRIBUTE, token);
-        }
-        return token;
-    }
-
-    private boolean hasValidCsrfToken(HttpServletRequest req) {
-        HttpSession session = req.getSession(false);
-        String expected = session == null ? null : (String) session.getAttribute(CSRF_ATTRIBUTE);
-        String submitted = req.getParameter("csrfToken");
-        return expected != null && submitted != null && MessageDigest.isEqual(
-                expected.getBytes(StandardCharsets.UTF_8), submitted.getBytes(StandardCharsets.UTF_8));
-    }
-
     // ── GET dispatcher ───────────────────────────────────────────────────────
 
     @Override
@@ -62,7 +38,7 @@ public class AdminController extends HttpServlet {
             throws ServletException, IOException {
         User admin = requireAdmin(req, res);
         if (admin == null) return;
-        req.setAttribute("csrfToken", getOrCreateCsrfToken(req));
+        CsrfUtil.getOrCreateToken(req);
 
         String path = req.getPathInfo();
         if (path == null) path = "/";
@@ -96,7 +72,7 @@ public class AdminController extends HttpServlet {
             throws ServletException, IOException {
         User admin = requireAdmin(req, res);
         if (admin == null) return;
-        if (!hasValidCsrfToken(req)) {
+        if (!CsrfUtil.hasValidToken(req)) {
             res.sendError(403);
             return;
         }
@@ -118,8 +94,13 @@ public class AdminController extends HttpServlet {
                 res.sendRedirect(req.getContextPath() + "/admin/users?msg=deleted");
                 break;
             case "/users/role":
-                adminDAO.setRole(intParam(req, "userId"), req.getParameter("newRole"), admin.getId());
-                res.sendRedirect(req.getContextPath() + "/admin/users?msg=role_updated");
+                String requestedRole = req.getParameter("newRole");
+                if ("ADMIN".equals(requestedRole) || "STUDENT".equals(requestedRole)) {
+                    adminDAO.setRole(intParam(req, "userId"), requestedRole, admin.getId());
+                    res.sendRedirect(req.getContextPath() + "/admin/users?msg=role_updated");
+                } else {
+                    res.sendRedirect(req.getContextPath() + "/admin/users?msg=invalid_role");
+                }
                 break;
             case "/users/reset-password": {
                 String newPass = req.getParameter("newPassword");

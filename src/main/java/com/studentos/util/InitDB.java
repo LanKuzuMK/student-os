@@ -21,10 +21,13 @@ public final class InitDB {
                         + "created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP, "
                         + "updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP"
                         + ")",
-                "UPDATE users SET password_hash = '$2a$10$hAZHFcGYO4y32HJ.bPPGIemUljIzF2XGeW7HDCEJBwb4Ygnuv4Vny' "
-                        + "WHERE email IN ('admin@example.com', 'student@example.com', 'mong@example.com', 'dara@example.com', 'sokha@example.com') "
-                        + "AND (password_hash NOT LIKE '$2%' "
-                        + "OR password_hash = '$2b$12$f92XfVIePffZBEmB82qgkO.fx5ejqoqZEDRovE0xg.X.1D10M8KuK')",
+                "CREATE TABLE IF NOT EXISTS email_verifications ("
+                        + "email VARCHAR(255) PRIMARY KEY, "
+                        + "code_hash VARCHAR(255) NOT NULL, "
+                        + "expires_at TIMESTAMP NOT NULL, "
+                        + "attempts INTEGER NOT NULL DEFAULT 0, "
+                        + "issued_at TIMESTAMP NOT NULL"
+                        + ")",
                 "CREATE TABLE IF NOT EXISTS profiles ("
                         + "user_id INTEGER PRIMARY KEY REFERENCES users(id) ON DELETE CASCADE, "
                         + "first_name VARCHAR(100), "
@@ -122,6 +125,26 @@ public final class InitDB {
             for (String sql : statements) {
                 statement.execute(sql);
             }
+            rotateAdministratorIfRequested(connection);
+        }
+    }
+
+    private static void rotateAdministratorIfRequested(Connection connection) throws Exception {
+        String email = System.getenv("ADMIN_ROTATION_EMAIL");
+        String password = System.getenv("ADMIN_ROTATION_PASSWORD");
+        if (email == null || email.isBlank() || password == null || password.length() < 12) {
+            return;
+        }
+
+        String sql = "UPDATE users SET password_hash = ?, status = 'ACTIVE', updated_at = CURRENT_TIMESTAMP "
+                + "WHERE LOWER(email) = LOWER(?) AND role = 'ADMIN'";
+        try (java.sql.PreparedStatement statement = connection.prepareStatement(sql)) {
+            statement.setString(1, BCryptUtil.hash(password));
+            statement.setString(2, email.trim());
+            int updated = statement.executeUpdate();
+            System.out.println(updated == 1
+                    ? "Administrator credential rotation completed. Remove the rotation secrets from the deployment environment."
+                    : "Administrator credential rotation skipped because no matching administrator account was found.");
         }
     }
 }

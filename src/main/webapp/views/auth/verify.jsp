@@ -30,15 +30,12 @@
             <h1 id="verify-title">Verify your email</h1>
             <c:choose>
                 <c:when test="${empty sessionScope.pendingEmail}">
-                    <p>Start by creating an account. We will then send you to this verification step.</p>
+                    <p>Start by creating an account. We will send a verification code to the address you provide.</p>
                     <a href="/auth/register" class="btn btn-primary" style="margin-top:18px;">Create an account</a>
                 </c:when>
                 <c:otherwise>
-                    <p>Enter the six-digit code for <strong><c:out value="${sessionScope.pendingEmail}"/></strong>.</p>
-                    <c:if test="${not empty sessionScope.otpCode}">
-                        <div class="verify-code">Demo verification code<strong><c:out value="${sessionScope.otpCode}"/></strong></div>
-                    </c:if>
-                    <c:if test="${not empty requestScope.error}"><div class="alert alert-error"><c:out value="${requestScope.error}"/></div></c:if>
+                    <p>Enter the six-digit code sent to <strong><c:out value="${sessionScope.pendingEmail}"/></strong>.</p>
+                    <c:if test="${param.error eq 'invalid'}"><div class="alert alert-error">That code is invalid, expired, or has reached its attempt limit. Start registration again to receive a new code.</div></c:if>
                     <form action="/auth/verify" method="POST" style="margin-top:18px;">
                         <div class="form-group"><label class="form-label" for="otp">Verification code</label><input id="otp" type="text" inputmode="numeric" pattern="[0-9]{6}" name="otp" placeholder="123456" required maxlength="6" autocomplete="one-time-code" class="form-control verify-otp"></div>
                         <button type="submit" class="btn btn-primary" style="width:100%;">Verify account</button>

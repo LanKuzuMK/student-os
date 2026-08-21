@@ -34,6 +34,7 @@
         <c:if test="${param.error eq 'link'}"><div class="alert alert-error">Enter a link name and a valid URL beginning with http:// or https://.</div></c:if>
 
         <form class="profile-editor" action="/profile/save" method="post" enctype="multipart/form-data">
+            <input type="hidden" name="csrfToken" value="<c:out value='${csrfToken}'/>">
             <section class="profile-identity-card">
                 <div class="profile-avatar-editor">
                     <c:choose>
@@ -69,6 +70,7 @@
         <section class="profile-form-card profile-link-manager">
             <div class="profile-section-heading"><div><p class="section-kicker">Custom links</p><h2>Add any platform</h2></div><p>Add GitHub, Instagram, Behance, Discord, or any public social-media link classmates can use to find you.</p></div>
             <form class="custom-link-add-form" action="/profile/links/add" method="post">
+                <input type="hidden" name="csrfToken" value="<c:out value='${csrfToken}'/>">
                 <div class="form-group"><label class="form-label" for="linkLabel">Link name</label><input class="form-control" id="linkLabel" name="linkLabel" maxlength="80" required placeholder="For example, GitHub or Instagram"></div>
                 <div class="form-group"><label class="form-label" for="linkUrl">Link URL</label><input class="form-control" id="linkUrl" name="linkUrl" type="url" maxlength="500" required placeholder="https://github.com/your-name"></div>
                 <button class="btn btn-primary" type="submit">Add link</button>
@@ -79,7 +81,7 @@
                         <c:forEach items="${profileLinks}" var="customLink">
                             <article class="custom-profile-link-row">
                                 <a href="<c:out value='${customLink.url}'/>" target="_blank" rel="noopener noreferrer"><strong><c:out value="${customLink.label}"/></strong><span><c:out value="${customLink.url}"/></span></a>
-                                <form action="/profile/links/delete" method="post" onsubmit="return confirm('Permanently delete this link from your profile?');"><input type="hidden" name="linkId" value="<c:out value='${customLink.id}'/>"><button class="text-action text-action-danger" type="submit">Delete</button></form>
+                                <form action="/profile/links/delete" method="post" onsubmit="return confirm('Permanently delete this link from your profile?');"><input type="hidden" name="linkId" value="<c:out value='${customLink.id}'/>"><input type="hidden" name="csrfToken" value="<c:out value='${csrfToken}'/>"><button class="text-action text-action-danger" type="submit">Delete</button></form>
                             </article>
                         </c:forEach>
                     </c:when>

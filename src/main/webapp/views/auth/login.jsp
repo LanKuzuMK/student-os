@@ -18,8 +18,8 @@
     <div class="auth-wrapper">
         <div class="auth-card">
             <div class="auth-logo"><a href="/">STUDENT OS</a></div>
-            <% if (request.getAttribute("error") != null) { %>
-                <div class="error-msg"><%= request.getAttribute("error") %></div>
+            <% if (request.getAttribute("error") != null || request.getParameter("error") != null) { %>
+                <div class="error-msg">We could not sign you in with those details. Please try again.</div>
             <% } %>
             <% if (request.getParameter("registered") != null) { %>
                 <div class="success-msg">Account created! Please log in.</div>

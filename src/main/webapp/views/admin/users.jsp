@@ -1,5 +1,5 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<%@ page import="java.util.*,com.studentos.model.User" %>
+<%@ page import="java.util.*,com.studentos.model.User,com.studentos.util.HtmlUtil" %>
 <%
     List<User> users = (List<User>) request.getAttribute("users");
     if (users == null) users = new ArrayList<>();
@@ -69,7 +69,7 @@
     <main class="admin-main">
         <div class="admin-header"><h1>User Management</h1></div>
         <% if (msg != null) { %>
-        <div class="toast">Action completed: <%=msg.replace("_"," ")%></div>
+        <div class="toast">Action completed: <%=HtmlUtil.escapeHtml(msg.replace("_"," "))%></div>
         <% } %>
         <table class="admin-table">
             <thead>
@@ -81,9 +81,9 @@
             <% for (User u : users) { %>
             <tr>
                 <td><%=u.getId()%></td>
-                <td><%=u.getEmail()%></td>
-                <td><span class="badge <%="ADMIN".equals(u.getRole())?"badge-admin":"badge-student"%>"><%=u.getRole()%></span></td>
-                <td><span class="badge <%="BANNED".equals(u.getStatus())?"badge-banned":"badge-active"%>"><%=u.getStatus()%></span></td>
+                <td><%=HtmlUtil.escapeHtml(u.getEmail())%></td>
+                <td><span class="badge <%="ADMIN".equals(u.getRole())?"badge-admin":"badge-student"%>"><%=HtmlUtil.escapeHtml(u.getRole())%></span></td>
+                <td><span class="badge <%="BANNED".equals(u.getStatus())?"badge-banned":"badge-active"%>"><%=HtmlUtil.escapeHtml(u.getStatus())%></span></td>
                 <td><%=u.getCreatedAt() != null ? u.getCreatedAt().toString().substring(0,10) : ""%></td>
                 <td>
                     <div class="action-row">
@@ -101,9 +101,9 @@
                         </form>
                         <% } %>
                         <button class="btn-sm btn-role"
-                            onclick="openRoleModal(<%=u.getId()%>,'<%=u.getRole()%>')">Role</button>
+                            onclick="openRoleModal(<%=u.getId()%>,'<%=HtmlUtil.escapeJavaScript(u.getRole())%>')">Role</button>
                         <button class="btn-sm btn-reset"
-                            onclick="openResetModal(<%=u.getId()%>,'<%=u.getEmail()%>')">Reset PW</button>
+                            onclick="openResetModal(<%=u.getId()%>,'<%=HtmlUtil.escapeJavaScript(u.getEmail())%>')">Reset PW</button>
                         <form method="post" action="/admin/users/delete" style="margin:0">
                             <input type="hidden" name="userId" value="<%=u.getId()%>">
                             <input type="hidden" name="csrfToken" value="<%=csrfToken%>">

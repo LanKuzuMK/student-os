@@ -1,5 +1,5 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<%@ page import="java.util.*" %>
+<%@ page import="java.util.*,com.studentos.util.HtmlUtil" %>
 <%
     List<Map<String,Object>> skills   = (List<Map<String,Object>>) request.getAttribute("skills");
     List<Map<String,Object>> jobs     = (List<Map<String,Object>>) request.getAttribute("jobs");
@@ -55,7 +55,7 @@
     <main class="admin-main">
         <div class="admin-header"><h1>Content Moderation</h1></div>
         <% if (msg != null) { %>
-        <div class="toast">Removed: <%=msg.replace("_"," ")%></div>
+        <div class="toast">Removed: <%=HtmlUtil.escapeHtml(msg.replace("_"," "))%></div>
         <% } %>
 
         <p class="section-title">Skills (<%=skills.size()%>)</p>
@@ -65,10 +65,10 @@
             <% for (Map<String,Object> r : skills) { %>
             <tr>
                 <td><%=r.get("id")%></td>
-                <td><%=r.get("email")%></td>
-                <td><%=r.get("skill_name")%></td>
-                <td><%=r.get("skill_level")%></td>
-                <td><%=r.get("type")%></td>
+                <td><%=HtmlUtil.escapeHtml(r.get("email"))%></td>
+                <td><%=HtmlUtil.escapeHtml(r.get("skill_name"))%></td>
+                <td><%=HtmlUtil.escapeHtml(r.get("skill_level"))%></td>
+                <td><%=HtmlUtil.escapeHtml(r.get("type"))%></td>
                 <td><form method="post" action="/admin/content/delete-skill" style="margin:0">
                     <input type="hidden" name="id" value="<%=r.get("id")%>">
                     <input type="hidden" name="csrfToken" value="<%=csrfToken%>">
@@ -86,9 +86,9 @@
             <% for (Map<String,Object> r : jobs) { %>
             <tr>
                 <td><%=r.get("id")%></td>
-                <td><%=r.get("email")%></td>
-                <td><%=r.get("title")%></td>
-                <td><%=r.get("status")%></td>
+                <td><%=HtmlUtil.escapeHtml(r.get("email"))%></td>
+                <td><%=HtmlUtil.escapeHtml(r.get("title"))%></td>
+                <td><%=HtmlUtil.escapeHtml(r.get("status"))%></td>
                 <td><form method="post" action="/admin/content/delete-job" style="margin:0">
                     <input type="hidden" name="id" value="<%=r.get("id")%>">
                     <input type="hidden" name="csrfToken" value="<%=csrfToken%>">
@@ -106,8 +106,8 @@
             <% for (Map<String,Object> r : services) { %>
             <tr>
                 <td><%=r.get("id")%></td>
-                <td><%=r.get("email")%></td>
-                <td><%=r.get("title")%></td>
+                <td><%=HtmlUtil.escapeHtml(r.get("email"))%></td>
+                <td><%=HtmlUtil.escapeHtml(r.get("title"))%></td>
                 <td><form method="post" action="/admin/content/delete-service" style="margin:0">
                     <input type="hidden" name="id" value="<%=r.get("id")%>">
                     <input type="hidden" name="csrfToken" value="<%=csrfToken%>">

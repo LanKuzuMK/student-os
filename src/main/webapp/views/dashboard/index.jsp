@@ -124,6 +124,7 @@
                                         <c:otherwise>
                                             <form action="/tasks/complete" method="post">
                                                 <input type="hidden" name="id" value="<c:out value='${task.id}'/>">
+                                                <input type="hidden" name="csrfToken" value="<c:out value='${csrfToken}'/>">
                                                 <button type="submit" class="btn btn-secondary" style="min-height:32px;padding:6px 10px;font-size:11px;">Finish</button>
                                             </form>
                                         </c:otherwise>
@@ -150,6 +151,7 @@
     <div style="width:100%;max-width:440px;padding:28px;background:#fff;border:1px solid #e5eaf3;border-radius:20px;box-shadow:0 28px 62px rgba(20,30,60,.25);">
         <div style="margin-bottom:22px;"><div class="section-kicker">Plan your next move</div><h2 style="font-family:'Plus Jakarta Sans',sans-serif;font-size:22px;letter-spacing:-.8px;">Create a focused task</h2></div>
         <form action="/tasks/create" method="post">
+            <input type="hidden" name="csrfToken" value="<c:out value='${csrfToken}'/>">
             <div class="form-group"><label class="form-label" for="taskTitle">Task title</label><input id="taskTitle" type="text" name="title" class="form-control" placeholder="e.g. Review Java Servlet notes" required></div>
             <div class="form-group"><label class="form-label" for="taskDescription">Short description</label><textarea id="taskDescription" name="description" class="form-control" rows="3" placeholder="What does done look like?"></textarea></div>
             <div class="form-group"><label class="form-label" for="taskPriority">Priority</label><select id="taskPriority" name="priority" class="form-control"><option value="LOW">Low</option><option value="MEDIUM" selected>Medium</option><option value="HIGH">High</option><option value="URGENT">Urgent</option></select></div>

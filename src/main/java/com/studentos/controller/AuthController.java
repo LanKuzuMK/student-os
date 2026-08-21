@@ -2,6 +2,7 @@ package com.studentos.controller;
 
 import com.studentos.model.User;
 import com.studentos.service.AuthService;
+import com.studentos.util.InputValidator;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -10,7 +11,6 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 
 import java.io.IOException;
-import java.util.Random;
 
 /**
  * Handles the application's explicit authentication endpoints.
@@ -27,6 +27,10 @@ import java.util.Random;
 )
 public class AuthController extends HttpServlet {
     private final AuthService authService = new AuthService();
+    private static final String PENDING_EMAIL = "pendingEmail";
+    private static final String PENDING_PASSWORD = "pendingPassword";
+    private static final String PENDING_FIRST_NAME = "pendingFirstName";
+    private static final String PENDING_LAST_NAME = "pendingLastName";
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -38,8 +42,7 @@ public class AuthController extends HttpServlet {
                     request.getRequestDispatcher("/views/auth/login.jsp").forward(request, response);
             case "/auth/register" ->
                     request.getRequestDispatcher("/views/auth/register.jsp").forward(request, response);
-            case "/auth/verify" ->
-                    request.getRequestDispatcher("/views/auth/verify.jsp").forward(request, response);
+            case "/auth/verify" -> request.getRequestDispatcher("/views/auth/verify.jsp").forward(request, response);
             case "/auth/logout" -> {
                 request.getSession().invalidate();
                 response.sendRedirect(request.getContextPath() + "/auth/signin");
@@ -87,43 +90,57 @@ public class AuthController extends HttpServlet {
     }
 
     private void handleRegistrationRequest(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        String email = request.getParameter("email");
+        String password = request.getParameter("password");
+        if (!InputValidator.isValidEmail(email) || password == null || password.length() < 8) {
+            response.sendRedirect(request.getContextPath() + "/auth/register?error=invalid");
+            return;
+        }
+
+        String normalizedEmail = email.trim().toLowerCase();
+        if (!authService.startEmailVerification(normalizedEmail)) {
+            response.sendRedirect(request.getContextPath() + "/auth/register?error=delivery");
+            return;
+        }
         HttpSession session = request.getSession();
-        session.setAttribute("otpCode", String.format("%06d", new Random().nextInt(1_000_000)));
-        session.setAttribute("pendingEmail", request.getParameter("email"));
-        session.setAttribute("pendingPassword", request.getParameter("password"));
-        session.setAttribute("pendingFirstName", request.getParameter("firstName"));
-        session.setAttribute("pendingLastName", request.getParameter("lastName"));
+        session.setAttribute(PENDING_EMAIL, normalizedEmail);
+        session.setAttribute(PENDING_PASSWORD, password);
+        session.setAttribute(PENDING_FIRST_NAME, request.getParameter("firstName"));
+        session.setAttribute(PENDING_LAST_NAME, request.getParameter("lastName"));
         response.sendRedirect(request.getContextPath() + "/auth/verify");
     }
 
-    private void handleVerification(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        HttpSession session = request.getSession();
-        String expectedOtp = (String) session.getAttribute("otpCode");
-        String enteredOtp = request.getParameter("otp");
-
-        if (expectedOtp != null && expectedOtp.equals(enteredOtp)) {
-            User user = authService.registerUser(
-                    (String) session.getAttribute("pendingEmail"),
-                    (String) session.getAttribute("pendingPassword"),
-                    (String) session.getAttribute("pendingFirstName"),
-                    (String) session.getAttribute("pendingLastName")
-            );
-
-            if (user != null) {
-                request.changeSessionId();
-                HttpSession authenticatedSession = request.getSession();
-                authenticatedSession.setAttribute("user", user);
-                authenticatedSession.removeAttribute("otpCode");
-                authenticatedSession.removeAttribute("pendingEmail");
-                authenticatedSession.removeAttribute("pendingPassword");
-                response.sendRedirect(request.getContextPath() + "/dashboard");
-            } else {
-                response.sendRedirect(request.getContextPath() + "/auth/register?error=RegistrationFailed");
-            }
-        } else {
-            request.setAttribute("error", "Invalid OTP code. Please try again.");
-            request.getRequestDispatcher("/views/auth/verify.jsp").forward(request, response);
+    private void handleVerification(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        HttpSession session = request.getSession(false);
+        if (session == null || session.getAttribute(PENDING_EMAIL) == null || session.getAttribute(PENDING_PASSWORD) == null) {
+            response.sendRedirect(request.getContextPath() + "/auth/register?error=expired");
+            return;
         }
+        String email = (String) session.getAttribute(PENDING_EMAIL);
+        String code = request.getParameter("otp");
+        if (!authService.verifyEmailCode(email, code)) {
+            response.sendRedirect(request.getContextPath() + "/auth/verify?error=invalid");
+            return;
+        }
+
+        User user = authService.registerUser(
+                email,
+                (String) session.getAttribute(PENDING_PASSWORD),
+                (String) session.getAttribute(PENDING_FIRST_NAME),
+                (String) session.getAttribute(PENDING_LAST_NAME)
+        );
+        if (user == null) {
+            response.sendRedirect(request.getContextPath() + "/auth/register?error=RegistrationFailed");
+            return;
+        }
+        request.changeSessionId();
+        HttpSession authenticatedSession = request.getSession();
+        authenticatedSession.setAttribute("user", user);
+        authenticatedSession.removeAttribute(PENDING_EMAIL);
+        authenticatedSession.removeAttribute(PENDING_PASSWORD);
+        authenticatedSession.removeAttribute(PENDING_FIRST_NAME);
+        authenticatedSession.removeAttribute(PENDING_LAST_NAME);
+        response.sendRedirect(request.getContextPath() + "/dashboard");
     }
+
 }

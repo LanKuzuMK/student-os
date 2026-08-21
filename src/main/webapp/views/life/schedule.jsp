@@ -50,7 +50,7 @@
                                     <c:choose>
                                         <c:when test="${task.status eq 'COMPLETED'}">
                                             <span class="completed-note">Finished work</span>
-                                            <form action="/tasks/delete" method="post" onsubmit="return confirm('Delete this completed task? This cannot be undone.');"><input type="hidden" name="id" value="<c:out value='${task.id}'/>"><input type="hidden" name="returnTo" value="schedule"><button class="text-action text-action-danger" type="submit">Delete task</button></form>
+                                            <form action="/tasks/delete" method="post" onsubmit="return confirm('Delete this completed task? This cannot be undone.');"><input type="hidden" name="id" value="<c:out value='${task.id}'/>"><input type="hidden" name="returnTo" value="schedule"><input type="hidden" name="csrfToken" value="<c:out value='${csrfToken}'/>"><button class="text-action text-action-danger" type="submit">Delete task</button></form>
                                         </c:when>
                                         <c:otherwise>
                                             <span class="active-note">Finish this task from Dashboard</span>

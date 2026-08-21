@@ -1,5 +1,5 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<%@ page import="java.util.*" %>
+<%@ page import="java.util.*,com.studentos.util.HtmlUtil" %>
 <%
     List<Map<String,Object>> messages = (List<Map<String,Object>>) request.getAttribute("messages");
     if (messages == null) messages = new ArrayList<>();
@@ -63,9 +63,9 @@
             <% for (Map<String,Object> m : messages) { %>
             <tr>
                 <td><%=m.get("id")%></td>
-                <td><%=m.get("sender")%></td>
-                <td><%=m.get("receiver")%></td>
-                <td class="preview-cell"><%=m.get("preview")%></td>
+                <td><%=HtmlUtil.escapeHtml(m.get("sender"))%></td>
+                <td><%=HtmlUtil.escapeHtml(m.get("receiver"))%></td>
+                <td class="preview-cell"><%=HtmlUtil.escapeHtml(m.get("preview"))%></td>
                 <td><%=m.get("created_at") != null ? m.get("created_at").toString().substring(0,16) : ""%></td>
                 <td><form method="post" action="/admin/messages/delete" style="margin:0">
                     <input type="hidden" name="id" value="<%=m.get("id")%>">

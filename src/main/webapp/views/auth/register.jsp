@@ -21,7 +21,7 @@
             <div class="auth-logo"><a href="/">STUDENT OS</a></div>
             <div style="text-align:center;color:var(--text-secondary);margin-bottom:24px;font-size:14px;">Create your account</div>
             <% if (request.getAttribute("error") != null || request.getParameter("error") != null) { %>
-                <div class="error-msg">We could not create that account. Try a different email or check your details.</div>
+                <div class="error-msg">We could not send a verification code. Check your details and try again shortly.</div>
             <% } %>
             <form action="/auth/register" method="POST">
                 <div class="form-group">
@@ -30,8 +30,9 @@
                 </div>
                 <div class="form-group">
                     <label class="form-label" for="registerPassword">Password</label>
-                    <input id="registerPassword" type="password" name="password" class="form-control" required minlength="6" autocomplete="new-password" placeholder="Choose a password">
+                    <input id="registerPassword" type="password" name="password" class="form-control" required minlength="8" autocomplete="new-password" placeholder="Choose at least 8 characters">
                 </div>
+                <p style="margin:0 0 16px;color:var(--text-secondary);font-size:12px;line-height:1.5;">We will send a six-digit verification code to this email before creating your account.</p>
                 <button type="submit" class="btn btn-primary" style="width:100%;margin-top:8px;">Create account</button>
             </form>
             <div style="text-align:center;margin-top:24px;font-size:14px;color:var(--text-secondary);">

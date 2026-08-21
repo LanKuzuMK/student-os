@@ -63,18 +63,19 @@
                                 <div class="managed-goal-bar" aria-label="<c:out value='${goal.progress}'/> percent complete"><span style="width:<c:out value='${goal.progress}'/>%"></span></div>
                                 <form class="managed-progress-form" action="/goals" method="post">
                                     <input type="hidden" name="action" value="progress"><input type="hidden" name="goalId" value="<c:out value='${goal.id}'/>">
+                                    <input type="hidden" name="csrfToken" value="<c:out value='${csrfToken}'/>">
                                     <label for="progress-<c:out value='${goal.id}'/>">Progress</label><div><input id="progress-<c:out value='${goal.id}'/>" class="form-control" type="number" name="progress" min="0" max="100" value="<c:out value='${goal.progress}'/>" required><span>%</span></div><button class="btn btn-secondary" type="submit">Update progress</button>
                                 </form>
                                 <div class="managed-goal-actions">
                                     <button class="text-action" type="button" onclick="document.getElementById('editGoal-<c:out value='${goal.id}'/>').style.display='flex'">Edit</button>
-                                    <form action="/goals" method="post" onsubmit="return confirm('Delete this goal? This cannot be undone.');"><input type="hidden" name="action" value="delete"><input type="hidden" name="goalId" value="<c:out value='${goal.id}'/>"><button class="text-action text-action-danger" type="submit">Delete</button></form>
+                                    <form action="/goals" method="post" onsubmit="return confirm('Delete this goal? This cannot be undone.');"><input type="hidden" name="action" value="delete"><input type="hidden" name="goalId" value="<c:out value='${goal.id}'/>"><input type="hidden" name="csrfToken" value="<c:out value='${csrfToken}'/>"><button class="text-action text-action-danger" type="submit">Delete</button></form>
                                 </div>
                             </article>
 
                             <div id="editGoal-<c:out value='${goal.id}'/>" class="goal-modal" style="display:none;">
                                 <div class="goal-modal-card" role="dialog" aria-modal="true" aria-labelledby="edit-title-<c:out value='${goal.id}'/>">
                                     <div class="goal-modal-header"><div><div class="section-kicker">Edit goal</div><h2 id="edit-title-<c:out value='${goal.id}'/>">Update your goal</h2></div><button class="modal-close" type="button" aria-label="Close" onclick="document.getElementById('editGoal-<c:out value='${goal.id}'/>').style.display='none'">×</button></div>
-                                    <form action="/goals" method="post"><input type="hidden" name="action" value="update"><input type="hidden" name="goalId" value="<c:out value='${goal.id}'/>">
+                                    <form action="/goals" method="post"><input type="hidden" name="action" value="update"><input type="hidden" name="goalId" value="<c:out value='${goal.id}'/>"><input type="hidden" name="csrfToken" value="<c:out value='${csrfToken}'/>">
                                         <div class="form-group"><label class="form-label" for="edit-title-input-<c:out value='${goal.id}'/>">Goal title</label><input id="edit-title-input-<c:out value='${goal.id}'/>" class="form-control" name="title" maxlength="120" value="<c:out value='${goal.title}'/>" required></div>
                                         <div class="form-group"><label class="form-label" for="edit-description-<c:out value='${goal.id}'/>">Description</label><textarea id="edit-description-<c:out value='${goal.id}'/>" class="form-control" name="description" rows="3" maxlength="500"><c:out value="${goal.description}"/></textarea></div>
                                         <div class="form-group"><label class="form-label" for="edit-progress-<c:out value='${goal.id}'/>">Progress</label><div class="progress-input"><input id="edit-progress-<c:out value='${goal.id}'/>" class="form-control" type="number" name="progress" min="0" max="100" value="<c:out value='${goal.progress}'/>" required><span>%</span></div></div>
@@ -94,7 +95,7 @@
 <div id="addGoalModal" class="goal-modal" style="display:none;">
     <div class="goal-modal-card" role="dialog" aria-modal="true" aria-labelledby="add-goal-title">
         <div class="goal-modal-header"><div><div class="section-kicker">New goal</div><h2 id="add-goal-title">Add a goal</h2></div><button class="modal-close" type="button" aria-label="Close" onclick="document.getElementById('addGoalModal').style.display='none'">×</button></div>
-        <form action="/goals" method="post"><input type="hidden" name="action" value="create">
+        <form action="/goals" method="post"><input type="hidden" name="action" value="create"><input type="hidden" name="csrfToken" value="<c:out value='${csrfToken}'/>">
             <div class="form-group"><label class="form-label" for="newGoalTitle">What do you want to achieve?</label><input id="newGoalTitle" class="form-control" name="title" maxlength="120" placeholder="e.g. Complete my Java web application" required></div>
             <div class="form-group"><label class="form-label" for="newGoalDescription">Description <span class="form-label-optional">Optional</span></label><textarea id="newGoalDescription" class="form-control" name="description" rows="3" maxlength="500" placeholder="A short note that explains why this matters."></textarea></div>
             <div class="form-group"><label class="form-label" for="newGoalProgress">Starting progress</label><div class="progress-input"><input id="newGoalProgress" class="form-control" type="number" name="progress" min="0" max="100" value="0" required><span>%</span></div></div>

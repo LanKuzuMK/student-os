@@ -17,6 +17,7 @@
     </aside>
     <main class="main-content">
         <header class="page-header"><div><p class="eyebrow">Student marketplace</p><h1 class="page-title">Freelance jobs</h1><p class="page-subtitle">Find small opportunities, see who posted them, and contact the right student with context.</p></div><button class="btn btn-primary" type="button" onclick="document.getElementById('jobModal').style.display='flex'">Post a job</button></header>
+        <c:if test="${param.error eq 'invalid'}"><div class="alert alert-error">Enter a title, description, and a valid non-negative budget.</div></c:if>
         <section class="grid-2">
             <c:choose>
                 <c:when test="${empty jobs}"><div class="card">No jobs are available right now.</div></c:when>
@@ -38,7 +39,7 @@
         <footer class="mkv-footer">© 2026 MKV Team</footer>
     </main>
 </div>
-<div id="jobModal" class="profile-modal" style="display:none"><div class="profile-modal-card"><div class="profile-modal-heading"><div><p class="section-kicker">New opportunity</p><h2>Post a freelance job</h2></div><button type="button" class="modal-close" onclick="document.getElementById('jobModal').style.display='none'">Close</button></div><form action="/freelance/post" method="post"><div class="form-group"><label class="form-label" for="jobTitle">Job title</label><input id="jobTitle" name="title" class="form-control" required></div><div class="form-group"><label class="form-label" for="jobDescription">Description</label><textarea id="jobDescription" name="description" class="form-control" rows="4" required></textarea></div><div class="form-group"><label class="form-label" for="jobBudget">Budget ($)</label><input id="jobBudget" type="number" step="0.01" name="budget" class="form-control" required></div><button class="btn btn-primary" type="submit">Post job</button></form></div></div>
+<div id="jobModal" class="profile-modal" style="display:none"><div class="profile-modal-card"><div class="profile-modal-heading"><div><p class="section-kicker">New opportunity</p><h2>Post a freelance job</h2></div><button type="button" class="modal-close" onclick="document.getElementById('jobModal').style.display='none'">Close</button></div><form action="/freelance/post" method="post"><input type="hidden" name="csrfToken" value="<c:out value='${csrfToken}'/>"><div class="form-group"><label class="form-label" for="jobTitle">Job title</label><input id="jobTitle" name="title" class="form-control" required></div><div class="form-group"><label class="form-label" for="jobDescription">Description</label><textarea id="jobDescription" name="description" class="form-control" rows="4" required></textarea></div><div class="form-group"><label class="form-label" for="jobBudget">Budget ($)</label><input id="jobBudget" type="number" min="0" step="0.01" name="budget" class="form-control" required></div><button class="btn btn-primary" type="submit">Post job</button></form></div></div>
     <script src="/js/mobile-nav.js?v=mobile-nav-phone-5" defer></script>
 </body>
 </html>
