@@ -52,6 +52,8 @@ public class EmailService {
             Transport.send(message);
             return true;
         } catch (Exception exception) {
+            System.err.println("Verification email delivery failed: " + exception.getClass().getSimpleName()
+                    + " - " + exception.getMessage());
             return false;
         }
     }
