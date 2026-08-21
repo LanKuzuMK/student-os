@@ -8,7 +8,7 @@
     <meta name="theme-color" content="#5a5ce2">
     <title>Dashboard - StudentOS</title>
     <link rel="icon" type="image/png" href="/favicon.png">
-    <link rel="stylesheet" href="/css/main.css">
+    <link rel="stylesheet" href="/css/main.css?v=mobile-nav-phone-4">
 </head>
 <body>
 <c:set var="activeTasks" value="0"/>
@@ -157,6 +157,6 @@
         </form>
     </div>
 </div>
-    <script src="/js/mobile-nav.js" defer></script>
+    <script src="/js/mobile-nav.js?v=mobile-nav-phone-4" defer></script>
 </body>
 </html>
