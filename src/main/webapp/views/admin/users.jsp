@@ -4,6 +4,7 @@
     List<User> users = (List<User>) request.getAttribute("users");
     if (users == null) users = new ArrayList<>();
     String msg = request.getParameter("msg");
+    String csrfToken = (String) request.getAttribute("csrfToken");
 %>
 <!DOCTYPE html>
 <html lang="en">
@@ -89,11 +90,13 @@
                         <% if ("BANNED".equals(u.getStatus())) { %>
                         <form method="post" action="/admin/users/unban" style="margin:0">
                             <input type="hidden" name="userId" value="<%=u.getId()%>">
+                            <input type="hidden" name="csrfToken" value="<%=csrfToken%>">
                             <button class="btn-sm btn-unban">Unban</button>
                         </form>
                         <% } else { %>
                         <form method="post" action="/admin/users/ban" style="margin:0">
                             <input type="hidden" name="userId" value="<%=u.getId()%>">
+                            <input type="hidden" name="csrfToken" value="<%=csrfToken%>">
                             <button class="btn-sm btn-ban" onclick="return confirm('Ban this user?')">Ban</button>
                         </form>
                         <% } %>
@@ -103,6 +106,7 @@
                             onclick="openResetModal(<%=u.getId()%>,'<%=u.getEmail()%>')">Reset PW</button>
                         <form method="post" action="/admin/users/delete" style="margin:0">
                             <input type="hidden" name="userId" value="<%=u.getId()%>">
+                            <input type="hidden" name="csrfToken" value="<%=csrfToken%>">
                             <button class="btn-sm btn-delete"
                                 onclick="return confirm('Permanently delete this account and all its data?')">Delete</button>
                         </form>
@@ -122,6 +126,7 @@
         <h3>Change Role</h3>
         <form method="post" action="/admin/users/role">
             <input type="hidden" name="userId" id="roleUserId">
+            <input type="hidden" name="csrfToken" value="<%=csrfToken%>">
             <select name="newRole" style="width:100%;padding:10px;border:1px solid #e2e8f0;border-radius:8px;font-size:14px;margin-bottom:14px;">
                 <option value="STUDENT">STUDENT</option>
                 <option value="ADMIN">ADMIN</option>
@@ -140,6 +145,7 @@
         <h3>Reset Password for <span id="resetEmail"></span></h3>
         <form method="post" action="/admin/users/reset-password">
             <input type="hidden" name="userId" id="resetUserId">
+            <input type="hidden" name="csrfToken" value="<%=csrfToken%>">
             <input type="password" name="newPassword" placeholder="New password (min 6 chars)" required minlength="6">
             <div class="modal-actions">
                 <button type="button" class="btn-cancel" onclick="closeModals()">Cancel</button>

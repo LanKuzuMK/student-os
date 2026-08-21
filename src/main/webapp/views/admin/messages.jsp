@@ -4,6 +4,7 @@
     List<Map<String,Object>> messages = (List<Map<String,Object>>) request.getAttribute("messages");
     if (messages == null) messages = new ArrayList<>();
     String msg = request.getParameter("msg");
+    String csrfToken = (String) request.getAttribute("csrfToken");
 %>
 <!DOCTYPE html>
 <html lang="en">
@@ -68,6 +69,7 @@
                 <td><%=m.get("created_at") != null ? m.get("created_at").toString().substring(0,16) : ""%></td>
                 <td><form method="post" action="/admin/messages/delete" style="margin:0">
                     <input type="hidden" name="id" value="<%=m.get("id")%>">
+                    <input type="hidden" name="csrfToken" value="<%=csrfToken%>">
                     <button class="btn-sm" onclick="return confirm('Permanently delete this message?')">Delete</button>
                 </form></td>
             </tr>

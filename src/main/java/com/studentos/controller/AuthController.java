@@ -77,6 +77,8 @@ public class AuthController extends HttpServlet {
     private void handleLogin(HttpServletRequest request, HttpServletResponse response) throws IOException {
         User user = authService.login(request.getParameter("email"), request.getParameter("password"));
         if (user != null) {
+            request.getSession();
+            request.changeSessionId();
             request.getSession().setAttribute("user", user);
             response.sendRedirect(request.getContextPath() + ("ADMIN".equals(user.getRole()) ? "/admin" : "/dashboard"));
         } else {
@@ -91,7 +93,6 @@ public class AuthController extends HttpServlet {
         session.setAttribute("pendingPassword", request.getParameter("password"));
         session.setAttribute("pendingFirstName", request.getParameter("firstName"));
         session.setAttribute("pendingLastName", request.getParameter("lastName"));
-        session.setAttribute("pendingRole", request.getParameter("role") != null ? request.getParameter("role") : "STUDENT");
         response.sendRedirect(request.getContextPath() + "/auth/verify");
     }
 
@@ -105,16 +106,17 @@ public class AuthController extends HttpServlet {
             User user = authService.registerUser(
                     (String) session.getAttribute("pendingEmail"),
                     (String) session.getAttribute("pendingPassword"),
-                    (String) session.getAttribute("pendingRole"),
                     (String) session.getAttribute("pendingFirstName"),
                     (String) session.getAttribute("pendingLastName")
             );
 
             if (user != null) {
-                session.setAttribute("user", user);
-                session.removeAttribute("otpCode");
-                session.removeAttribute("pendingEmail");
-                session.removeAttribute("pendingPassword");
+                request.changeSessionId();
+                HttpSession authenticatedSession = request.getSession();
+                authenticatedSession.setAttribute("user", user);
+                authenticatedSession.removeAttribute("otpCode");
+                authenticatedSession.removeAttribute("pendingEmail");
+                authenticatedSession.removeAttribute("pendingPassword");
                 response.sendRedirect(request.getContextPath() + "/dashboard");
             } else {
                 response.sendRedirect(request.getContextPath() + "/auth/register?error=RegistrationFailed");

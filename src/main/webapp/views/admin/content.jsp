@@ -8,6 +8,7 @@
     if (jobs     == null) jobs     = new ArrayList<>();
     if (services == null) services = new ArrayList<>();
     String msg = request.getParameter("msg");
+    String csrfToken = (String) request.getAttribute("csrfToken");
 %>
 <!DOCTYPE html>
 <html lang="en">
@@ -70,6 +71,7 @@
                 <td><%=r.get("type")%></td>
                 <td><form method="post" action="/admin/content/delete-skill" style="margin:0">
                     <input type="hidden" name="id" value="<%=r.get("id")%>">
+                    <input type="hidden" name="csrfToken" value="<%=csrfToken%>">
                     <button class="btn-sm" onclick="return confirm('Delete this skill?')">Delete</button>
                 </form></td>
             </tr>
@@ -89,6 +91,7 @@
                 <td><%=r.get("status")%></td>
                 <td><form method="post" action="/admin/content/delete-job" style="margin:0">
                     <input type="hidden" name="id" value="<%=r.get("id")%>">
+                    <input type="hidden" name="csrfToken" value="<%=csrfToken%>">
                     <button class="btn-sm" onclick="return confirm('Delete this job?')">Delete</button>
                 </form></td>
             </tr>
@@ -107,6 +110,7 @@
                 <td><%=r.get("title")%></td>
                 <td><form method="post" action="/admin/content/delete-service" style="margin:0">
                     <input type="hidden" name="id" value="<%=r.get("id")%>">
+                    <input type="hidden" name="csrfToken" value="<%=csrfToken%>">
                     <button class="btn-sm" onclick="return confirm('Delete this service?')">Delete</button>
                 </form></td>
             </tr>

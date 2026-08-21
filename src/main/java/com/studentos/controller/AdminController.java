@@ -1,27 +1,58 @@
 package com.studentos.controller;
 
 import com.studentos.dao.AdminDAO;
+import com.studentos.dao.UserDAO;
 import com.studentos.model.User;
 import com.studentos.util.BCryptUtil;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.*;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.security.SecureRandom;
+import java.util.Base64;
 
 @WebServlet("/admin/*")
 public class AdminController extends HttpServlet {
 
     private final AdminDAO adminDAO = new AdminDAO();
+    private final UserDAO userDAO = new UserDAO();
+    private static final String CSRF_ATTRIBUTE = "adminCsrfToken";
 
     // ── Guard helper ─────────────────────────────────────────────────────────
 
     private User requireAdmin(HttpServletRequest req, HttpServletResponse res) throws IOException {
-        User user = (User) req.getSession().getAttribute("user");
-        if (user == null || !"ADMIN".equals(user.getRole())) {
+        HttpSession session = req.getSession(false);
+        User sessionUser = session == null ? null : (User) session.getAttribute("user");
+        User currentUser = sessionUser == null ? null : userDAO.findById(sessionUser.getId());
+        if (currentUser == null || !"ADMIN".equals(currentUser.getRole()) || !"ACTIVE".equals(currentUser.getStatus())) {
+            if (session != null) session.invalidate();
             res.sendError(403);
             return null;
         }
-        return user;
+        session.setAttribute("user", currentUser);
+        return currentUser;
+    }
+
+    private String getOrCreateCsrfToken(HttpServletRequest req) {
+        HttpSession session = req.getSession();
+        String token = (String) session.getAttribute(CSRF_ATTRIBUTE);
+        if (token == null) {
+            byte[] bytes = new byte[32];
+            new SecureRandom().nextBytes(bytes);
+            token = Base64.getUrlEncoder().withoutPadding().encodeToString(bytes);
+            session.setAttribute(CSRF_ATTRIBUTE, token);
+        }
+        return token;
+    }
+
+    private boolean hasValidCsrfToken(HttpServletRequest req) {
+        HttpSession session = req.getSession(false);
+        String expected = session == null ? null : (String) session.getAttribute(CSRF_ATTRIBUTE);
+        String submitted = req.getParameter("csrfToken");
+        return expected != null && submitted != null && MessageDigest.isEqual(
+                expected.getBytes(StandardCharsets.UTF_8), submitted.getBytes(StandardCharsets.UTF_8));
     }
 
     // ── GET dispatcher ───────────────────────────────────────────────────────
@@ -31,6 +62,7 @@ public class AdminController extends HttpServlet {
             throws ServletException, IOException {
         User admin = requireAdmin(req, res);
         if (admin == null) return;
+        req.setAttribute("csrfToken", getOrCreateCsrfToken(req));
 
         String path = req.getPathInfo();
         if (path == null) path = "/";
@@ -64,6 +96,10 @@ public class AdminController extends HttpServlet {
             throws ServletException, IOException {
         User admin = requireAdmin(req, res);
         if (admin == null) return;
+        if (!hasValidCsrfToken(req)) {
+            res.sendError(403);
+            return;
+        }
 
         String path = req.getPathInfo();
         if (path == null) path = "/";

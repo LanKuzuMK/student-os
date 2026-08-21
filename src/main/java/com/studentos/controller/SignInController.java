@@ -29,6 +29,8 @@ public class SignInController extends HttpServlet {
             return;
         }
 
+        request.getSession();
+        request.changeSessionId();
         request.getSession().setAttribute("user", user);
         response.sendRedirect(request.getContextPath() + ("ADMIN".equals(user.getRole()) ? "/admin" : "/dashboard"));
     }

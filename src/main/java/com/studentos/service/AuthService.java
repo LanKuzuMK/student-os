@@ -23,14 +23,14 @@ public class AuthService {
         }
     }
 
-    public User registerUser(String email, String password, String role, String firstName, String lastName) {
+    public User registerUser(String email, String password, String firstName, String lastName) {
         if (userDAO.findByEmail(email) != null) {
             return null; // Email exists
         }
         User newUser = new User();
         newUser.setEmail(email);
         newUser.setPasswordHash(BCrypt.hashpw(password, BCrypt.gensalt()));
-        newUser.setRole(role != null ? role : "STUDENT");
+        newUser.setRole("STUDENT");
         
         if (userDAO.createUser(newUser)) {
             User savedUser = userDAO.findByEmail(email);
