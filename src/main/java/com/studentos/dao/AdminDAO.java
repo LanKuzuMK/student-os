@@ -118,9 +118,9 @@ public class AdminDAO {
 
     public List<Map<String, Object>> getAllSkills() {
         return fetchRows(
-            "SELECT us.id, u.email, us.skill_name, us.description, us.created_at " +
+            "SELECT us.id, u.email, us.skill_name, us.skill_level, us.type, us.created_at " +
             "FROM user_skills us JOIN users u ON us.user_id = u.id ORDER BY us.id DESC",
-            "id","email","skill_name","description","created_at");
+            "id","email","skill_name","skill_level","type","created_at");
     }
 
     public List<Map<String, Object>> getAllJobs() {
@@ -154,12 +154,12 @@ public class AdminDAO {
     public List<Map<String, Object>> getRecentMessages(int limit) {
         return fetchRows(
             "SELECT m.id, s.email AS sender, r.email AS receiver, " +
-            "LEFT(m.body, 80) AS preview, m.sent_at " +
+            "LEFT(m.content, 80) AS preview, m.created_at " +
             "FROM messages m " +
             "JOIN users s ON m.sender_id = s.id " +
             "JOIN users r ON m.receiver_id = r.id " +
-            "ORDER BY m.sent_at DESC LIMIT " + limit,
-            "id","sender","receiver","preview","sent_at");
+            "ORDER BY m.created_at DESC LIMIT " + limit,
+            "id","sender","receiver","preview","created_at");
     }
 
     public boolean deleteMessage(int id) {

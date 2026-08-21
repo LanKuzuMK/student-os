@@ -65,7 +65,7 @@
                 <td><%=m.get("sender")%></td>
                 <td><%=m.get("receiver")%></td>
                 <td class="preview-cell"><%=m.get("preview")%></td>
-                <td><%=m.get("sent_at") != null ? m.get("sent_at").toString().substring(0,16) : ""%></td>
+                <td><%=m.get("created_at") != null ? m.get("created_at").toString().substring(0,16) : ""%></td>
                 <td><form method="post" action="/admin/messages/delete" style="margin:0">
                     <input type="hidden" name="id" value="<%=m.get("id")%>">
                     <button class="btn-sm" onclick="return confirm('Permanently delete this message?')">Delete</button>

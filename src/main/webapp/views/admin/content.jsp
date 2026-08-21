@@ -59,14 +59,15 @@
 
         <p class="section-title">Skills (<%=skills.size()%>)</p>
         <table class="admin-table">
-            <thead><tr><th>ID</th><th>Owner</th><th>Skill</th><th>Description</th><th>Action</th></tr></thead>
+            <thead><tr><th>ID</th><th>Owner</th><th>Skill</th><th>Level</th><th>Type</th><th>Action</th></tr></thead>
             <tbody>
             <% for (Map<String,Object> r : skills) { %>
             <tr>
                 <td><%=r.get("id")%></td>
                 <td><%=r.get("email")%></td>
                 <td><%=r.get("skill_name")%></td>
-                <td><%=r.get("description")%></td>
+                <td><%=r.get("skill_level")%></td>
+                <td><%=r.get("type")%></td>
                 <td><form method="post" action="/admin/content/delete-skill" style="margin:0">
                     <input type="hidden" name="id" value="<%=r.get("id")%>">
                     <button class="btn-sm" onclick="return confirm('Delete this skill?')">Delete</button>
