@@ -6,13 +6,13 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
-/** Run explicitly with the Gmail secrets injected; it sends only to the owner mailbox. */
+/** Run explicitly with the Brevo secrets injected; it sends only to the owner mailbox. */
 @Tag("integration")
 class EmailServiceIntegrationTest {
     @Test
     void sendsVerificationCodeToConfiguredOwnerMailbox() {
         EmailService service = new EmailService();
-        String ownerEmail = System.getenv("GMAIL_SMTP_USERNAME");
+        String ownerEmail = System.getenv("EMAIL_FROM");
         assumeTrue(service.isConfigured() && ownerEmail != null && !ownerEmail.isBlank());
         assertTrue(service.sendVerificationCode(ownerEmail, "123456"));
     }

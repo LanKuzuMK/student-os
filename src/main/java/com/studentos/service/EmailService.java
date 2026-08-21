@@ -1,61 +1,63 @@
 package com.studentos.service;
 
-import jakarta.mail.Authenticator;
-import jakarta.mail.Message;
-import jakarta.mail.PasswordAuthentication;
-import jakarta.mail.Session;
-import jakarta.mail.Transport;
-import jakarta.mail.internet.InternetAddress;
-import jakarta.mail.internet.MimeMessage;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 
-import java.nio.charset.StandardCharsets;
-import java.util.Properties;
+import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
+import java.time.Duration;
 
-/** Sends transactional verification messages through Gmail SMTP and a dedicated App Password. */
+/** Sends transactional verification messages through Brevo's HTTPS API. */
 public class EmailService {
+    private static final URI BREVO_EMAILS_URI = URI.create("https://api.brevo.com/v3/smtp/email");
+    private final HttpClient httpClient = HttpClient.newBuilder().connectTimeout(Duration.ofSeconds(10)).build();
+
     public boolean isConfigured() {
-        return readEnvironment("GMAIL_SMTP_USERNAME") != null
-                && readEnvironment("GMAIL_SMTP_APP_PASSWORD") != null
-                && readEnvironment("EMAIL_FROM") != null;
+        return readEnvironment("BREVO_API_KEY") != null && readEnvironment("EMAIL_FROM") != null;
     }
 
     public boolean sendVerificationCode(String recipient, String code) {
-        String username = readEnvironment("GMAIL_SMTP_USERNAME");
-        String appPassword = readEnvironment("GMAIL_SMTP_APP_PASSWORD");
+        String apiKey = readEnvironment("BREVO_API_KEY");
         String sender = readEnvironment("EMAIL_FROM");
-        if (username == null || appPassword == null || sender == null) {
+        if (apiKey == null || sender == null) {
             return false;
         }
 
-        Properties properties = new Properties();
-        properties.put("mail.smtp.auth", "true");
-        properties.put("mail.smtp.starttls.enable", "true");
-        properties.put("mail.smtp.host", "smtp.gmail.com");
-        properties.put("mail.smtp.port", "587");
-        properties.put("mail.smtp.connectiontimeout", "10000");
-        properties.put("mail.smtp.timeout", "15000");
-        properties.put("mail.smtp.writetimeout", "15000");
+        JsonObject payload = new JsonObject();
+        JsonObject senderDetails = new JsonObject();
+        senderDetails.addProperty("name", "StudentOS");
+        senderDetails.addProperty("email", sender);
+        payload.add("sender", senderDetails);
 
-        Session session = Session.getInstance(properties, new Authenticator() {
-            @Override
-            protected PasswordAuthentication getPasswordAuthentication() {
-                return new PasswordAuthentication(username, appPassword);
-            }
-        });
+        JsonArray recipients = new JsonArray();
+        JsonObject recipientDetails = new JsonObject();
+        recipientDetails.addProperty("email", recipient);
+        recipients.add(recipientDetails);
+        payload.add("to", recipients);
+        payload.addProperty("subject", "Your StudentOS verification code");
+        payload.addProperty("textContent", "Your StudentOS verification code is " + code + ". It expires in 10 minutes. If you did not request this, you can ignore this email.");
+        payload.addProperty("htmlContent", "<p>Your StudentOS verification code is:</p><p style=\"font-size:24px;font-weight:700;letter-spacing:0.16em\">" + code + "</p><p>This code expires in 10 minutes. If you did not request it, you can ignore this email.</p>");
 
+        HttpRequest request = HttpRequest.newBuilder(BREVO_EMAILS_URI)
+                .timeout(Duration.ofSeconds(20))
+                .header("api-key", apiKey)
+                .header("Content-Type", "application/json")
+                .header("Accept", "application/json")
+                .POST(HttpRequest.BodyPublishers.ofString(payload.toString()))
+                .build();
         try {
-            MimeMessage message = new MimeMessage(session);
-            message.setFrom(new InternetAddress(sender, "StudentOS", StandardCharsets.UTF_8.name()));
-            message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(recipient, false));
-            message.setSubject("Your StudentOS verification code", StandardCharsets.UTF_8.name());
-            message.setText("Your StudentOS verification code is " + code + ". It expires in 10 minutes. If you did not request this, you can ignore this email.", StandardCharsets.UTF_8.name());
-            Transport.send(message);
-            return true;
+            HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+            if (response.statusCode() >= 200 && response.statusCode() < 300) {
+                return true;
+            }
+            System.err.println("Verification email delivery failed: Brevo HTTP " + response.statusCode());
         } catch (Exception exception) {
             System.err.println("Verification email delivery failed: " + exception.getClass().getSimpleName()
                     + " - " + exception.getMessage());
-            return false;
         }
+        return false;
     }
 
     private String readEnvironment(String name) {
