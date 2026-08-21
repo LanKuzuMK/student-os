@@ -1,0 +1,28 @@
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Access denied — StudentOS</title>
+    <link rel="stylesheet" href="/css/main.css?v=admin-2">
+    <link rel="icon" type="image/png" href="/favicon.png">
+    <style>
+        .error-page { min-height:100vh; display:grid; place-items:center; padding:24px; background:#f7f8fc; }
+        .error-card { width:min(460px,100%); padding:42px; border:1px solid #e4e7f0; border-radius:18px; background:#fff; box-shadow:0 18px 48px rgba(42,48,92,.08); text-align:center; }
+        .error-code { margin:0; color:#ef4444; font-family:'Space Grotesk',sans-serif; font-size:56px; font-weight:700; letter-spacing:-.07em; }
+        .error-card h1 { margin:8px 0 10px; color:#17213c; font-family:'Space Grotesk',sans-serif; font-size:25px; }
+        .error-card p { margin:0 auto 24px; max-width:320px; color:#64748b; font-size:14px; line-height:1.65; }
+        .error-card a { display:inline-block; padding:10px 18px; border-radius:9px; background:#5b5bd6; color:#fff; font-size:13px; font-weight:700; text-decoration:none; }
+    </style>
+</head>
+<body>
+    <main class="error-page">
+        <section class="error-card">
+            <p class="error-code">403</p>
+            <h1>Administrator access required</h1>
+            <p>Your account does not have permission to open this area.</p>
+            <a href="/dashboard">Back to dashboard</a>
+        </section>
+    </main>
+</body>
+</html>
