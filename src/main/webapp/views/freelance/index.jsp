@@ -4,7 +4,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Freelance Jobs - StudentOS</title>
-    <link rel="stylesheet" href="/css/main.css?v=mobile-nav-phone-4"><link rel="icon" type="image/png" href="/favicon.png">
+    <link rel="stylesheet" href="/css/main.css?v=mobile-nav-phone-5"><link rel="icon" type="image/png" href="/favicon.png">
 </head>
 <body>
 <div class="app-container">
@@ -39,6 +39,6 @@
     </main>
 </div>
 <div id="jobModal" class="profile-modal" style="display:none"><div class="profile-modal-card"><div class="profile-modal-heading"><div><p class="section-kicker">New opportunity</p><h2>Post a freelance job</h2></div><button type="button" class="modal-close" onclick="document.getElementById('jobModal').style.display='none'">Close</button></div><form action="/freelance/post" method="post"><div class="form-group"><label class="form-label" for="jobTitle">Job title</label><input id="jobTitle" name="title" class="form-control" required></div><div class="form-group"><label class="form-label" for="jobDescription">Description</label><textarea id="jobDescription" name="description" class="form-control" rows="4" required></textarea></div><div class="form-group"><label class="form-label" for="jobBudget">Budget ($)</label><input id="jobBudget" type="number" step="0.01" name="budget" class="form-control" required></div><button class="btn btn-primary" type="submit">Post job</button></form></div></div>
-    <script src="/js/mobile-nav.js?v=mobile-nav-phone-4" defer></script>
+    <script src="/js/mobile-nav.js?v=mobile-nav-phone-5" defer></script>
 </body>
 </html>

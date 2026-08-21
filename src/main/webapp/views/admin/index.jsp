@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Admin Dashboard - Student OS</title>
-    <link rel="stylesheet" href="/css/main.css?v=mobile-nav-phone-4">
+    <link rel="stylesheet" href="/css/main.css?v=mobile-nav-phone-5">
     <style>
         .stat-card {
             background-color: var(--bg-primary); border: 1px solid var(--border-color);
@@ -55,6 +55,6 @@
         <footer class="mkv-footer">© 2026 MKV Team</footer>
     </main>
     </div>
-    <script src="/js/mobile-nav.js?v=mobile-nav-phone-4" defer></script>
+    <script src="/js/mobile-nav.js?v=mobile-nav-phone-5" defer></script>
 </body>
 </html>

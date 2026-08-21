@@ -6,7 +6,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>My Skills - StudentOS</title>
-    <link rel="stylesheet" href="/css/main.css?v=mobile-nav-phone-4">
+    <link rel="stylesheet" href="/css/main.css?v=mobile-nav-phone-5">
     <link rel="icon" type="image/png" href="/favicon.png">
 </head>
 <body>
@@ -71,6 +71,6 @@
         </form>
     </div>
 </div>
-    <script src="/js/mobile-nav.js?v=mobile-nav-phone-4" defer></script>
+    <script src="/js/mobile-nav.js?v=mobile-nav-phone-5" defer></script>
 </body>
 </html>
