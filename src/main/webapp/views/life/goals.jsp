@@ -102,5 +102,6 @@
         </form>
     </div>
 </div>
+    <script src="/js/mobile-nav.js" defer></script>
 </body>
 </html>
