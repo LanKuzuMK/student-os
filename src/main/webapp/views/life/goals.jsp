@@ -18,7 +18,7 @@
             <a href="/dashboard" class="nav-link">Overview</a><a href="/goals" class="nav-link active">Goals</a><a href="/schedule" class="nav-link">Schedule</a>
         </div>
         <div class="nav-group"><div class="nav-title">Skills</div>
-            <a href="/skills/discover" class="nav-link">Discover</a><a href="/skills" class="nav-link">My Skills</a>
+            <a href="/skills/discover" class="nav-link">Discover</a><a href="/skills" class="nav-link">My Skills</a><a href="/messages" class="nav-link">Messages</a><a href="/profile" class="nav-link">My profile</a>
         </div>
         <div class="nav-group"><div class="nav-title">Work</div>
             <a href="/freelance" class="nav-link">Freelance Jobs</a><a href="/freelance/services" class="nav-link">Services</a>

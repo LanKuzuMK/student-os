@@ -23,7 +23,7 @@
             <div class="nav-title">Community</div>
             <a href="/skills/discover" class="nav-link">Discover talent</a>
             <a href="/skills" class="nav-link active">My skills</a>
-            <a href="/messages" class="nav-link">Messages<c:if test="${unreadMessageCount gt 0}"><span class="notification-badge"><c:out value="${unreadMessageCount}"/></span></c:if></a>
+            <a href="/messages" class="nav-link">Messages<c:if test="${unreadMessageCount gt 0}"><span class="notification-badge"><c:out value="${unreadMessageCount}"/></span></c:if></a><a href="/profile" class="nav-link">My profile</a>
         </div>
         <div class="nav-group">
             <div class="nav-title">Opportunity</div>
