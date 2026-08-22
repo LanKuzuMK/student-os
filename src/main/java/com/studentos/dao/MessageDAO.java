@@ -14,7 +14,8 @@ public class MessageDAO {
     public List<Message> getMessagesForUser(int userId) {
         List<Message> messages = new ArrayList<>();
         String sql = "SELECT m.id, m.sender_id, m.receiver_id, m.content, "
-                + "CASE WHEN m.sender_id = ? THEN receiver.email ELSE sender.email END AS counterpart_email "
+                + "CASE WHEN m.sender_id = ? THEN receiver.email ELSE sender.email END AS counterpart_email, "
+                + "CASE WHEN m.sender_id = ? THEN m.receiver_id ELSE m.sender_id END AS counterpart_id "
                 + "FROM messages m "
                 + "JOIN users sender ON sender.id = m.sender_id "
                 + "JOIN users receiver ON receiver.id = m.receiver_id "
@@ -23,9 +24,7 @@ public class MessageDAO {
                 + "ORDER BY m.id DESC";
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setInt(1, userId);
-            ps.setInt(2, userId);
-            ps.setInt(3, userId);
+            ps.setInt(1, userId); ps.setInt(2, userId); ps.setInt(3, userId); ps.setInt(4, userId);
             try (ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {
                     Message message = new Message();
@@ -34,6 +33,7 @@ public class MessageDAO {
                     message.setReceiverId(rs.getInt("receiver_id"));
                     message.setContent(rs.getString("content"));
                     message.setCounterpartEmail(rs.getString("counterpart_email"));
+                    message.setCounterpartId(rs.getInt("counterpart_id"));
                     messages.add(message);
                 }
             }

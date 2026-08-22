@@ -181,6 +181,13 @@ public final class InitDB {
                 "ALTER TABLE messages ADD COLUMN IF NOT EXISTS sender_deleted BOOLEAN NOT NULL DEFAULT FALSE",
                 "ALTER TABLE messages ADD COLUMN IF NOT EXISTS receiver_deleted BOOLEAN NOT NULL DEFAULT FALSE",
                 "CREATE INDEX IF NOT EXISTS idx_messages_receiver_id ON messages(receiver_id)",
+                "CREATE TABLE IF NOT EXISTS user_blocks ("
+                        + "blocker_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE, "
+                        + "blocked_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE, "
+                        + "created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP, "
+                        + "PRIMARY KEY (blocker_id, blocked_id), CHECK (blocker_id <> blocked_id)"
+                        + ")",
+                "CREATE INDEX IF NOT EXISTS idx_user_blocks_blocked ON user_blocks(blocked_id, blocker_id)",
                 "CREATE INDEX IF NOT EXISTS idx_goals_user_id ON goals(user_id)"
         };
 
