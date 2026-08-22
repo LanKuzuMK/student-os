@@ -11,9 +11,9 @@
         @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap');
 
         :root { --ink: #12213f; --muted: #61708a; --brand: #5a5ce2; --brand-deep: #4548c4; --line: #e6eaf3; }
-        * { box-sizing: border-box; }
+        * { box-sizing: border-box; -ms-overflow-style: none; scrollbar-width: none; }
         html, body { width: 100%; -ms-overflow-style: none; overflow-x: hidden; scrollbar-width: none; }
-        html::-webkit-scrollbar, body::-webkit-scrollbar { display: none !important; width: 0 !important; height: 0 !important; background: transparent; }
+        *::-webkit-scrollbar { display: none !important; width: 0 !important; height: 0 !important; background: transparent; }
         body {
             min-height: 100vh;
             margin: 0;
