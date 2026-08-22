@@ -23,4 +23,8 @@ class PersistentSessionManagerTest {
         assertEquals(hash, PersistentSessionManager.hashToken(token));
         assertNotEquals(hash, PersistentSessionManager.hashToken(token + "-changed"));
     }
+
+    @Test void usesSevenDayRollingInactivityWindow() {
+        assertEquals(7 * 24 * 60 * 60, PersistentSessionManager.inactivityWindowSeconds());
+    }
 }

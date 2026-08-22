@@ -40,8 +40,17 @@ public class AuthSessionDAO {
         }
     }
 
-    public void touch(String tokenHash) {
-        update("UPDATE auth_sessions SET last_seen_at = CURRENT_TIMESTAMP WHERE token_hash = ? AND revoked_at IS NULL", tokenHash);
+    public boolean extend(String tokenHash, Instant expiresAt) {
+        String sql = "UPDATE auth_sessions SET last_seen_at = CURRENT_TIMESTAMP, expires_at = ? "
+                + "WHERE token_hash = ? AND revoked_at IS NULL AND expires_at > CURRENT_TIMESTAMP";
+        try (Connection connection = DBConnection.getConnection();
+             PreparedStatement statement = connection.prepareStatement(sql)) {
+            statement.setTimestamp(1, Timestamp.from(expiresAt));
+            statement.setString(2, tokenHash);
+            return statement.executeUpdate() == 1;
+        } catch (Exception e) {
+            throw new IllegalStateException("Could not extend an authenticated session", e);
+        }
     }
 
     public void revoke(String tokenHash) {

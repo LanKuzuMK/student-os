@@ -42,6 +42,7 @@ public class AuthFilter implements Filter {
 
         session.setAttribute("user", currentUser);
         session.setAttribute("authVersion", currentUser.getAuthVersion());
+        persistentSessionManager.refreshIfPresent(request, response);
         if ("POST".equalsIgnoreCase(request.getMethod()) && !CsrfUtil.hasValidToken(request)) {
             response.sendError(HttpServletResponse.SC_FORBIDDEN);
             return;

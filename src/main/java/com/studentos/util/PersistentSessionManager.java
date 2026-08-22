@@ -19,7 +19,8 @@ import java.util.HexFormat;
 /** Restores secure, revocable browser login state after a normal application restart. */
 public final class PersistentSessionManager {
     private static final String COOKIE_NAME = "STUDENTOS_AUTH";
-    private static final int MAX_AGE_SECONDS = (int) Duration.ofDays(14).toSeconds();
+    private static final Duration INACTIVITY_WINDOW = Duration.ofDays(7);
+    private static final int MAX_AGE_SECONDS = (int) INACTIVITY_WINDOW.toSeconds();
     private static final SecureRandom RANDOM = new SecureRandom();
 
     private final AuthSessionDAO authSessionDAO = new AuthSessionDAO();
@@ -33,7 +34,7 @@ public final class PersistentSessionManager {
         session.setAttribute("authVersion", user.getAuthVersion());
 
         String token = generateToken();
-        authSessionDAO.create(user.getId(), user.getAuthVersion(), hashToken(token), Instant.now().plusSeconds(MAX_AGE_SECONDS));
+        authSessionDAO.create(user.getId(), user.getAuthVersion(), hashToken(token), Instant.now().plus(INACTIVITY_WINDOW));
         writeCookie(request, response, token, MAX_AGE_SECONDS);
     }
 
@@ -61,8 +62,15 @@ public final class PersistentSessionManager {
         HttpSession session = request.getSession();
         session.setAttribute("user", user);
         session.setAttribute("authVersion", user.getAuthVersion());
-        authSessionDAO.touch(tokenHash);
+        refresh(request, response, tokenHash);
         return user;
+    }
+
+    public void refreshIfPresent(HttpServletRequest request, HttpServletResponse response) {
+        String token = readToken(request);
+        if (token != null) {
+            refresh(request, response, hashToken(token));
+        }
     }
 
     public void revokeCurrent(HttpServletRequest request, HttpServletResponse response) {
@@ -91,6 +99,10 @@ public final class PersistentSessionManager {
         }
     }
 
+    static int inactivityWindowSeconds() {
+        return MAX_AGE_SECONDS;
+    }
+
     private String readToken(HttpServletRequest request) {
         Cookie[] cookies = request.getCookies();
         if (cookies == null) {
@@ -106,6 +118,15 @@ public final class PersistentSessionManager {
 
     private void clearCookie(HttpServletRequest request, HttpServletResponse response) {
         writeCookie(request, response, "", 0);
+    }
+
+    private void refresh(HttpServletRequest request, HttpServletResponse response, String tokenHash) {
+        if (authSessionDAO.extend(tokenHash, Instant.now().plus(INACTIVITY_WINDOW))) {
+            String token = readToken(request);
+            if (token != null) {
+                writeCookie(request, response, token, MAX_AGE_SECONDS);
+            }
+        }
     }
 
     private void writeCookie(HttpServletRequest request, HttpServletResponse response, String value, int maxAge) {
