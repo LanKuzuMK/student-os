@@ -2,6 +2,7 @@ package com.studentos.controller;
 
 import com.studentos.model.User;
 import com.studentos.service.AuthService;
+import com.studentos.util.AccessPolicy;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
@@ -32,6 +33,7 @@ public class SignInController extends HttpServlet {
         request.getSession();
         request.changeSessionId();
         request.getSession().setAttribute("user", user);
-        response.sendRedirect(request.getContextPath() + ("ADMIN".equals(user.getRole()) ? "/admin" : "/dashboard"));
+        request.getSession().setAttribute("authVersion", user.getAuthVersion());
+        response.sendRedirect(request.getContextPath() + AccessPolicy.postLoginPath(user.getRole()));
     }
 }

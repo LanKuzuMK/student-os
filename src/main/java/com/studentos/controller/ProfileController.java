@@ -39,6 +39,7 @@ public class ProfileController extends HttpServlet {
 
         request.setAttribute("profile", profileDAO.getByUserId(signedInUser.getId()));
         request.setAttribute("profileLinks", profileDAO.getLinksByUserId(signedInUser.getId()));
+        request.setAttribute("profileProjects", profileDAO.getProjectsByUserId(signedInUser.getId()));
         request.getRequestDispatcher("/views/profile/manage.jsp").forward(request, response);
     }
 
@@ -57,6 +58,14 @@ public class ProfileController extends HttpServlet {
             deleteCustomLink(request, response, signedInUser);
             return;
         }
+        if ("/projects/add".equals(path)) {
+            addProject(request, response, signedInUser);
+            return;
+        }
+        if ("/projects/delete".equals(path)) {
+            deleteProject(request, response, signedInUser);
+            return;
+        }
         if (!"/save".equals(path)) {
             response.sendError(HttpServletResponse.SC_NOT_FOUND);
             return;
@@ -72,6 +81,8 @@ public class ProfileController extends HttpServlet {
         profile.setPortfolioUrl(normalizeLink(request.getParameter("portfolioUrl")));
         profile.setLinkedinUrl(normalizeLink(request.getParameter("linkedinUrl")));
         profile.setTelegramUrl(normalizeLink(request.getParameter("telegramUrl")));
+        profile.setAvailabilityStatus(normalizeAvailability(request.getParameter("availabilityStatus")));
+        profile.setCollaborationPreferences(limit(request.getParameter("collaborationPreferences"), 500));
 
         byte[] avatar = null;
         try {
@@ -112,6 +123,26 @@ public class ProfileController extends HttpServlet {
         response.sendRedirect(request.getContextPath() + "/profile?linkDeleted=" + (profileDAO.deleteLink(linkId, signedInUser.getId()) ? "1" : "0"));
     }
 
+    private void addProject(HttpServletRequest request, HttpServletResponse response, User signedInUser) throws IOException {
+        String title = limit(request.getParameter("projectTitle"), 120);
+        String description = limit(request.getParameter("projectDescription"), 500);
+        String url = normalizeLink(request.getParameter("projectUrl"));
+        if (title == null || url == null) {
+            response.sendRedirect(request.getContextPath() + "/profile?error=project");
+            return;
+        }
+        response.sendRedirect(request.getContextPath() + "/profile?projectAdded=" + (profileDAO.addProject(signedInUser.getId(), title, description, url) ? "1" : "0"));
+    }
+
+    private void deleteProject(HttpServletRequest request, HttpServletResponse response, User signedInUser) throws IOException {
+        Integer projectId = parseId(request.getParameter("projectId"));
+        if (projectId == null) {
+            response.sendRedirect(request.getContextPath() + "/profile?error=projectDelete");
+            return;
+        }
+        response.sendRedirect(request.getContextPath() + "/profile?projectDeleted=" + (profileDAO.deleteProject(projectId, signedInUser.getId()) ? "1" : "0"));
+    }
+
     private void showPublicProfile(HttpServletRequest request, HttpServletResponse response, User signedInUser)
             throws ServletException, IOException {
         Integer profileId = parseId(request.getParameter("id"));
@@ -126,6 +157,7 @@ public class ProfileController extends HttpServlet {
         }
         request.setAttribute("profile", profile);
         request.setAttribute("profileLinks", profileDAO.getLinksByUserId(profileId));
+        request.setAttribute("profileProjects", profileDAO.getProjectsByUserId(profileId));
         request.setAttribute("isOwnProfile", profileId == signedInUser.getId());
         request.getRequestDispatcher("/views/profile/view.jsp").forward(request, response);
     }
@@ -178,5 +210,12 @@ public class ProfileController extends HttpServlet {
             return null;
         }
         return (link.startsWith("https://") || link.startsWith("http://")) ? link : null;
+    }
+
+    private String normalizeAvailability(String value) {
+        return switch (value == null ? "" : value) {
+            case "OPEN_TO_COLLABORATE", "LOOKING_FOR_TEAM", "AVAILABLE_FOR_FREELANCE", "FOCUSED_ON_STUDY" -> value;
+            default -> null;
+        };
     }
 }

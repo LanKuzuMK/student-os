@@ -3,6 +3,7 @@ package com.studentos.filter;
 import com.studentos.dao.UserDAO;
 import com.studentos.model.User;
 import com.studentos.util.CsrfUtil;
+import com.studentos.util.SessionVersionUtil;
 import jakarta.servlet.*;
 import jakarta.servlet.annotation.WebFilter;
 import jakarta.servlet.http.HttpServletRequest;
@@ -10,7 +11,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import java.io.IOException;
 
-@WebFilter(urlPatterns = {"/dashboard", "/dashboard/*", "/schedule", "/goals", "/tasks", "/tasks/*", "/skills", "/skills/*", "/freelance", "/freelance/*", "/messages", "/messages/*", "/profile", "/profile/*", "/account", "/account/*", "/reports", "/reports/*", "/admin", "/admin/*"})
+@WebFilter(urlPatterns = {"/dashboard", "/dashboard/*", "/schedule", "/goals", "/tasks", "/tasks/*", "/skills", "/skills/*", "/freelance", "/freelance/*", "/messages", "/messages/*", "/profile", "/profile/*", "/account", "/account/*", "/reports", "/reports/*", "/notifications", "/notifications/*", "/admin", "/admin/*"})
 public class AuthFilter implements Filter {
     private final UserDAO userDAO = new UserDAO();
 
@@ -22,7 +23,9 @@ public class AuthFilter implements Filter {
         
         User sessionUser = session == null ? null : (User) session.getAttribute("user");
         User currentUser = sessionUser == null ? null : userDAO.findById(sessionUser.getId());
-        if (currentUser == null || !"ACTIVE".equals(currentUser.getStatus())) {
+        Integer sessionVersion = session == null ? null : (Integer) session.getAttribute("authVersion");
+        if (currentUser == null || !"ACTIVE".equals(currentUser.getStatus())
+                || !SessionVersionUtil.isCurrent(sessionVersion, currentUser.getAuthVersion())) {
             if (session != null) {
                 session.invalidate();
             }
@@ -31,6 +34,7 @@ public class AuthFilter implements Filter {
         }
 
         session.setAttribute("user", currentUser);
+        session.setAttribute("authVersion", currentUser.getAuthVersion());
         if ("POST".equalsIgnoreCase(request.getMethod()) && !CsrfUtil.hasValidToken(request)) {
             response.sendError(HttpServletResponse.SC_FORBIDDEN);
             return;

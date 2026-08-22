@@ -1,5 +1,6 @@
 package com.studentos.controller;
 
+import com.studentos.dao.UserDAO;
 import com.studentos.model.User;
 import com.studentos.service.AuthService;
 import com.studentos.util.CsrfUtil;
@@ -14,6 +15,7 @@ import java.io.IOException;
 /** Handles password changes for authenticated accounts. */
 public class PasswordController extends HttpServlet {
     private final AuthService authService = new AuthService();
+    private final UserDAO userDAO = new UserDAO();
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -42,6 +44,14 @@ public class PasswordController extends HttpServlet {
             return;
         }
         request.changeSessionId();
+        User refreshedUser = userDAO.findById(user.getId());
+        if (refreshedUser == null) {
+            request.getSession().invalidate();
+            response.sendRedirect(request.getContextPath() + "/auth/signin");
+            return;
+        }
+        request.getSession().setAttribute("user", refreshedUser);
+        request.getSession().setAttribute("authVersion", refreshedUser.getAuthVersion());
         response.sendRedirect(request.getContextPath() + "/account/password?success=1");
     }
 

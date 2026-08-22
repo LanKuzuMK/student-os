@@ -88,7 +88,7 @@ public class AdminDAO {
 
     public boolean setRole(int targetId, String newRole, int adminId) {
         if (targetId == adminId) return false;
-        if (!"ADMIN".equals(newRole) && !"STUDENT".equals(newRole)) return false;
+        if (!"ADMIN".equals(newRole) && !"MODERATOR".equals(newRole) && !"STUDENT".equals(newRole)) return false;
         String sql = "UPDATE users SET role = ? WHERE id = ? AND id != ?";
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
@@ -104,7 +104,7 @@ public class AdminDAO {
 
     public boolean resetPassword(int targetId, String newHash, int adminId) {
         if (targetId == adminId) return false;
-        String sql = "UPDATE users SET password_hash = ? WHERE id = ? AND id != ?";
+        String sql = "UPDATE users SET password_hash = ?, auth_version = auth_version + 1, updated_at = CURRENT_TIMESTAMP WHERE id = ? AND id != ?";
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setString(1, newHash);

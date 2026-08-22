@@ -17,6 +17,7 @@ public class UserDAO {
                 user.setPasswordHash(rs.getString("password_hash"));
                 user.setRole(rs.getString("role"));
                 user.setStatus(rs.getString("status"));
+                user.setAuthVersion(rs.getInt("auth_version"));
                 user.setCreatedAt(rs.getTimestamp("created_at"));
                 return user;
             }
@@ -38,6 +39,7 @@ public class UserDAO {
                     user.setEmail(rs.getString("email"));
                     user.setRole(rs.getString("role"));
                     user.setStatus(rs.getString("status"));
+                    user.setAuthVersion(rs.getInt("auth_version"));
                     user.setCreatedAt(rs.getTimestamp("created_at"));
                     return user;
                 }
@@ -63,7 +65,7 @@ public class UserDAO {
     }
 
     public boolean updatePassword(int userId, String passwordHash) {
-        String sql = "UPDATE users SET password_hash = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ? AND status = 'ACTIVE'";
+        String sql = "UPDATE users SET password_hash = ?, auth_version = auth_version + 1, updated_at = CURRENT_TIMESTAMP WHERE id = ? AND status = 'ACTIVE'";
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setString(1, passwordHash);

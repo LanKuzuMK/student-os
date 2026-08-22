@@ -42,7 +42,7 @@ public class AuthService {
         }
 
         String insertUser = "INSERT INTO users (email, password_hash, role) VALUES (?, ?, 'STUDENT') "
-                + "RETURNING id, email, role, status, created_at";
+                + "RETURNING id, email, role, status, auth_version, created_at";
         String insertProfile = "INSERT INTO profiles (user_id, first_name, last_name) VALUES (?, ?, ?)";
         try (Connection connection = DBConnection.getConnection()) {
             connection.setAutoCommit(false);
@@ -66,6 +66,7 @@ public class AuthService {
                     user.setEmail(result.getString("email"));
                     user.setRole(result.getString("role"));
                     user.setStatus(result.getString("status"));
+                    user.setAuthVersion(result.getInt("auth_version"));
                     user.setCreatedAt(result.getTimestamp("created_at"));
                     connection.commit();
                     return user;

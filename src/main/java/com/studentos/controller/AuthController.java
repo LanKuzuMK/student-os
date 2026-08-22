@@ -4,6 +4,7 @@ import com.studentos.model.User;
 import com.studentos.service.AuthService;
 import com.studentos.util.CsrfUtil;
 import com.studentos.util.InputValidator;
+import com.studentos.util.AccessPolicy;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -98,10 +99,8 @@ public class AuthController extends HttpServlet {
     private void handleLogin(HttpServletRequest request, HttpServletResponse response) throws IOException {
         User user = authService.login(request.getParameter("email"), request.getParameter("password"));
         if (user != null) {
-            request.getSession();
-            request.changeSessionId();
-            request.getSession().setAttribute("user", user);
-            response.sendRedirect(request.getContextPath() + ("ADMIN".equals(user.getRole()) ? "/admin" : "/dashboard"));
+            establishAuthenticatedSession(request, user);
+            response.sendRedirect(request.getContextPath() + AccessPolicy.postLoginPath(user.getRole()));
         } else {
             response.sendRedirect(request.getContextPath() + "/auth/signin?error=1");
         }
@@ -151,9 +150,8 @@ public class AuthController extends HttpServlet {
             response.sendRedirect(request.getContextPath() + "/auth/register?error=RegistrationFailed");
             return;
         }
-        request.changeSessionId();
+        establishAuthenticatedSession(request, user);
         HttpSession authenticatedSession = request.getSession();
-        authenticatedSession.setAttribute("user", user);
         authenticatedSession.removeAttribute(PENDING_EMAIL);
         authenticatedSession.removeAttribute(PENDING_PASSWORD);
         authenticatedSession.removeAttribute(PENDING_FIRST_NAME);
@@ -190,6 +188,14 @@ public class AuthController extends HttpServlet {
         }
         session.invalidate();
         response.sendRedirect(request.getContextPath() + "/auth/signin?reset=1");
+    }
+
+    private void establishAuthenticatedSession(HttpServletRequest request, User user) {
+        request.getSession();
+        request.changeSessionId();
+        HttpSession session = request.getSession();
+        session.setAttribute("user", user);
+        session.setAttribute("authVersion", user.getAuthVersion());
     }
 
 }

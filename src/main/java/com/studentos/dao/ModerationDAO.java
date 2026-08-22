@@ -33,12 +33,13 @@ public class ModerationDAO {
 
     public List<Map<String, Object>> getReports() {
         String sql = "SELECT r.id, r.target_type, r.target_id, r.reason, r.details, r.status, r.created_at, r.reviewed_at, r.resolution_note, "
-                + "reporter.email AS reporter_email, reviewer.email AS reviewer_email, "
+                + "reporter.email AS reporter_email, reviewer.email AS reviewer_email, assignee.email AS assigned_email, "
                 + "COALESCE(sk.skill_name, j.title, svc.title, LEFT(m.content, 120), '[removed content]') AS target_summary, "
                 + "COALESCE(sku.email, ju.email, svcu.email, sender.email, '') AS target_owner_email "
                 + "FROM moderation_reports r "
                 + "JOIN users reporter ON reporter.id = r.reporter_id "
                 + "LEFT JOIN users reviewer ON reviewer.id = r.reviewed_by "
+                + "LEFT JOIN users assignee ON assignee.id = r.assigned_to "
                 + "LEFT JOIN user_skills sk ON r.target_type = 'SKILL' AND sk.id = r.target_id "
                 + "LEFT JOIN users sku ON sku.id = sk.user_id "
                 + "LEFT JOIN jobs j ON r.target_type = 'JOB' AND j.id = r.target_id "
@@ -49,10 +50,59 @@ public class ModerationDAO {
                 + "LEFT JOIN users sender ON sender.id = m.sender_id "
                 + "ORDER BY CASE WHEN r.status = 'OPEN' THEN 0 ELSE 1 END, r.created_at DESC";
         return fetchRows(sql, "id", "target_type", "target_id", "reason", "details", "status", "created_at", "reviewed_at",
-                "resolution_note", "reporter_email", "reviewer_email", "target_summary", "target_owner_email");
+                "resolution_note", "reporter_email", "reviewer_email", "assigned_email", "target_summary", "target_owner_email");
+    }
+
+    public List<Map<String, Object>> getReports(String status, String targetType, String search, int limit, int offset) {
+        String normalizedSearch = search == null ? "" : search.trim().toLowerCase();
+        List<Map<String, Object>> filtered = new ArrayList<>();
+        for (Map<String, Object> report : getReports()) {
+            boolean statusMatches = status == null || status.isBlank() || status.equals(report.get("status"));
+            boolean typeMatches = targetType == null || targetType.isBlank() || targetType.equals(report.get("target_type"));
+            String searchable = String.valueOf(report.get("reporter_email")) + " " + report.get("reason") + " "
+                    + String.valueOf(report.get("details")) + " " + String.valueOf(report.get("target_summary"));
+            if (statusMatches && typeMatches && searchable.toLowerCase().contains(normalizedSearch)) filtered.add(report);
+        }
+        int start = Math.min(Math.max(offset, 0), filtered.size());
+        int end = Math.min(start + Math.max(1, Math.min(limit, 100)), filtered.size());
+        return new ArrayList<>(filtered.subList(start, end));
+    }
+
+    public int countReports(String status, String targetType, String search) {
+        String normalizedSearch = search == null ? "" : search.trim().toLowerCase();
+        int count = 0;
+        for (Map<String, Object> report : getReports()) {
+            boolean statusMatches = status == null || status.isBlank() || status.equals(report.get("status"));
+            boolean typeMatches = targetType == null || targetType.isBlank() || targetType.equals(report.get("target_type"));
+            String searchable = String.valueOf(report.get("reporter_email")) + " " + report.get("reason") + " "
+                    + String.valueOf(report.get("details")) + " " + String.valueOf(report.get("target_summary"));
+            if (statusMatches && typeMatches && searchable.toLowerCase().contains(normalizedSearch)) count++;
+        }
+        return count;
+    }
+
+    public boolean assignReport(int reportId, int staffId) {
+        String sql = "UPDATE moderation_reports SET assigned_to = ? WHERE id = ? AND status = 'OPEN'";
+        try (Connection connection = DBConnection.getConnection(); PreparedStatement statement = connection.prepareStatement(sql)) {
+            statement.setInt(1, staffId);
+            statement.setInt(2, reportId);
+            return statement.executeUpdate() == 1;
+        } catch (SQLException exception) { return false; }
+    }
+
+    public Integer getReporterId(int reportId) {
+        try (Connection connection = DBConnection.getConnection();
+             PreparedStatement statement = connection.prepareStatement("SELECT reporter_id FROM moderation_reports WHERE id = ?")) {
+            statement.setInt(1, reportId);
+            try (ResultSet result = statement.executeQuery()) { return result.next() ? result.getInt(1) : null; }
+        } catch (SQLException exception) { return null; }
     }
 
     public boolean setContentVisibility(String targetType, int targetId, boolean hidden) {
+        return setContentVisibility(targetType, targetId, hidden, hidden ? "Hidden by StudentOS moderation" : null);
+    }
+
+    public boolean setContentVisibility(String targetType, int targetId, boolean hidden, String note) {
         String table = contentTable(targetType);
         if (table == null || targetId < 1) {
             return false;
@@ -60,7 +110,7 @@ public class ModerationDAO {
         String sql = "UPDATE " + table + " SET moderation_status = ?, moderation_note = ? WHERE id = ?";
         try (Connection connection = DBConnection.getConnection(); PreparedStatement statement = connection.prepareStatement(sql)) {
             statement.setString(1, hidden ? "HIDDEN" : "VISIBLE");
-            statement.setString(2, hidden ? "Hidden by StudentOS moderation" : null);
+            statement.setString(2, note);
             statement.setInt(3, targetId);
             return statement.executeUpdate() == 1;
         } catch (SQLException exception) {

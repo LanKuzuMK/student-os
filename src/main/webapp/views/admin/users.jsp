@@ -129,6 +129,7 @@
             <input type="hidden" name="csrfToken" value="<%=csrfToken%>">
             <select name="newRole" style="width:100%;padding:10px;border:1px solid #e2e8f0;border-radius:8px;font-size:14px;margin-bottom:14px;">
                 <option value="STUDENT">STUDENT</option>
+                <option value="MODERATOR">MODERATOR</option>
                 <option value="ADMIN">ADMIN</option>
             </select>
             <div class="modal-actions">
@@ -146,7 +147,7 @@
         <form method="post" action="/admin/users/reset-password">
             <input type="hidden" name="userId" id="resetUserId">
             <input type="hidden" name="csrfToken" value="<%=csrfToken%>">
-            <input type="password" name="newPassword" placeholder="New password (min 6 chars)" required minlength="6">
+            <input type="password" name="newPassword" placeholder="8+ characters, with a letter and number" required minlength="8" pattern="(?=.*[A-Za-z])(?=.*\d)\S{8,128}" title="Use 8 to 128 characters with a letter, a number, and no spaces.">
             <div class="modal-actions">
                 <button type="button" class="btn-cancel" onclick="closeModals()">Cancel</button>
                 <button type="submit" class="btn-primary">Reset</button>

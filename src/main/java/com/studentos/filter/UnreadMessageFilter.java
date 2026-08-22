@@ -1,6 +1,7 @@
 package com.studentos.filter;
 
 import com.studentos.dao.MessageDAO;
+import com.studentos.dao.NotificationDAO;
 import com.studentos.model.User;
 import jakarta.servlet.Filter;
 import jakarta.servlet.FilterChain;
@@ -14,6 +15,7 @@ import java.io.IOException;
 
 public class UnreadMessageFilter implements Filter {
     private final MessageDAO messageDAO = new MessageDAO();
+    private final NotificationDAO notificationDAO = new NotificationDAO();
 
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
@@ -24,6 +26,7 @@ public class UnreadMessageFilter implements Filter {
                 User user = (User) session.getAttribute("user");
                 if (user != null) {
                     httpRequest.setAttribute("unreadMessageCount", messageDAO.countUnreadMessagesForUser(user.getId()));
+                    httpRequest.setAttribute("unreadNotificationCount", notificationDAO.countUnreadForRecipient(user.getId()));
                 }
             }
         }

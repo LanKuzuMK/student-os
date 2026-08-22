@@ -18,6 +18,7 @@ public final class InitDB {
                         + "password_hash VARCHAR(255) NOT NULL, "
                         + "role VARCHAR(50) NOT NULL DEFAULT 'STUDENT', "
                         + "status VARCHAR(50) NOT NULL DEFAULT 'ACTIVE', "
+                        + "auth_version INTEGER NOT NULL DEFAULT 1, "
                         + "created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP, "
                         + "updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP"
                         + ")",
@@ -35,6 +36,13 @@ public final class InitDB {
                         + "attempts INTEGER NOT NULL DEFAULT 0, "
                         + "issued_at TIMESTAMP NOT NULL"
                         + ")",
+                "ALTER TABLE users ADD COLUMN IF NOT EXISTS auth_version INTEGER NOT NULL DEFAULT 1",
+                "CREATE TABLE IF NOT EXISTS notifications ("
+                        + "id SERIAL PRIMARY KEY, recipient_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE, "
+                        + "type VARCHAR(40) NOT NULL, title VARCHAR(160) NOT NULL, message VARCHAR(1000) NOT NULL, "
+                        + "action_url VARCHAR(500), is_read BOOLEAN NOT NULL DEFAULT FALSE, created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP"
+                        + ")",
+                "CREATE INDEX IF NOT EXISTS idx_notifications_recipient_created ON notifications(recipient_id, is_read, created_at DESC)",
                 "ALTER TABLE user_skills ADD COLUMN IF NOT EXISTS moderation_status VARCHAR(20) NOT NULL DEFAULT 'VISIBLE'",
                 "ALTER TABLE user_skills ADD COLUMN IF NOT EXISTS moderation_note VARCHAR(1000)",
                 "ALTER TABLE jobs ADD COLUMN IF NOT EXISTS moderation_status VARCHAR(20) NOT NULL DEFAULT 'VISIBLE'",
@@ -44,9 +52,10 @@ public final class InitDB {
                 "CREATE TABLE IF NOT EXISTS moderation_reports ("
                         + "id SERIAL PRIMARY KEY, reporter_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE, "
                         + "target_type VARCHAR(20) NOT NULL, target_id INTEGER NOT NULL, reason VARCHAR(80) NOT NULL, details VARCHAR(1000), "
-                        + "status VARCHAR(20) NOT NULL DEFAULT 'OPEN', reviewed_by INTEGER REFERENCES users(id) ON DELETE SET NULL, "
+                        + "status VARCHAR(20) NOT NULL DEFAULT 'OPEN', assigned_to INTEGER REFERENCES users(id) ON DELETE SET NULL, reviewed_by INTEGER REFERENCES users(id) ON DELETE SET NULL, "
                         + "resolution_note VARCHAR(1000), created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP, reviewed_at TIMESTAMP"
                         + ")",
+                "ALTER TABLE moderation_reports ADD COLUMN IF NOT EXISTS assigned_to INTEGER REFERENCES users(id) ON DELETE SET NULL",
                 "CREATE UNIQUE INDEX IF NOT EXISTS idx_open_moderation_report_per_reporter ON moderation_reports(reporter_id, target_type, target_id) WHERE status = 'OPEN'",
                 "CREATE INDEX IF NOT EXISTS idx_moderation_reports_status ON moderation_reports(status, created_at DESC)",
                 "CREATE TABLE IF NOT EXISTS moderation_audit_log ("
@@ -122,6 +131,8 @@ public final class InitDB {
                 "ALTER TABLE profiles ADD COLUMN IF NOT EXISTS portfolio_url VARCHAR(500)",
                 "ALTER TABLE profiles ADD COLUMN IF NOT EXISTS linkedin_url VARCHAR(500)",
                 "ALTER TABLE profiles ADD COLUMN IF NOT EXISTS telegram_url VARCHAR(500)",
+                "ALTER TABLE profiles ADD COLUMN IF NOT EXISTS availability_status VARCHAR(50)",
+                "ALTER TABLE profiles ADD COLUMN IF NOT EXISTS collaboration_preferences VARCHAR(500)",
                 "ALTER TABLE profiles ADD COLUMN IF NOT EXISTS avatar_data BYTEA",
                 "ALTER TABLE profiles ADD COLUMN IF NOT EXISTS avatar_content_type VARCHAR(100)",
                 "CREATE TABLE IF NOT EXISTS profile_links ("
@@ -132,6 +143,11 @@ public final class InitDB {
                         + "created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP"
                         + ")",
                 "CREATE INDEX IF NOT EXISTS idx_profile_links_user_id ON profile_links(user_id)",
+                "CREATE TABLE IF NOT EXISTS profile_projects ("
+                        + "id SERIAL PRIMARY KEY, user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE, "
+                        + "title VARCHAR(120) NOT NULL, description VARCHAR(500), url VARCHAR(500) NOT NULL, created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP"
+                        + ")",
+                "CREATE INDEX IF NOT EXISTS idx_profile_projects_user_id ON profile_projects(user_id)",
                 "CREATE INDEX IF NOT EXISTS idx_tasks_user_id ON tasks(user_id)",
                 "CREATE INDEX IF NOT EXISTS idx_user_skills_user_id ON user_skills(user_id)",
                 "CREATE INDEX IF NOT EXISTS idx_jobs_created_at ON jobs(created_at DESC)",

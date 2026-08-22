@@ -1,6 +1,7 @@
 package com.studentos.controller;
 
 import com.studentos.dao.MessageDAO;
+import com.studentos.dao.NotificationDAO;
 import com.studentos.dao.UserDAO;
 import com.studentos.model.Message;
 import com.studentos.model.User;
@@ -13,6 +14,7 @@ import java.io.IOException;
 
 public class MessageController extends HttpServlet {
     private final MessageDAO messageDAO = new MessageDAO();
+    private final NotificationDAO notificationDAO = new NotificationDAO();
     private final UserDAO userDAO = new UserDAO();
 
     @Override
@@ -73,6 +75,7 @@ public class MessageController extends HttpServlet {
             message.setReceiverId(recipient.getId());
             message.setContent(content.trim());
             if (messageDAO.sendMessage(message)) {
+                notificationDAO.create(recipient.getId(), "MESSAGE", "New StudentOS message", "You have a new message from a student.", "/messages");
                 response.sendRedirect(request.getContextPath() + "/messages?sent=1");
                 return;
             }

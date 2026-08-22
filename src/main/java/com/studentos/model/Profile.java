@@ -11,6 +11,8 @@ public class Profile {
     private String portfolioUrl;
     private String linkedinUrl;
     private String telegramUrl;
+    private String availabilityStatus;
+    private String collaborationPreferences;
     private boolean hasAvatar;
 
     public int getUserId() { return userId; }
@@ -33,6 +35,19 @@ public class Profile {
     public void setLinkedinUrl(String linkedinUrl) { this.linkedinUrl = linkedinUrl; }
     public String getTelegramUrl() { return telegramUrl; }
     public void setTelegramUrl(String telegramUrl) { this.telegramUrl = telegramUrl; }
+    public String getAvailabilityStatus() { return availabilityStatus; }
+    public void setAvailabilityStatus(String availabilityStatus) { this.availabilityStatus = availabilityStatus; }
+    public String getCollaborationPreferences() { return collaborationPreferences; }
+    public void setCollaborationPreferences(String collaborationPreferences) { this.collaborationPreferences = collaborationPreferences; }
+    public String getAvailabilityLabel() {
+        return switch (availabilityStatus == null ? "" : availabilityStatus) {
+            case "OPEN_TO_COLLABORATE" -> "Open to collaborate";
+            case "LOOKING_FOR_TEAM" -> "Looking for a team";
+            case "AVAILABLE_FOR_FREELANCE" -> "Available for freelance work";
+            case "FOCUSED_ON_STUDY" -> "Focused on study";
+            default -> "";
+        };
+    }
     public boolean isHasAvatar() { return hasAvatar; }
     public void setHasAvatar(boolean hasAvatar) { this.hasAvatar = hasAvatar; }
 
