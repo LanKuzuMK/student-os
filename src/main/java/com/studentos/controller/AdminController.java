@@ -64,7 +64,19 @@ public class AdminController extends HttpServlet {
         switch (path) {
             case "/users":
                 if (!requireAdmin(staff, res)) return;
-                req.setAttribute("users", adminDAO.getAllUsers());
+                String userQuery = InputValidator.trimToLength(req.getParameter("q"), 100);
+                String userRole = allowedUserRole(req.getParameter("role"));
+                String userStatus = allowedUserStatus(req.getParameter("status"));
+                int userPage = Math.max(1, intParam(req, "page"));
+                int userPageSize = 20;
+                int totalUsers = adminDAO.countUsers(userQuery, userRole, userStatus);
+                req.setAttribute("users", adminDAO.getUsers(userQuery, userRole, userStatus, userPageSize, (userPage - 1) * userPageSize));
+                req.setAttribute("userQuery", userQuery);
+                req.setAttribute("userRole", userRole);
+                req.setAttribute("userStatus", userStatus);
+                req.setAttribute("userTotal", totalUsers);
+                req.setAttribute("userPage", userPage);
+                req.setAttribute("userPages", Math.max(1, (int) Math.ceil(totalUsers / (double) userPageSize)));
                 forward(req, res, "/views/admin/users.jsp");
                 break;
             case "/content":
@@ -293,5 +305,13 @@ public class AdminController extends HttpServlet {
 
     private String allowedTargetType(String targetType) {
         return ModerationPolicy.isKnownTargetType(targetType) ? targetType : null;
+    }
+
+    private String allowedUserRole(String role) {
+        return "ADMIN".equals(role) || "MODERATOR".equals(role) || "STUDENT".equals(role) ? role : null;
+    }
+
+    private String allowedUserStatus(String status) {
+        return "ACTIVE".equals(status) || "BANNED".equals(status) ? status : null;
     }
 }

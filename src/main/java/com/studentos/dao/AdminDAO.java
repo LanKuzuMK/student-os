@@ -61,6 +61,44 @@ public class AdminDAO {
         return list;
     }
 
+    public List<User> getUsers(String query, String role, String status, int limit, int offset) {
+        List<User> list = new ArrayList<>();
+        StringBuilder sql = new StringBuilder("SELECT id, email, role, status, created_at FROM users WHERE 1 = 1");
+        List<Object> parameters = new ArrayList<>();
+        appendUserFilters(sql, parameters, query, role, status);
+        sql.append(" ORDER BY created_at DESC, id DESC LIMIT ? OFFSET ?");
+        parameters.add(Math.max(1, Math.min(limit, 100)));
+        parameters.add(Math.max(0, offset));
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql.toString())) {
+            bindParameters(ps, parameters);
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    User u = new User();
+                    u.setId(rs.getInt("id"));
+                    u.setEmail(rs.getString("email"));
+                    u.setRole(rs.getString("role"));
+                    u.setStatus(rs.getString("status"));
+                    u.setCreatedAt(rs.getTimestamp("created_at"));
+                    list.add(u);
+                }
+            }
+        } catch (SQLException e) { e.printStackTrace(); }
+        return list;
+    }
+
+    public int countUsers(String query, String role, String status) {
+        StringBuilder sql = new StringBuilder("SELECT COUNT(*) FROM users WHERE 1 = 1");
+        List<Object> parameters = new ArrayList<>();
+        appendUserFilters(sql, parameters, query, role, status);
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql.toString())) {
+            bindParameters(ps, parameters);
+            try (ResultSet rs = ps.executeQuery()) { return rs.next() ? rs.getInt(1) : 0; }
+        } catch (SQLException e) { e.printStackTrace(); }
+        return 0;
+    }
+
     // ── Ban / unban ──────────────────────────────────────────────────────────
 
     public boolean banUser(int targetId, int adminId) {
@@ -197,5 +235,18 @@ public class AdminDAO {
             }
         } catch (SQLException e) { e.printStackTrace(); }
         return rows;
+    }
+
+    private void appendUserFilters(StringBuilder sql, List<Object> parameters, String query, String role, String status) {
+        if (query != null && !query.isBlank()) {
+            sql.append(" AND LOWER(email) LIKE ?");
+            parameters.add("%" + query.trim().toLowerCase() + "%");
+        }
+        if (role != null && !role.isBlank()) { sql.append(" AND role = ?"); parameters.add(role); }
+        if (status != null && !status.isBlank()) { sql.append(" AND status = ?"); parameters.add(status); }
+    }
+
+    private void bindParameters(PreparedStatement statement, List<Object> parameters) throws SQLException {
+        for (int i = 0; i < parameters.size(); i++) statement.setObject(i + 1, parameters.get(i));
     }
 }
