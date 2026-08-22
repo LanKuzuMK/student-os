@@ -1,127 +1,27 @@
+<%-- Design direction: calm editorial control room with unmistakable moderation status and careful destructive actions. --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ page import="java.util.*,com.studentos.util.HtmlUtil" %>
 <%
-    List<Map<String,Object>> skills   = (List<Map<String,Object>>) request.getAttribute("skills");
-    List<Map<String,Object>> jobs     = (List<Map<String,Object>>) request.getAttribute("jobs");
+    List<Map<String,Object>> skills = (List<Map<String,Object>>) request.getAttribute("skills");
+    List<Map<String,Object>> jobs = (List<Map<String,Object>>) request.getAttribute("jobs");
     List<Map<String,Object>> services = (List<Map<String,Object>>) request.getAttribute("services");
-    if (skills   == null) skills   = new ArrayList<>();
-    if (jobs     == null) jobs     = new ArrayList<>();
-    if (services == null) services = new ArrayList<>();
-    String msg = request.getParameter("msg");
-    String csrfToken = (String) request.getAttribute("csrfToken");
+    if (skills == null) skills = new ArrayList<>(); if (jobs == null) jobs = new ArrayList<>(); if (services == null) services = new ArrayList<>();
+    String msg = request.getParameter("msg"); String csrfToken = (String) request.getAttribute("csrfToken");
 %>
 <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Content — Admin — StudentOS</title>
-    <link rel="stylesheet" href="/css/main.css?v=admin-1">
-    <link rel="icon" type="image/png" href="/favicon.png">
-    <style>
-        .admin-shell { display:grid; grid-template-columns:220px 1fr; min-height:100vh; }
-        .admin-rail  { position:fixed; inset:0 auto 0 0; width:220px; background:#0f172a; color:#e2e8f0; display:flex; flex-direction:column; padding:24px 0; overflow-y:auto; }
-        .admin-rail-logo { padding:0 20px 24px; font-family:'Space Grotesk',sans-serif; font-size:17px; font-weight:700; color:#fff; border-bottom:1px solid rgba(255,255,255,.1); }
-        .admin-rail-logo span { color:#f87171; font-size:11px; margin-left:6px; font-weight:600; letter-spacing:.06em; }
-        .admin-nav { padding:16px 0; flex:1; }
-        .admin-nav a { display:block; padding:10px 20px; color:#94a3b8; font-size:13px; font-weight:600; text-decoration:none; transition:background .15s,color .15s; }
-        .admin-nav a:hover, .admin-nav a.active { background:rgba(255,255,255,.08); color:#fff; }
-        .admin-rail-footer { padding:16px 20px; border-top:1px solid rgba(255,255,255,.1); }
-        .admin-rail-footer a { color:#f87171; font-size:12px; text-decoration:none; }
-        .admin-main { margin-left:220px; padding:40px clamp(20px,4vw,56px); }
-        .admin-header { margin-bottom:28px; }
-        .admin-header h1 { margin:0; font-family:'Space Grotesk',sans-serif; font-size:26px; font-weight:700; color:#0f172a; }
-        .toast { display:inline-block; margin-bottom:18px; padding:10px 16px; border-radius:8px; background:#dcfce7; color:#166534; font-size:13px; font-weight:600; }
-        .section-title { font-family:'Space Grotesk',sans-serif; font-size:16px; font-weight:700; color:#0f172a; margin:32px 0 12px; }
-        .admin-table { width:100%; border-collapse:collapse; background:#fff; border:1px solid #e2e8f0; border-radius:12px; overflow:hidden; font-size:13px; }
-        .admin-table th { background:#f8fafc; padding:12px 14px; text-align:left; color:#64748b; font-size:11px; font-weight:700; letter-spacing:.07em; text-transform:uppercase; border-bottom:1px solid #e2e8f0; }
-        .admin-table td { padding:12px 14px; border-bottom:1px solid #f1f5f9; vertical-align:middle; max-width:320px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
-        .admin-table tr:last-child td { border-bottom:0; }
-        .btn-sm { padding:5px 10px; border:0; border-radius:7px; font-size:11px; font-weight:700; cursor:pointer; background:#fee2e2; color:#dc2626; }
-    </style>
-</head>
-<body>
-<div class="admin-shell">
-    <aside class="admin-rail">
-        <div class="admin-rail-logo">StudentOS <span>ADMIN</span></div>
-        <nav class="admin-nav">
-            <a href="/admin">Dashboard</a>
-            <a href="/admin/users">Users</a>
-            <a href="/admin/content" class="active">Content</a>
-            <a href="/admin/messages">Messages</a>
-            <a href="/dashboard">Back to App</a>
-        </nav>
-        <div class="admin-rail-footer"><a href="/auth/logout">Logout</a></div>
-    </aside>
-    <main class="admin-main">
-        <div class="admin-header"><h1>Content Moderation</h1></div>
-        <% if (msg != null) { %>
-        <div class="toast">Removed: <%=HtmlUtil.escapeHtml(msg.replace("_"," "))%></div>
-        <% } %>
+<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Content — Admin — StudentOS</title><link rel="stylesheet" href="/css/main.css?v=admin-ui-20260822"><link rel="icon" type="image/png" href="/favicon.png"></head>
+<body><div class="admin-shell"><aside class="admin-rail"><div class="admin-rail-logo">StudentOS <span>Admin</span></div><nav class="admin-nav" aria-label="Administrator navigation"><a href="/admin">Dashboard</a><a href="/admin/users">Users</a><a href="/admin/content" class="active">Content</a><a href="/admin/messages">Messages</a><a href="/admin/reports">Reports</a><a href="/admin/audit">Audit log</a><a href="/dashboard">Back to App</a></nav><div class="admin-rail-footer"><a href="/auth/logout">Logout</a></div></aside>
+<main class="admin-main"><header class="admin-header"><div><p class="eyebrow">Content safety</p><h1>Content moderation</h1><p>Review skills, jobs, and services with clear visibility status and a fully recorded moderation path.</p></div><span class="admin-status"><%=skills.size()+jobs.size()+services.size()%> items listed</span></header>
+<% if (msg != null) { %><div class="toast">Updated: <%=HtmlUtil.escapeHtml(msg.replace("_"," "))%></div><% } %>
 
-        <p class="section-title">Skills (<%=skills.size()%>)</p>
-        <table class="admin-table">
-            <thead><tr><th>ID</th><th>Owner</th><th>Skill</th><th>Level</th><th>Type</th><th>Visibility</th><th>Action</th></tr></thead>
-            <tbody>
-            <% for (Map<String,Object> r : skills) { %>
-            <tr>
-                <td><%=r.get("id")%></td>
-                <td><%=HtmlUtil.escapeHtml(r.get("email"))%></td>
-                <td><%=HtmlUtil.escapeHtml(r.get("skill_name"))%></td>
-                <td><%=HtmlUtil.escapeHtml(r.get("skill_level"))%></td>
-                <td><%=HtmlUtil.escapeHtml(r.get("type"))%></td>
-                <td><span class="badge <%= "HIDDEN".equals(r.get("moderation_status")) ? "badge-banned" : "badge-active" %>"><%=HtmlUtil.escapeHtml(r.get("moderation_status"))%></span></td>
-                <td><form method="post" action="/admin/content/<%= "HIDDEN".equals(r.get("moderation_status")) ? "restore" : "hide" %>" style="margin:0 0 6px"><input type="hidden" name="targetType" value="SKILL"><input type="hidden" name="targetId" value="<%=r.get("id")%>"><input type="hidden" name="reason" value="Manual moderation review"><input type="hidden" name="csrfToken" value="<%=csrfToken%>"><button class="btn-sm <%= "HIDDEN".equals(r.get("moderation_status")) ? "btn-unban" : "btn-ban" %>"><%= "HIDDEN".equals(r.get("moderation_status")) ? "Restore" : "Hide" %></button></form><form method="post" action="/admin/content/delete-skill" style="margin:0">
-                    <input type="hidden" name="id" value="<%=r.get("id")%>">
-                    <input type="hidden" name="csrfToken" value="<%=csrfToken%>">
-                    <button class="btn-sm" onclick="return confirm('Delete this skill?')">Delete</button>
-                </form></td>
-            </tr>
-            <% } %>
-            </tbody>
-        </table>
+<h2 class="section-title">Skills · <%=skills.size()%></h2><div class="admin-table-wrap"><table class="admin-table"><thead><tr><th>ID</th><th>Owner</th><th>Skill</th><th>Level</th><th>Type</th><th>Visibility</th><th>Moderation actions</th></tr></thead><tbody>
+<% for (Map<String,Object> r : skills) { boolean hidden = "HIDDEN".equals(r.get("moderation_status")); %><tr><td><%=r.get("id")%></td><td><%=HtmlUtil.escapeHtml(r.get("email"))%></td><td><strong><%=HtmlUtil.escapeHtml(r.get("skill_name"))%></strong></td><td><%=HtmlUtil.escapeHtml(r.get("skill_level"))%></td><td><%=HtmlUtil.escapeHtml(r.get("type"))%></td><td><span class="badge <%=hidden ? "badge-banned" : "badge-active"%>"><%=HtmlUtil.escapeHtml(r.get("moderation_status"))%></span></td><td><div class="action-row"><form method="post" action="/admin/content/<%=hidden ? "restore" : "hide"%>"><input type="hidden" name="targetType" value="SKILL"><input type="hidden" name="targetId" value="<%=r.get("id")%>"><input type="hidden" name="reason" value="Manual moderation review"><input type="hidden" name="csrfToken" value="<%=csrfToken%>"><button class="btn-sm <%=hidden ? "btn-unban" : "btn-ban"%>"><%=hidden ? "Restore" : "Hide"%></button></form><form method="post" action="/admin/content/delete-skill"><input type="hidden" name="id" value="<%=r.get("id")%>"><input type="hidden" name="csrfToken" value="<%=csrfToken%>"><button class="btn-sm btn-delete" onclick="return confirm('Delete this skill?')">Delete</button></form></div></td></tr><% } %>
+</tbody></table></div>
 
-        <p class="section-title">Freelance Jobs (<%=jobs.size()%>)</p>
-        <table class="admin-table">
-            <thead><tr><th>ID</th><th>Owner</th><th>Title</th><th>Status</th><th>Visibility</th><th>Action</th></tr></thead>
-            <tbody>
-            <% for (Map<String,Object> r : jobs) { %>
-            <tr>
-                <td><%=r.get("id")%></td>
-                <td><%=HtmlUtil.escapeHtml(r.get("email"))%></td>
-                <td><%=HtmlUtil.escapeHtml(r.get("title"))%></td>
-                <td><%=HtmlUtil.escapeHtml(r.get("status"))%></td>
-                <td><span class="badge <%= "HIDDEN".equals(r.get("moderation_status")) ? "badge-banned" : "badge-active" %>"><%=HtmlUtil.escapeHtml(r.get("moderation_status"))%></span></td>
-                <td><form method="post" action="/admin/content/<%= "HIDDEN".equals(r.get("moderation_status")) ? "restore" : "hide" %>" style="margin:0 0 6px"><input type="hidden" name="targetType" value="JOB"><input type="hidden" name="targetId" value="<%=r.get("id")%>"><input type="hidden" name="reason" value="Manual moderation review"><input type="hidden" name="csrfToken" value="<%=csrfToken%>"><button class="btn-sm <%= "HIDDEN".equals(r.get("moderation_status")) ? "btn-unban" : "btn-ban" %>"><%= "HIDDEN".equals(r.get("moderation_status")) ? "Restore" : "Hide" %></button></form><form method="post" action="/admin/content/delete-job" style="margin:0">
-                    <input type="hidden" name="id" value="<%=r.get("id")%>">
-                    <input type="hidden" name="csrfToken" value="<%=csrfToken%>">
-                    <button class="btn-sm" onclick="return confirm('Delete this job?')">Delete</button>
-                </form></td>
-            </tr>
-            <% } %>
-            </tbody>
-        </table>
+<h2 class="section-title">Freelance jobs · <%=jobs.size()%></h2><div class="admin-table-wrap"><table class="admin-table"><thead><tr><th>ID</th><th>Owner</th><th>Title</th><th>Status</th><th>Visibility</th><th>Moderation actions</th></tr></thead><tbody>
+<% for (Map<String,Object> r : jobs) { boolean hidden = "HIDDEN".equals(r.get("moderation_status")); %><tr><td><%=r.get("id")%></td><td><%=HtmlUtil.escapeHtml(r.get("email"))%></td><td><strong><%=HtmlUtil.escapeHtml(r.get("title"))%></strong></td><td><%=HtmlUtil.escapeHtml(r.get("status"))%></td><td><span class="badge <%=hidden ? "badge-banned" : "badge-active"%>"><%=HtmlUtil.escapeHtml(r.get("moderation_status"))%></span></td><td><div class="action-row"><form method="post" action="/admin/content/<%=hidden ? "restore" : "hide"%>"><input type="hidden" name="targetType" value="JOB"><input type="hidden" name="targetId" value="<%=r.get("id")%>"><input type="hidden" name="reason" value="Manual moderation review"><input type="hidden" name="csrfToken" value="<%=csrfToken%>"><button class="btn-sm <%=hidden ? "btn-unban" : "btn-ban"%>"><%=hidden ? "Restore" : "Hide"%></button></form><form method="post" action="/admin/content/delete-job"><input type="hidden" name="id" value="<%=r.get("id")%>"><input type="hidden" name="csrfToken" value="<%=csrfToken%>"><button class="btn-sm btn-delete" onclick="return confirm('Delete this job?')">Delete</button></form></div></td></tr><% } %>
+</tbody></table></div>
 
-        <p class="section-title">Services (<%=services.size()%>)</p>
-        <table class="admin-table">
-            <thead><tr><th>ID</th><th>Owner</th><th>Title</th><th>Visibility</th><th>Action</th></tr></thead>
-            <tbody>
-            <% for (Map<String,Object> r : services) { %>
-            <tr>
-                <td><%=r.get("id")%></td>
-                <td><%=HtmlUtil.escapeHtml(r.get("email"))%></td>
-                <td><%=HtmlUtil.escapeHtml(r.get("title"))%></td>
-                <td><span class="badge <%= "HIDDEN".equals(r.get("moderation_status")) ? "badge-banned" : "badge-active" %>"><%=HtmlUtil.escapeHtml(r.get("moderation_status"))%></span></td>
-                <td><form method="post" action="/admin/content/<%= "HIDDEN".equals(r.get("moderation_status")) ? "restore" : "hide" %>" style="margin:0 0 6px"><input type="hidden" name="targetType" value="SERVICE"><input type="hidden" name="targetId" value="<%=r.get("id")%>"><input type="hidden" name="reason" value="Manual moderation review"><input type="hidden" name="csrfToken" value="<%=csrfToken%>"><button class="btn-sm <%= "HIDDEN".equals(r.get("moderation_status")) ? "btn-unban" : "btn-ban" %>"><%= "HIDDEN".equals(r.get("moderation_status")) ? "Restore" : "Hide" %></button></form><form method="post" action="/admin/content/delete-service" style="margin:0">
-                    <input type="hidden" name="id" value="<%=r.get("id")%>">
-                    <input type="hidden" name="csrfToken" value="<%=csrfToken%>">
-                    <button class="btn-sm" onclick="return confirm('Delete this service?')">Delete</button>
-                </form></td>
-            </tr>
-            <% } %>
-            </tbody>
-        </table>
-        <footer class="mkv-footer" style="margin-top:60px;">© 2026 MKV Team</footer>
-    </main>
-</div>
-</body>
-</html>
+<h2 class="section-title">Services · <%=services.size()%></h2><div class="admin-table-wrap"><table class="admin-table"><thead><tr><th>ID</th><th>Owner</th><th>Title</th><th>Visibility</th><th>Moderation actions</th></tr></thead><tbody>
+<% for (Map<String,Object> r : services) { boolean hidden = "HIDDEN".equals(r.get("moderation_status")); %><tr><td><%=r.get("id")%></td><td><%=HtmlUtil.escapeHtml(r.get("email"))%></td><td><strong><%=HtmlUtil.escapeHtml(r.get("title"))%></strong></td><td><span class="badge <%=hidden ? "badge-banned" : "badge-active"%>"><%=HtmlUtil.escapeHtml(r.get("moderation_status"))%></span></td><td><div class="action-row"><form method="post" action="/admin/content/<%=hidden ? "restore" : "hide"%>"><input type="hidden" name="targetType" value="SERVICE"><input type="hidden" name="targetId" value="<%=r.get("id")%>"><input type="hidden" name="reason" value="Manual moderation review"><input type="hidden" name="csrfToken" value="<%=csrfToken%>"><button class="btn-sm <%=hidden ? "btn-unban" : "btn-ban"%>"><%=hidden ? "Restore" : "Hide"%></button></form><form method="post" action="/admin/content/delete-service"><input type="hidden" name="id" value="<%=r.get("id")%>"><input type="hidden" name="csrfToken" value="<%=csrfToken%>"><button class="btn-sm btn-delete" onclick="return confirm('Delete this service?')">Delete</button></form></div></td></tr><% } %>
+</tbody></table></div><footer class="mkv-footer">© 2026 MKV Team</footer></main></div><script src="/js/admin-nav.js?v=20260822"></script></body></html>
