@@ -11,7 +11,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import java.io.IOException;
 
-@WebFilter(urlPatterns = {"/dashboard", "/dashboard/*", "/schedule", "/goals", "/tasks", "/tasks/*", "/skills", "/skills/*", "/freelance", "/freelance/*", "/messages", "/messages/*", "/profile", "/profile/*", "/account", "/account/*", "/reports", "/reports/*", "/notifications", "/notifications/*", "/collaborations", "/collaborations/*", "/saved", "/saved/*", "/admin", "/admin/*"})
+@WebFilter(urlPatterns = {"/dashboard", "/dashboard/*", "/schedule", "/goals", "/tasks", "/tasks/*", "/skills", "/skills/*", "/freelance", "/freelance/*", "/messages", "/messages/*", "/profile", "/profile/*", "/account", "/account/*", "/reports", "/reports/*", "/notifications", "/notifications/*", "/collaborations", "/collaborations/*", "/projects", "/projects/*", "/saved", "/saved/*", "/admin", "/admin/*"})
 public class AuthFilter implements Filter {
     private final UserDAO userDAO = new UserDAO();
 
