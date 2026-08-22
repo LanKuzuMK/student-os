@@ -2,165 +2,39 @@
 <%@ taglib uri="jakarta.tags.core" prefix="c" %>
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="theme-color" content="#5a5ce2">
-    <title>Dashboard - StudentOS</title>
-    <link rel="icon" type="image/png" href="/favicon.png">
-    <link rel="stylesheet" href="/css/main.css?v=mobile-nav-phone-5">
-</head>
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="theme-color" content="#5a5ce2"><title>Dashboard - StudentOS</title><link rel="icon" type="image/png" href="/favicon.png"><link rel="stylesheet" href="/css/main.css?v=dashboard-personal-1"></head>
 <body>
-<c:set var="activeTasks" value="0"/>
-<c:set var="completedTasks" value="0"/>
-<c:forEach var="taskCounter" items="${tasks}">
-    <c:choose>
-        <c:when test="${taskCounter.status eq 'COMPLETED'}"><c:set var="completedTasks" value="${completedTasks + 1}"/></c:when>
-        <c:otherwise><c:set var="activeTasks" value="${activeTasks + 1}"/></c:otherwise>
-    </c:choose>
-</c:forEach>
 <div class="app-container">
     <aside class="sidebar">
-        <div class="sidebar-logo">StudentOS</div>
-        <div class="nav-group">
-            <div class="nav-title">My Workspace</div>
-            <a href="/dashboard" class="nav-link active">Overview</a>
-            <a href="/goals" class="nav-link">Goals</a>
-            <a href="/schedule" class="nav-link">Schedule</a>
-        </div>
-        <div class="nav-group">
-            <div class="nav-title">Community</div>
-            <a href="/skills/discover" class="nav-link">Discover talent</a>
-            <a href="/skills" class="nav-link">My skills</a>
-            <a href="/collaborations" class="nav-link">Collaborations</a>
-            <a href="/messages" class="nav-link">Messages<c:if test="${unreadMessageCount gt 0}"><span class="notification-badge"><c:out value="${unreadMessageCount}"/></span></c:if></a>
-            <a href="/notifications" class="nav-link">Notifications<c:if test="${unreadNotificationCount gt 0}"><span class="notification-badge"><c:out value="${unreadNotificationCount}"/></span></c:if></a>
-            <a href="/profile" class="nav-link">My profile</a>
-        </div>
-        <div class="nav-group">
-            <div class="nav-title">Opportunity</div>
-            <a href="/freelance" class="nav-link">Freelance jobs</a>
-            <a href="/freelance/services" class="nav-link">Services</a>
-        </div>
-        <div class="sidebar-footer">
-            <div class="account-chip"><c:out value="${sessionScope.user.email}"/></div>
-            <a href="/auth/logout" class="nav-link nav-link-danger">Logout</a>
-        </div>
+        <div class="sidebar-logo"><span class="logo-mark">S</span> Student OS</div>
+        <div class="nav-group"><div class="nav-title">My Workspace</div><a href="/dashboard" class="nav-link active">Overview</a><a href="/goals" class="nav-link">Goals</a><a href="/schedule" class="nav-link">Schedule</a></div>
+        <div class="nav-group"><div class="nav-title">Community</div><a href="/skills/discover" class="nav-link">Discover talent</a><a href="/skills" class="nav-link">My skills</a><a href="/collaborations" class="nav-link">Collaborations<c:if test="${dashboardSummary.incomingCollaborationCount gt 0}"><span class="notification-badge"><c:out value="${dashboardSummary.incomingCollaborationCount}"/></span></c:if></a><a href="/messages" class="nav-link">Messages<c:if test="${unreadMessageCount gt 0}"><span class="notification-badge"><c:out value="${unreadMessageCount}"/></span></c:if></a><a href="/notifications" class="nav-link">Notifications<c:if test="${unreadNotificationCount gt 0}"><span class="notification-badge"><c:out value="${unreadNotificationCount}"/></span></c:if></a><a href="/profile" class="nav-link">My profile</a></div>
+        <div class="nav-group"><div class="nav-title">Opportunity</div><a href="/freelance" class="nav-link">Freelance jobs</a><a href="/freelance/services" class="nav-link">Services</a></div>
+        <div class="sidebar-footer"><div class="account-chip"><c:out value="${sessionScope.user.email}"/></div><a href="/auth/logout" class="nav-link nav-link-danger">Log out</a></div>
     </aside>
-
     <main class="main-content">
-        <div class="app-topbar">
-            <div class="breadcrumb"><strong>StudentOS</strong> &nbsp;/&nbsp; Workspace</div>
-            <div class="topbar-actions"><span class="topbar-date"><span class="status-dot"></span>Your workspace is ready</span></div>
-        </div>
+        <div class="app-topbar"><div class="breadcrumb"><strong>StudentOS</strong> &nbsp;/&nbsp; Personal workspace</div><div class="topbar-actions"><span class="topbar-date"><span class="status-dot"></span>Private student overview</span></div></div>
+        <header class="page-header"><div><p class="eyebrow">Your personal command center</p><h1 class="page-title">Make today count.</h1><p class="page-subtitle">Your goals, conversations, collaboration, and next move—kept in one focused workspace.</p></div><button class="btn btn-primary" type="button" onclick="document.getElementById('taskModal').style.display='flex'">+ New task</button></header>
 
-        <header class="page-header">
-            <div>
-                <div class="eyebrow">Your personal command center</div>
-                <h1 class="page-title">Make today count.</h1>
-                <p class="page-subtitle">Plan with intention, keep momentum, and turn every study session into visible progress.</p>
-            </div>
-            <button class="btn btn-primary" type="button" onclick="document.getElementById('taskModal').style.display='flex'">+ New task</button>
-        </header>
+        <section class="dashboard-next-action" aria-label="Recommended next action"><div><p class="section-kicker"><c:out value="${nextAction.eyebrow}"/></p><h2><c:out value="${nextAction.title}"/></h2><p><c:out value="${nextAction.description}"/></p></div><a class="btn btn-primary" href="<c:out value='${nextAction.url}'/>"><c:out value="${nextAction.label}"/></a></section>
 
-        <section class="dashboard-hero" aria-label="StudentOS workspace overview">
-            <div class="hero-content">
-                <div class="hero-kicker">StudentOS Focus Mode</div>
-                <h2 class="hero-title">Your next milestone starts with one focused move.</h2>
-                <p class="hero-copy">Create a task, connect with talented students, or share the skills you are ready to offer. Your workspace keeps the important things moving.</p>
-                <div class="hero-actions">
-                    <button class="btn btn-hero" type="button" onclick="document.getElementById('taskModal').style.display='flex'">Plan a task</button>
-                    <a class="btn btn-hero-quiet" href="/skills/discover">Discover students</a>
-                </div>
-            </div>
-            <div class="hero-aside">
-                <span class="hero-aside-label">Current momentum</span>
-                <strong class="hero-aside-value"><c:out value="${activeTasks}"/> active task<c:if test="${activeTasks ne 1}">s</c:if></strong>
-                <span class="hero-aside-note">One thoughtful action is enough to begin.</span>
-            </div>
+        <section class="dashboard-snapshot-grid" aria-label="Your StudentOS snapshot">
+            <article class="dashboard-snapshot-card"><span class="dashboard-snapshot-label">Focus</span><strong><c:out value="${dashboardSummary.activeTaskCount}"/></strong><span>open task<c:if test="${dashboardSummary.activeTaskCount ne 1}">s</c:if></span><a href="/schedule">Manage tasks</a></article>
+            <article class="dashboard-snapshot-card"><span class="dashboard-snapshot-label">Goals</span><strong><c:out value="${dashboardSummary.averageGoalProgress}"/>%</strong><span>average progress</span><a href="/goals">View goals</a></article>
+            <article class="dashboard-snapshot-card"><span class="dashboard-snapshot-label">Community</span><strong><c:out value="${dashboardSummary.unreadMessageCount + dashboardSummary.unreadNotificationCount}"/></strong><span>new update<c:if test="${dashboardSummary.unreadMessageCount + dashboardSummary.unreadNotificationCount ne 1}">s</c:if></span><a href="/notifications">Review activity</a></article>
+            <article class="dashboard-snapshot-card"><span class="dashboard-snapshot-label">Profile</span><strong><c:out value="${dashboardSummary.profileCompletion}"/>%</strong><span>ready to discover</span><a href="/profile">Improve profile</a></article>
         </section>
 
-        <section class="stats-grid" aria-label="Workspace statistics">
-            <article class="stat-card stat-card-focus">
-                <div class="stat-card-header"><span class="stat-label">Active focus</span><span class="stat-mark">01</span></div>
-                <div class="stat-card-value"><strong><c:out value="${activeTasks}"/></strong><span>open task<c:if test="${activeTasks ne 1}">s</c:if></span></div>
-                <p class="stat-note">Choose one meaningful next step.</p>
-            </article>
-            <article class="stat-card stat-card-progress">
-                <div class="stat-card-header"><span class="stat-label">Progress made</span><span class="stat-mark">02</span></div>
-                <div class="stat-card-value"><strong><c:out value="${completedTasks}"/></strong><span>complete</span></div>
-                <p class="stat-note">Small wins build real momentum.</p>
-            </article>
-            <article class="stat-card stat-card-community">
-                <div class="stat-card-header"><span class="stat-label">Community</span><span class="stat-mark">03</span></div>
-                <div class="stat-card-value"><strong>Skills</strong><span>exchange</span></div>
-                <p class="stat-note">Find a classmate to learn or build with.</p>
-            </article>
+        <section class="dashboard-personal-grid">
+            <article class="panel dashboard-focus-panel"><div class="panel-heading"><div><p class="panel-kicker">Today’s shortlist</p><h2 class="panel-title">Your focus list</h2><p class="panel-subtitle">Finish something useful, then let the next action lead you forward.</p></div><a class="panel-link" href="/schedule">View schedule</a></div><div class="focus-list"><c:choose><c:when test="${empty tasks}"><div class="empty-focus"><strong>Your workspace is clear.</strong>Create your first task and make a small start today.</div></c:when><c:otherwise><c:forEach var="task" items="${tasks}" begin="0" end="4"><div class="focus-item <c:if test='${task.status eq "COMPLETED"}'>completed</c:if>"><span class="focus-indicator"></span><div><div class="focus-task-title"><c:out value="${task.title}"/></div><div class="focus-task-copy"><c:out value="${task.description}" default="Add a short note to keep the task clear."/></div></div><c:choose><c:when test="${task.status eq 'COMPLETED'}"><span class="focus-badge">Done</span></c:when><c:otherwise><form action="/tasks/complete" method="post"><input type="hidden" name="id" value="<c:out value='${task.id}'/>"><input type="hidden" name="csrfToken" value="<c:out value='${csrfToken}'/>"><button type="submit" class="btn btn-secondary dashboard-finish-button">Finish</button></form></c:otherwise></c:choose></div></c:forEach></c:otherwise></c:choose></div></article>
+            <aside class="dashboard-activity-panel"><div class="panel-heading"><div><p class="panel-kicker">Student activity</p><h2 class="panel-title">Keep the right things moving</h2></div></div><div class="dashboard-activity-list"><a href="/collaborations" class="dashboard-activity-row"><span>Collaboration requests</span><strong><c:out value="${dashboardSummary.incomingCollaborationCount}"/> waiting</strong></a><a href="/messages" class="dashboard-activity-row"><span>Unread messages</span><strong><c:out value="${dashboardSummary.unreadMessageCount}"/> new</strong></a><a href="/notifications" class="dashboard-activity-row"><span>Notifications</span><strong><c:out value="${dashboardSummary.unreadNotificationCount}"/> new</strong></a><a href="/skills" class="dashboard-activity-row"><span>Skills shared</span><strong><c:out value="${dashboardSummary.skillCount}"/> total</strong></a></div><a href="/skills/discover" class="btn btn-secondary dashboard-discover-link">Discover classmates</a></aside>
         </section>
 
-        <section class="dashboard-columns">
-            <div class="panel">
-                <div class="panel-heading">
-                    <div>
-                        <div class="panel-kicker">Today’s shortlist</div>
-                        <h2 class="panel-title">Your focus list</h2>
-                        <p class="panel-subtitle">The work worth making time for today.</p>
-                    </div>
-                    <a class="panel-link" href="/schedule">View schedule</a>
-                </div>
-                <div class="focus-list">
-                    <c:choose>
-                        <c:when test="${empty tasks}">
-                            <div class="empty-focus"><strong>Your workspace is clear.</strong>Create your first task and make a small start today.</div>
-                        </c:when>
-                        <c:otherwise>
-                            <c:forEach var="task" items="${tasks}">
-                                <div class="focus-item <c:if test='${task.status eq "COMPLETED"}'>completed</c:if>">
-                                    <span class="focus-indicator"></span>
-                                    <div>
-                                        <div class="focus-task-title"><c:out value="${task.title}"/></div>
-                                        <div class="focus-task-copy"><c:out value="${task.description}" default="Add a short note to keep the task clear."/></div>
-                                    </div>
-                                    <c:choose>
-                                        <c:when test="${task.status eq 'COMPLETED'}"><span class="focus-badge">Done</span></c:when>
-                                        <c:otherwise>
-                                            <form action="/tasks/complete" method="post">
-                                                <input type="hidden" name="id" value="<c:out value='${task.id}'/>">
-                                                <input type="hidden" name="csrfToken" value="<c:out value='${csrfToken}'/>">
-                                                <button type="submit" class="btn btn-secondary" style="min-height:32px;padding:6px 10px;font-size:11px;">Finish</button>
-                                            </form>
-                                        </c:otherwise>
-                                    </c:choose>
-                                </div>
-                            </c:forEach>
-                        </c:otherwise>
-                    </c:choose>
-                </div>
-            </div>
-
-            <aside class="panel network-card">
-                <div class="network-eyebrow"><span>Peer exchange</span><svg class="icon" aria-hidden="true"><use href="/assets/icons.svg#arrow-up-right"></use></svg></div>
-                <h3>Good collaborators are already in your community.</h3>
-                <p>Browse skills, find the right classmate, and start with a clear reason to connect.</p>
-                <a href="/skills/discover" class="btn btn-primary">Find a collaborator</a>
-            </aside>
-        </section>
-    <footer class="mkv-footer">© 2026 MKV Team</footer>
+        <section class="dashboard-goals-section"><div class="panel-heading"><div><p class="panel-kicker">Direction</p><h2 class="panel-title">Goal progress</h2><p class="panel-subtitle">A short view of the goals that give your tasks more meaning.</p></div><a class="panel-link" href="/goals">Manage goals</a></div><div class="dashboard-goal-list"><c:choose><c:when test="${empty goals}"><div class="dashboard-goal-empty">Set a goal to connect your daily tasks to a larger direction.</div></c:when><c:otherwise><c:forEach var="goal" items="${goals}" begin="0" end="2"><article class="dashboard-goal-row"><div><strong><c:out value="${goal.title}"/></strong><span><c:out value="${goal.description}"/></span></div><div class="dashboard-goal-progress"><span><c:out value="${goal.progress}"/>%</span><div class="dashboard-progress-track"><i style="width:<c:out value='${goal.progress}'/>%"></i></div></div></article></c:forEach></c:otherwise></c:choose></div></section>
+        <footer class="mkv-footer">© 2026 MKV Team</footer>
     </main>
 </div>
-
-<div id="taskModal" style="display:none;position:fixed;z-index:20;inset:0;padding:20px;background:rgba(13,25,52,.48);align-items:center;justify-content:center;backdrop-filter:blur(5px);">
-    <div style="width:100%;max-width:440px;padding:28px;background:#fff;border:1px solid #e5eaf3;border-radius:20px;box-shadow:0 28px 62px rgba(20,30,60,.25);">
-        <div style="margin-bottom:22px;"><div class="section-kicker">Plan your next move</div><h2 style="font-family:'Plus Jakarta Sans',sans-serif;font-size:22px;letter-spacing:-.8px;">Create a focused task</h2></div>
-        <form action="/tasks/create" method="post">
-            <input type="hidden" name="csrfToken" value="<c:out value='${csrfToken}'/>">
-            <div class="form-group"><label class="form-label" for="taskTitle">Task title</label><input id="taskTitle" type="text" name="title" class="form-control" placeholder="e.g. Review Java Servlet notes" required></div>
-            <div class="form-group"><label class="form-label" for="taskDescription">Short description</label><textarea id="taskDescription" name="description" class="form-control" rows="3" placeholder="What does done look like?"></textarea></div>
-            <div class="form-group"><label class="form-label" for="taskPriority">Priority</label><select id="taskPriority" name="priority" class="form-control"><option value="LOW">Low</option><option value="MEDIUM" selected>Medium</option><option value="HIGH">High</option><option value="URGENT">Urgent</option></select></div>
-            <div style="display:flex;justify-content:flex-end;gap:10px;margin-top:24px;"><button type="button" class="btn btn-secondary" onclick="document.getElementById('taskModal').style.display='none'">Cancel</button><button type="submit" class="btn btn-primary">Save task</button></div>
-        </form>
-    </div>
-</div>
-    <script src="/js/mobile-nav.js?v=mobile-nav-phone-5" defer></script>
+<div id="taskModal" class="dashboard-task-modal" style="display:none"><div class="dashboard-task-modal-card"><div><p class="section-kicker">Plan your next move</p><h2>Create a focused task</h2></div><form action="/tasks/create" method="post"><input type="hidden" name="csrfToken" value="<c:out value='${csrfToken}'/>"><div class="form-group"><label class="form-label" for="taskTitle">Task title</label><input id="taskTitle" type="text" name="title" class="form-control" placeholder="For example, review Java Servlet notes" required></div><div class="form-group"><label class="form-label" for="taskDescription">Short description</label><textarea id="taskDescription" name="description" class="form-control" rows="3" placeholder="What does done look like?"></textarea></div><div class="form-group"><label class="form-label" for="taskPriority">Priority</label><select id="taskPriority" name="priority" class="form-control"><option value="LOW">Low</option><option value="MEDIUM" selected>Medium</option><option value="HIGH">High</option><option value="URGENT">Urgent</option></select></div><div class="dashboard-modal-actions"><button type="button" class="btn btn-secondary" onclick="document.getElementById('taskModal').style.display='none'">Cancel</button><button type="submit" class="btn btn-primary">Save task</button></div></form></div></div>
+<script src="/js/mobile-nav.js?v=mobile-nav-phone-5" defer></script>
 </body>
 </html>
