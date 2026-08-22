@@ -4,7 +4,7 @@
   if (!rail || document.querySelector('.admin-menu-toggle')) return;
 
   const themeScript = document.createElement('script');
-  themeScript.src = '/js/theme-toggle.js?v=theme-control-1';
+  themeScript.src = '/js/theme-toggle.js?v=theme-control-2';
   document.head.append(themeScript);
 
   const accessibilityScript = document.createElement('script');
