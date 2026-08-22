@@ -17,7 +17,7 @@
             <p class="page-subtitle" style="margin-inline:auto;">The page could not finish loading. Refresh once, or return to your workspace and try again.</p><% if (trace != null) { %><p style="margin:12px auto 0;color:#7b879b;font-size:12px;">Support reference: <strong><%= trace %></strong></p><% } %>
             <div style="display:flex;justify-content:center;gap:10px;flex-wrap:wrap;margin-top:20px;"><a href="" class="btn btn-primary">Try again</a><a href="/dashboard" class="btn btn-secondary">Go to workspace</a></div>
         </div>
-        <footer class="mkv-footer" style="width:100%;">© 2026 MKV Team</footer>
+        <footer class="mkv-footer" style="width:100%;">&copy; 2026 MKV Team</footer>
     </main>
 </body>
 </html>

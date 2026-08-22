@@ -39,7 +39,7 @@
                 <c:otherwise><p class="profile-empty-copy">You are all caught up. New messages, account updates, and moderation outcomes will appear here.</p></c:otherwise>
             </c:choose>
         </section>
-        <footer class="mkv-footer">© 2026 MKV Team</footer>
+        <footer class="mkv-footer">&copy; 2026 MKV Team</footer>
     </main>
 </div>
 <script src="/js/mobile-nav.js?v=mobile-nav-phone-5" defer></script>

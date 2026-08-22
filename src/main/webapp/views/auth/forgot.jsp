@@ -23,6 +23,6 @@
     </form>
     <div style="text-align:center; margin-top:22px; font-size:14px;"><a href="/auth/signin">Back to sign in</a> · <a href="/auth/reset">Enter a reset code</a></div>
 </div></div>
-<footer class="mkv-footer">© 2026 MKV Team</footer>
+<footer class="mkv-footer">&copy; 2026 MKV Team</footer>
 </body>
 </html>
