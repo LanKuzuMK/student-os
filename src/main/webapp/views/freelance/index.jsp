@@ -4,7 +4,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Freelance Jobs - StudentOS</title>
-    <link rel="stylesheet" href="/css/main.css?v=mobile-nav-phone-5"><link rel="icon" type="image/png" href="/favicon.png">
+    <link rel="stylesheet" href="/css/main.css?v=marketplace-20260822"><link rel="icon" type="image/png" href="/favicon.png">
 </head>
 <body>
 <div class="app-container">
@@ -28,10 +28,11 @@
                             <div class="card-header"><div class="card-title"><c:out value="${job.title}"/></div><span class="badge badge-completed">$<c:out value="${job.budget}"/></span></div>
                             <p style="color:var(--text-secondary)"><c:out value="${job.description}"/></p>
                             <p class="owner-meta">Posted by <strong><c:out value="${job.ownerName}"/></strong> · <c:out value="${job.status}"/></p>
-                            <div class="owner-actions">
+                            <div class="owner-actions opportunity-primary-actions">
                                 <a href="/profile/view?id=<c:out value='${job.userId}'/>" class="btn btn-secondary">View profile</a>
-                                <c:if test="${job.userId ne currentUserId}"><a href="/messages?toEmail=<c:out value='${job.ownerEmail}'/>" class="btn btn-primary">Message owner</a><form action="/saved/add" method="post"><input type="hidden" name="csrfToken" value="<c:out value='${csrfToken}'/>"><input type="hidden" name="targetType" value="JOB"><input type="hidden" name="targetId" value="<c:out value='${job.id}'/>"><input type="hidden" name="returnTo" value="/freelance"><button class="text-action" type="submit">Save opportunity</button></form><details><summary class="text-action">Report</summary><form action="/reports/new" method="post"><input type="hidden" name="csrfToken" value="<c:out value='${csrfToken}'/>"><input type="hidden" name="targetType" value="JOB"><input type="hidden" name="targetId" value="<c:out value='${job.id}'/>"><input type="hidden" name="returnTo" value="/freelance"><select name="reason" required><option value="SPAM">Spam</option><option value="HARASSMENT">Harassment</option><option value="INAPPROPRIATE">Inappropriate</option><option value="MISLEADING">Misleading</option><option value="OTHER">Other</option></select><input name="details" maxlength="1000" placeholder="Optional context"><button class="text-action text-action-danger" type="submit">Submit report</button></form></details></c:if>
+                                <c:if test="${job.userId ne currentUserId}"><a href="/messages?toEmail=<c:out value='${job.ownerEmail}'/>" class="btn btn-primary">Message owner</a></c:if>
                             </div>
+                            <c:if test="${job.userId ne currentUserId}"><div class="opportunity-secondary-actions"><form action="/saved/add" method="post"><input type="hidden" name="csrfToken" value="<c:out value='${csrfToken}'/>"><input type="hidden" name="targetType" value="JOB"><input type="hidden" name="targetId" value="<c:out value='${job.id}'/>"><input type="hidden" name="returnTo" value="/freelance"><button class="text-action" type="submit">Save opportunity</button></form><details class="opportunity-report"><summary class="text-action">Report</summary><div class="opportunity-report-popover"><form action="/reports/new" method="post"><input type="hidden" name="csrfToken" value="<c:out value='${csrfToken}'/>"><input type="hidden" name="targetType" value="JOB"><input type="hidden" name="targetId" value="<c:out value='${job.id}'/>"><input type="hidden" name="returnTo" value="/freelance"><label class="form-label" for="reportReason-<c:out value='${job.id}'/>">Reason</label><select id="reportReason-<c:out value='${job.id}'/>" name="reason" required><option value="SPAM">Spam</option><option value="HARASSMENT">Harassment</option><option value="INAPPROPRIATE">Inappropriate</option><option value="MISLEADING">Misleading</option><option value="OTHER">Other</option></select><input name="details" maxlength="1000" placeholder="Optional context"><button class="text-action text-action-danger" type="submit">Submit report</button></form></div></details></div></c:if>
                         </article>
                     </c:forEach>
                 </c:otherwise>
