@@ -1,6 +1,7 @@
 package com.studentos.service;
 import com.studentos.dao.UserDAO;
 import com.studentos.dao.EmailVerificationDAO;
+import com.studentos.dao.PasswordResetDAO;
 import com.studentos.model.User;
 import com.studentos.util.DBConnection;
 import com.studentos.util.InputValidator;
@@ -14,6 +15,7 @@ import java.sql.SQLException;
 public class AuthService {
     private UserDAO userDAO = new UserDAO();
     private final EmailVerificationDAO verificationDAO = new EmailVerificationDAO();
+    private final PasswordResetDAO passwordResetDAO = new PasswordResetDAO();
     private final EmailService emailService = new EmailService();
 
     public User login(String email, String password) {
@@ -35,7 +37,7 @@ public class AuthService {
 
     public User registerUser(String email, String password, String firstName, String lastName) {
         String normalizedEmail = email == null ? null : email.trim().toLowerCase();
-        if (!InputValidator.isValidEmail(normalizedEmail) || password == null || password.length() < 8) {
+        if (!InputValidator.isValidEmail(normalizedEmail) || !InputValidator.isValidPassword(password)) {
             return null;
         }
 
@@ -100,5 +102,57 @@ public class AuthService {
         return InputValidator.isValidEmail(normalizedEmail)
                 && VerificationCodeUtil.isSixDigitCode(code)
                 && verificationDAO.consumeIfValid(normalizedEmail, code);
+    }
+
+    public boolean startPasswordReset(String email) {
+        String normalizedEmail = email == null ? null : email.trim().toLowerCase();
+        if (!InputValidator.isValidEmail(normalizedEmail) || !emailService.isConfigured()) {
+            return false;
+        }
+        User user = userDAO.findByEmail(normalizedEmail);
+        if (user == null || !"ACTIVE".equals(user.getStatus())) {
+            return false;
+        }
+        String code = VerificationCodeUtil.generateSixDigitCode();
+        if (!passwordResetDAO.createOrReplace(normalizedEmail, code)) {
+            return false;
+        }
+        if (emailService.sendPasswordResetCode(normalizedEmail, code)) {
+            return true;
+        }
+        passwordResetDAO.delete(normalizedEmail);
+        return false;
+    }
+
+    public boolean completePasswordReset(String email, String code, String newPassword) {
+        String normalizedEmail = email == null ? null : email.trim().toLowerCase();
+        if (!InputValidator.isValidEmail(normalizedEmail) || !InputValidator.isValidPassword(newPassword)
+                || !VerificationCodeUtil.isSixDigitCode(code)) {
+            return false;
+        }
+        User user = userDAO.findByEmail(normalizedEmail);
+        if (user == null || !"ACTIVE".equals(user.getStatus()) || !passwordResetDAO.consumeIfValid(normalizedEmail, code)) {
+            return false;
+        }
+        return userDAO.updatePassword(user.getId(), BCrypt.hashpw(newPassword, BCrypt.gensalt()));
+    }
+
+    public boolean changePassword(User sessionUser, String currentPassword, String newPassword) {
+        if (sessionUser == null || currentPassword == null || !InputValidator.isValidPassword(newPassword)) {
+            return false;
+        }
+        User currentUser = userDAO.findById(sessionUser.getId());
+        User userWithHash = currentUser == null ? null : userDAO.findByEmail(currentUser.getEmail());
+        if (userWithHash == null || !"ACTIVE".equals(userWithHash.getStatus())) {
+            return false;
+        }
+        try {
+            if (!BCrypt.checkpw(currentPassword, userWithHash.getPasswordHash()) || BCrypt.checkpw(newPassword, userWithHash.getPasswordHash())) {
+                return false;
+            }
+        } catch (IllegalArgumentException exception) {
+            return false;
+        }
+        return userDAO.updatePassword(userWithHash.getId(), BCrypt.hashpw(newPassword, BCrypt.gensalt()));
     }
 }

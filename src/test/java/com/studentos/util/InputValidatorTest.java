@@ -29,4 +29,13 @@ class InputValidatorTest {
         assertEquals("abc", InputValidator.trimToLength("abcdef", 3));
         assertNull(InputValidator.trimToLength("   ", 3));
     }
+
+    @Test
+    void acceptsAReasonablePasswordAndRejectsWeakOrMalformedValues() {
+        assertTrue(InputValidator.isValidPassword("StudentOS9"));
+        assertFalse(InputValidator.isValidPassword("short7"));
+        assertFalse(InputValidator.isValidPassword("abcdefgh"));
+        assertFalse(InputValidator.isValidPassword("12345678"));
+        assertFalse(InputValidator.isValidPassword("Pass word9"));
+    }
 }

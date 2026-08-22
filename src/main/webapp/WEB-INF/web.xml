@@ -78,6 +78,25 @@
         <url-pattern>/auth/logout</url-pattern>
     </servlet-mapping>
 
+    <servlet-mapping>
+        <servlet-name>authController</servlet-name>
+        <url-pattern>/auth/forgot</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>authController</servlet-name>
+        <url-pattern>/auth/reset</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>passwordController</servlet-name>
+        <servlet-class>com.studentos.controller.PasswordController</servlet-class>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>passwordController</servlet-name>
+        <url-pattern>/account/password</url-pattern>
+    </servlet-mapping>
+
     <welcome-file-list>
         <welcome-file>index.jsp</welcome-file>
     </welcome-file-list>

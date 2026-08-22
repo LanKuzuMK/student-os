@@ -21,7 +21,7 @@
     <main class="main-content">
         <header class="page-header profile-page-header">
             <div><p class="eyebrow">Student identity</p><h1 class="page-title">My profile</h1><p class="page-subtitle">Set the details classmates and collaborators see before they contact you.</p></div>
-            <a class="btn btn-secondary" href="/profile/view?id=<c:out value='${profile.userId}'/>">View public profile</a>
+            <div class="page-header-actions"><a class="btn btn-secondary" href="/account/password">Change password</a><a class="btn btn-secondary" href="/profile/view?id=<c:out value='${profile.userId}'/>">View public profile</a></div>
         </header>
 
         <c:if test="${param.saved eq '1'}"><div class="alert alert-success">Your profile was updated successfully.</div></c:if>

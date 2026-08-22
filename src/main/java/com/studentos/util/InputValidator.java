@@ -26,4 +26,13 @@ public final class InputValidator {
             return null;
         }
     }
+
+    public static boolean isValidPassword(String password) {
+        if (password == null || password.length() < 8 || password.length() > 128 || password.chars().anyMatch(Character::isWhitespace)) {
+            return false;
+        }
+        boolean hasLetter = password.chars().anyMatch(Character::isLetter);
+        boolean hasDigit = password.chars().anyMatch(Character::isDigit);
+        return hasLetter && hasDigit;
+    }
 }

@@ -19,6 +19,14 @@ public class EmailService {
     }
 
     public boolean sendVerificationCode(String recipient, String code) {
+        return sendCode(recipient, code, "Your StudentOS verification code", "verification");
+    }
+
+    public boolean sendPasswordResetCode(String recipient, String code) {
+        return sendCode(recipient, code, "Your StudentOS password reset code", "password reset");
+    }
+
+    private boolean sendCode(String recipient, String code, String subject, String purpose) {
         String apiKey = readEnvironment("BREVO_API_KEY");
         String sender = readEnvironment("EMAIL_FROM");
         if (apiKey == null || sender == null) {
@@ -36,9 +44,9 @@ public class EmailService {
         recipientDetails.addProperty("email", recipient);
         recipients.add(recipientDetails);
         payload.add("to", recipients);
-        payload.addProperty("subject", "Your StudentOS verification code");
-        payload.addProperty("textContent", "Your StudentOS verification code is " + code + ". It expires in 10 minutes. If you did not request this, you can ignore this email.");
-        payload.addProperty("htmlContent", "<p>Your StudentOS verification code is:</p><p style=\"font-size:24px;font-weight:700;letter-spacing:0.16em\">" + code + "</p><p>This code expires in 10 minutes. If you did not request it, you can ignore this email.</p>");
+        payload.addProperty("subject", subject);
+        payload.addProperty("textContent", "Your StudentOS " + purpose + " code is " + code + ". It expires in 10 minutes. If you did not request this, you can ignore this email.");
+        payload.addProperty("htmlContent", "<p>Your StudentOS " + purpose + " code is:</p><p style=\"font-size:24px;font-weight:700;letter-spacing:0.16em\">" + code + "</p><p>This code expires in 10 minutes. If you did not request it, you can ignore this email.</p>");
 
         HttpRequest request = HttpRequest.newBuilder(BREVO_EMAILS_URI)
                 .timeout(Duration.ofSeconds(20))
@@ -52,9 +60,9 @@ public class EmailService {
             if (response.statusCode() >= 200 && response.statusCode() < 300) {
                 return true;
             }
-            System.err.println("Verification email delivery failed: Brevo HTTP " + response.statusCode());
+            System.err.println("Transactional email delivery failed: Brevo HTTP " + response.statusCode());
         } catch (Exception exception) {
-            System.err.println("Verification email delivery failed: " + exception.getClass().getSimpleName()
+            System.err.println("Transactional email delivery failed: " + exception.getClass().getSimpleName()
                     + " - " + exception.getMessage());
         }
         return false;

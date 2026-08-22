@@ -24,6 +24,9 @@
             <% if (request.getParameter("registered") != null) { %>
                 <div class="success-msg">Account created! Please log in.</div>
             <% } %>
+            <% if (request.getParameter("reset") != null) { %>
+                <div class="success-msg">Your password was reset. Sign in with your new password.</div>
+            <% } %>
             <form action="/auth/signin" method="POST">
                 <div class="form-group">
                     <label class="form-label">Email</label>
@@ -36,6 +39,7 @@
                 <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 8px;">Sign In</button>
             </form>
             <div style="text-align: center; margin-top: 24px; font-size: 14px; color: var(--text-secondary);">
+                <p><a href="/auth/forgot" style="color: var(--text-primary); font-weight: 500;">Forgot password?</a></p>
                 Don't have an account? <a href="/auth/register" style="color: var(--text-primary); font-weight: 500;">Register</a>
             </div>
         </div>

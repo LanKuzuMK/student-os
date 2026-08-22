@@ -28,6 +28,13 @@ public final class InitDB {
                         + "attempts INTEGER NOT NULL DEFAULT 0, "
                         + "issued_at TIMESTAMP NOT NULL"
                         + ")",
+                "CREATE TABLE IF NOT EXISTS password_reset_codes ("
+                        + "email VARCHAR(255) PRIMARY KEY REFERENCES users(email) ON DELETE CASCADE, "
+                        + "code_hash VARCHAR(255) NOT NULL, "
+                        + "expires_at TIMESTAMP NOT NULL, "
+                        + "attempts INTEGER NOT NULL DEFAULT 0, "
+                        + "issued_at TIMESTAMP NOT NULL"
+                        + ")",
                 "CREATE TABLE IF NOT EXISTS profiles ("
                         + "user_id INTEGER PRIMARY KEY REFERENCES users(id) ON DELETE CASCADE, "
                         + "first_name VARCHAR(100), "
