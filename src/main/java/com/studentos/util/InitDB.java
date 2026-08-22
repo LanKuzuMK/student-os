@@ -43,6 +43,17 @@ public final class InitDB {
                         + "action_url VARCHAR(500), is_read BOOLEAN NOT NULL DEFAULT FALSE, created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP"
                         + ")",
                 "CREATE INDEX IF NOT EXISTS idx_notifications_recipient_created ON notifications(recipient_id, is_read, created_at DESC)",
+                "CREATE TABLE IF NOT EXISTS collaboration_requests ("
+                        + "id SERIAL PRIMARY KEY, requester_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE, "
+                        + "recipient_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE, request_type VARCHAR(40) NOT NULL, "
+                        + "title VARCHAR(120) NOT NULL, description VARCHAR(1000) NOT NULL, expected_commitment VARCHAR(120), "
+                        + "status VARCHAR(20) NOT NULL DEFAULT 'PENDING', response_note VARCHAR(500), "
+                        + "created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP, responded_at TIMESTAMP, "
+                        + "CHECK (requester_id <> recipient_id), CHECK (status IN ('PENDING', 'ACCEPTED', 'DECLINED', 'CANCELLED'))"
+                        + ")",
+                "CREATE UNIQUE INDEX IF NOT EXISTS uq_collaboration_pending_request ON collaboration_requests(requester_id, recipient_id, title) WHERE status = 'PENDING'",
+                "CREATE INDEX IF NOT EXISTS idx_collaboration_recipient_status ON collaboration_requests(recipient_id, status, created_at DESC)",
+                "CREATE INDEX IF NOT EXISTS idx_collaboration_requester_status ON collaboration_requests(requester_id, status, created_at DESC)",
                 "ALTER TABLE user_skills ADD COLUMN IF NOT EXISTS moderation_status VARCHAR(20) NOT NULL DEFAULT 'VISIBLE'",
                 "ALTER TABLE user_skills ADD COLUMN IF NOT EXISTS moderation_note VARCHAR(1000)",
                 "ALTER TABLE jobs ADD COLUMN IF NOT EXISTS moderation_status VARCHAR(20) NOT NULL DEFAULT 'VISIBLE'",
