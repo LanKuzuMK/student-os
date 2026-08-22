@@ -1,11 +1,12 @@
 <%@ taglib uri="jakarta.tags.core" prefix="c" %>
+<%@ taglib uri="jakarta.tags.fmt" prefix="fmt" %>
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Notifications - StudentOS</title>
-    <link rel="stylesheet" href="/css/main.css?v=notifications-1">
+    <link rel="stylesheet" href="/css/main.css?v=polish-20260822">
     <link rel="icon" type="image/png" href="/favicon.png">
 </head>
 <body>
@@ -27,9 +28,9 @@
                 <c:when test="${not empty notifications}">
                     <div class="custom-link-list">
                         <c:forEach items="${notifications}" var="notification">
-                            <article class="custom-profile-link-row">
-                                <div><p class="section-kicker"><c:out value="${notification.type}"/> <c:if test="${not notification.read}">· New</c:if></p><strong><c:out value="${notification.title}"/></strong><span><c:out value="${notification.message}"/></span><small><c:out value="${notification.createdAt}"/></small></div>
-                                <div class="page-header-actions"><c:if test="${not empty notification.actionUrl}"><a class="btn btn-secondary" href="<c:out value='${notification.actionUrl}'/>">Open</a></c:if><c:if test="${not notification.read}"><form method="post" action="/notifications"><input type="hidden" name="csrfToken" value="<c:out value='${csrfToken}'/>"><input type="hidden" name="notificationId" value="<c:out value='${notification.id}'/>"><button class="text-action" type="submit">Mark read</button></form></c:if></div>
+                            <article class="notification-row <c:if test='${not notification.read}'>is-unread</c:if>">
+                                <div class="notification-copy"><div class="notification-label"><span><c:out value="${notification.type}"/></span><c:if test="${not notification.read}"><b>New</b></c:if></div><h2><c:out value="${notification.title}"/></h2><p><c:out value="${notification.message}"/></p><time datetime="<c:out value='${notification.createdAt}'/>"><fmt:formatDate value="${notification.createdAt}" pattern="MMM d, yyyy 'at' h:mm a"/></time></div>
+                                <div class="notification-actions"><c:if test="${not empty notification.actionUrl}"><a class="btn btn-secondary" href="<c:out value='${notification.actionUrl}'/>">Open</a></c:if><c:if test="${not notification.read}"><form method="post" action="/notifications"><input type="hidden" name="csrfToken" value="<c:out value='${csrfToken}'/>"><input type="hidden" name="notificationId" value="<c:out value='${notification.id}'/>"><button class="text-action" type="submit">Mark as read</button></form></c:if></div>
                             </article>
                         </c:forEach>
                     </div>

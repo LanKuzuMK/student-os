@@ -2,7 +2,7 @@
 <%@ taglib uri="jakarta.tags.core" prefix="c" %>
 <!DOCTYPE html>
 <html lang="en">
-<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="theme-color" content="#5a5ce2"><title>Dashboard - StudentOS</title><link rel="icon" type="image/png" href="/favicon.png"><link rel="stylesheet" href="/css/main.css?v=dashboard-personal-1"></head>
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="theme-color" content="#5a5ce2"><title>Dashboard - StudentOS</title><link rel="icon" type="image/png" href="/favicon.png"><link rel="stylesheet" href="/css/main.css?v=polish-20260822"></head>
 <body>
 <div class="app-container">
     <aside class="sidebar">
