@@ -107,7 +107,17 @@ public class AdminController extends HttpServlet {
                 forward(req, res, "/views/admin/reports.jsp");
                 break;
             case "/audit":
-                req.setAttribute("auditEntries", moderationDAO.getAuditEntries(250));
+                String auditQuery = InputValidator.trimToLength(req.getParameter("q"), 100);
+                String auditAction = InputValidator.trimToLength(req.getParameter("action"), 80);
+                int auditPage = Math.max(1, intParam(req, "page"));
+                int auditPageSize = 30;
+                int totalAuditEntries = moderationDAO.countAuditEntries(auditQuery, auditAction);
+                req.setAttribute("auditEntries", moderationDAO.getAuditEntries(auditQuery, auditAction, auditPageSize, (auditPage - 1) * auditPageSize));
+                req.setAttribute("auditQuery", auditQuery);
+                req.setAttribute("auditAction", auditAction);
+                req.setAttribute("auditTotal", totalAuditEntries);
+                req.setAttribute("auditPage", auditPage);
+                req.setAttribute("auditPages", Math.max(1, (int) Math.ceil(totalAuditEntries / (double) auditPageSize)));
                 forward(req, res, "/views/admin/audit.jsp");
                 break;
             case "/health":

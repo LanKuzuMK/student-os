@@ -157,6 +157,25 @@ public class ModerationDAO {
         return fetchRows(sql, "id", "action", "target_type", "target_id", "reason", "created_at", "admin_email");
     }
 
+    public List<Map<String, Object>> getAuditEntries(String query, String action, int limit, int offset) {
+        StringBuilder sql = new StringBuilder("SELECT a.id, a.action, a.target_type, a.target_id, a.reason, a.created_at, u.email AS admin_email FROM moderation_audit_log a LEFT JOIN users u ON u.id = a.admin_id WHERE 1 = 1");
+        List<Object> parameters = new ArrayList<>();
+        appendAuditFilters(sql, parameters, query, action);
+        sql.append(" ORDER BY a.created_at DESC LIMIT ? OFFSET ?");
+        parameters.add(Math.max(1, Math.min(limit, 100))); parameters.add(Math.max(0, offset));
+        return fetchRows(sql.toString(), parameters, "id", "action", "target_type", "target_id", "reason", "created_at", "admin_email");
+    }
+
+    public int countAuditEntries(String query, String action) {
+        StringBuilder sql = new StringBuilder("SELECT COUNT(*) FROM moderation_audit_log a LEFT JOIN users u ON u.id = a.admin_id WHERE 1 = 1");
+        List<Object> parameters = new ArrayList<>();
+        appendAuditFilters(sql, parameters, query, action);
+        try (Connection connection = DBConnection.getConnection(); PreparedStatement statement = connection.prepareStatement(sql.toString())) {
+            bind(statement, parameters);
+            try (ResultSet result = statement.executeQuery()) { return result.next() ? result.getInt(1) : 0; }
+        } catch (SQLException exception) { return 0; }
+    }
+
     private boolean hasOpenDuplicate(int reporterId, String targetType, int targetId) {
         String sql = "SELECT 1 FROM moderation_reports WHERE reporter_id = ? AND target_type = ? AND target_id = ? AND status = 'OPEN'";
         try (Connection connection = DBConnection.getConnection(); PreparedStatement statement = connection.prepareStatement(sql)) {
@@ -221,4 +240,22 @@ public class ModerationDAO {
         }
         return rows;
     }
+
+    private List<Map<String, Object>> fetchRows(String sql, List<Object> parameters, String... columns) {
+        List<Map<String, Object>> rows = new ArrayList<>();
+        try (Connection connection = DBConnection.getConnection(); PreparedStatement statement = connection.prepareStatement(sql)) {
+            bind(statement, parameters);
+            try (ResultSet result = statement.executeQuery()) {
+                while (result.next()) { Map<String, Object> row = new LinkedHashMap<>(); for (String column : columns) row.put(column, result.getObject(column)); rows.add(row); }
+            }
+        } catch (SQLException exception) { System.err.println("Unable to load moderation data: " + exception.getMessage()); }
+        return rows;
+    }
+
+    private void appendAuditFilters(StringBuilder sql, List<Object> parameters, String query, String action) {
+        if (query != null && !query.isBlank()) { sql.append(" AND LOWER(COALESCE(u.email, '') || ' ' || a.action || ' ' || a.target_type || ' ' || COALESCE(a.reason, '')) LIKE ?"); parameters.add("%" + query.trim().toLowerCase() + "%"); }
+        if (action != null && !action.isBlank()) { sql.append(" AND a.action = ?"); parameters.add(action); }
+    }
+
+    private void bind(PreparedStatement statement, List<Object> parameters) throws SQLException { for (int i = 0; i < parameters.size(); i++) statement.setObject(i + 1, parameters.get(i)); }
 }
