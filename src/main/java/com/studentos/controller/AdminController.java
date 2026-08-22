@@ -9,6 +9,7 @@ import com.studentos.util.BCryptUtil;
 import com.studentos.util.CsrfUtil;
 import com.studentos.util.InputValidator;
 import com.studentos.util.AccessPolicy;
+import com.studentos.util.AppHealth;
 import com.studentos.util.ModerationPolicy;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -108,6 +109,11 @@ public class AdminController extends HttpServlet {
             case "/audit":
                 req.setAttribute("auditEntries", moderationDAO.getAuditEntries(250));
                 forward(req, res, "/views/admin/audit.jsp");
+                break;
+            case "/health":
+                if (!requireAdmin(staff, res)) return;
+                req.setAttribute("databaseAvailable", AppHealth.databaseAvailable());
+                forward(req, res, "/views/admin/health.jsp");
                 break;
             default:
                 if (!requireAdmin(staff, res)) return;

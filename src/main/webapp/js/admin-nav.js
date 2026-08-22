@@ -11,6 +11,15 @@
   accessibilityScript.src = '/js/accessibility.js?v=accessibility-1';
   document.head.append(accessibilityScript);
 
+  const navigation = rail.querySelector('.admin-nav');
+  if (navigation && !navigation.querySelector('a[href="/admin/health"]')) {
+    const healthLink = document.createElement('a');
+    healthLink.href = '/admin/health';
+    healthLink.textContent = 'System health';
+    const backToApp = navigation.querySelector('a[href="/dashboard"]');
+    navigation.insertBefore(healthLink, backToApp || null);
+  }
+
   const toggle = document.createElement('button');
   toggle.type = 'button';
   toggle.className = 'admin-menu-toggle';

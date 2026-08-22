@@ -7,6 +7,17 @@
     <display-name>Student OS</display-name>
 
     <filter>
+        <filter-name>requestTraceFilter</filter-name>
+        <filter-class>com.studentos.filter.RequestTraceFilter</filter-class>
+    </filter>
+    <filter-mapping>
+        <filter-name>requestTraceFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+        <dispatcher>REQUEST</dispatcher>
+        <dispatcher>ERROR</dispatcher>
+    </filter-mapping>
+
+    <filter>
         <filter-name>unreadMessageFilter</filter-name>
         <filter-class>com.studentos.filter.UnreadMessageFilter</filter-class>
     </filter>
