@@ -3,6 +3,10 @@
   const rail = document.querySelector('.admin-rail');
   if (!rail || document.querySelector('.admin-menu-toggle')) return;
 
+  const themeScript = document.createElement('script');
+  themeScript.src = '/js/theme-toggle.js?v=theme-control-1';
+  document.head.append(themeScript);
+
   const toggle = document.createElement('button');
   toggle.type = 'button';
   toggle.className = 'admin-menu-toggle';

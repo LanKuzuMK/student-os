@@ -1,8 +1,10 @@
 (() => {
   const sidebar = document.querySelector('.sidebar');
-  if (!sidebar || document.querySelector('.mobile-nav-toggle')) {
-    return;
-  }
+  if (!sidebar || document.querySelector('.mobile-nav-toggle')) return;
+
+  const themeScript = document.createElement('script');
+  themeScript.src = '/js/theme-toggle.js?v=theme-control-1';
+  document.head.append(themeScript);
 
   const toggle = document.createElement('button');
   toggle.type = 'button';
