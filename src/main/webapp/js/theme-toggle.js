@@ -30,7 +30,7 @@
     control.className = 'theme-control';
     control.innerHTML = '<div class="theme-control-copy"><span class="theme-control-eyebrow">Appearance</span><strong data-theme-label>Light mode</strong></div><button type="button" class="theme-toggle" data-theme-toggle aria-pressed="false" aria-label="Switch to dark mode"><span class="theme-toggle-track" aria-hidden="true"><span class="theme-toggle-knob"></span></span></button>';
     const footer = rail.querySelector('.sidebar-footer, .admin-rail-footer');
-    if (footer) rail.insertBefore(control, footer); else rail.append(control);
+    if (footer) footer.insertBefore(control, footer.firstChild); else rail.append(control);
     control.querySelector('[data-theme-toggle]').addEventListener('click', () => {
       const next = root.dataset.theme === 'dark' ? 'light' : 'dark';
       try { window.localStorage.setItem(storageKey, next); } catch (_) { /* Keep the in-page preference if storage is unavailable. */ }
