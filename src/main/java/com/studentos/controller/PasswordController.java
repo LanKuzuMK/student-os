@@ -4,6 +4,7 @@ import com.studentos.dao.UserDAO;
 import com.studentos.model.User;
 import com.studentos.service.AuthService;
 import com.studentos.util.CsrfUtil;
+import com.studentos.util.PersistentSessionManager;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
@@ -16,6 +17,7 @@ import java.io.IOException;
 public class PasswordController extends HttpServlet {
     private final AuthService authService = new AuthService();
     private final UserDAO userDAO = new UserDAO();
+    private final PersistentSessionManager persistentSessionManager = new PersistentSessionManager();
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -43,15 +45,14 @@ public class PasswordController extends HttpServlet {
             response.sendRedirect(request.getContextPath() + "/account/password?error=invalid");
             return;
         }
-        request.changeSessionId();
         User refreshedUser = userDAO.findById(user.getId());
         if (refreshedUser == null) {
             request.getSession().invalidate();
             response.sendRedirect(request.getContextPath() + "/auth/signin");
             return;
         }
-        request.getSession().setAttribute("user", refreshedUser);
-        request.getSession().setAttribute("authVersion", refreshedUser.getAuthVersion());
+        persistentSessionManager.revokeAllForUser(user.getId());
+        persistentSessionManager.establish(request, response, refreshedUser);
         response.sendRedirect(request.getContextPath() + "/account/password?success=1");
     }
 

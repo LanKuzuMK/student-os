@@ -5,6 +5,7 @@ import com.studentos.service.AuthService;
 import com.studentos.util.CsrfUtil;
 import com.studentos.util.InputValidator;
 import com.studentos.util.AccessPolicy;
+import com.studentos.util.PersistentSessionManager;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -31,6 +32,7 @@ import java.io.IOException;
 )
 public class AuthController extends HttpServlet {
     private final AuthService authService = new AuthService();
+    private final PersistentSessionManager persistentSessionManager = new PersistentSessionManager();
     private static final String PENDING_EMAIL = "pendingEmail";
     private static final String PENDING_PASSWORD = "pendingPassword";
     private static final String PENDING_FIRST_NAME = "pendingFirstName";
@@ -61,6 +63,7 @@ public class AuthController extends HttpServlet {
                 request.getRequestDispatcher("/views/auth/reset.jsp").forward(request, response);
             }
             case "/auth/logout" -> {
+                persistentSessionManager.revokeCurrent(request, response);
                 request.getSession().invalidate();
                 response.sendRedirect(request.getContextPath() + "/auth/signin");
             }
@@ -80,6 +83,7 @@ public class AuthController extends HttpServlet {
             case "/auth/forgot" -> handleForgotPassword(request, response);
             case "/auth/reset" -> handlePasswordReset(request, response);
             case "/auth/logout" -> {
+                persistentSessionManager.revokeCurrent(request, response);
                 request.getSession().invalidate();
                 response.sendRedirect(request.getContextPath() + "/auth/signin");
             }
@@ -99,7 +103,7 @@ public class AuthController extends HttpServlet {
     private void handleLogin(HttpServletRequest request, HttpServletResponse response) throws IOException {
         User user = authService.login(request.getParameter("email"), request.getParameter("password"));
         if (user != null) {
-            establishAuthenticatedSession(request, user);
+            establishAuthenticatedSession(request, response, user);
             response.sendRedirect(request.getContextPath() + AccessPolicy.postLoginPath(user.getRole()));
         } else {
             response.sendRedirect(request.getContextPath() + "/auth/signin?error=1");
@@ -150,7 +154,7 @@ public class AuthController extends HttpServlet {
             response.sendRedirect(request.getContextPath() + "/auth/register?error=RegistrationFailed");
             return;
         }
-        establishAuthenticatedSession(request, user);
+        establishAuthenticatedSession(request, response, user);
         HttpSession authenticatedSession = request.getSession();
         authenticatedSession.removeAttribute(PENDING_EMAIL);
         authenticatedSession.removeAttribute(PENDING_PASSWORD);
@@ -190,12 +194,8 @@ public class AuthController extends HttpServlet {
         response.sendRedirect(request.getContextPath() + "/auth/signin?reset=1");
     }
 
-    private void establishAuthenticatedSession(HttpServletRequest request, User user) {
-        request.getSession();
-        request.changeSessionId();
-        HttpSession session = request.getSession();
-        session.setAttribute("user", user);
-        session.setAttribute("authVersion", user.getAuthVersion());
+    private void establishAuthenticatedSession(HttpServletRequest request, HttpServletResponse response, User user) {
+        persistentSessionManager.establish(request, response, user);
     }
 
 }

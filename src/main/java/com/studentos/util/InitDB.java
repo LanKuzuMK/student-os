@@ -37,6 +37,12 @@ public final class InitDB {
                         + "issued_at TIMESTAMP NOT NULL"
                         + ")",
                 "ALTER TABLE users ADD COLUMN IF NOT EXISTS auth_version INTEGER NOT NULL DEFAULT 1",
+                "CREATE TABLE IF NOT EXISTS auth_sessions ("
+                        + "id BIGSERIAL PRIMARY KEY, user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE, "
+                        + "auth_version INTEGER NOT NULL, token_hash CHAR(64) NOT NULL UNIQUE, expires_at TIMESTAMP NOT NULL, "
+                        + "created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP, last_seen_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP, revoked_at TIMESTAMP"
+                        + ")",
+                "CREATE INDEX IF NOT EXISTS idx_auth_sessions_user_active ON auth_sessions(user_id, expires_at DESC) WHERE revoked_at IS NULL",
                 "CREATE TABLE IF NOT EXISTS notifications ("
                         + "id SERIAL PRIMARY KEY, recipient_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE, "
                         + "type VARCHAR(40) NOT NULL, title VARCHAR(160) NOT NULL, message VARCHAR(1000) NOT NULL, "

@@ -3,6 +3,7 @@ package com.studentos.controller;
 import com.studentos.model.User;
 import com.studentos.service.AuthService;
 import com.studentos.util.AccessPolicy;
+import com.studentos.util.PersistentSessionManager;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
@@ -15,6 +16,7 @@ import java.io.IOException;
  */
 public class SignInController extends HttpServlet {
     private final AuthService authService = new AuthService();
+    private final PersistentSessionManager persistentSessionManager = new PersistentSessionManager();
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -30,10 +32,7 @@ public class SignInController extends HttpServlet {
             return;
         }
 
-        request.getSession();
-        request.changeSessionId();
-        request.getSession().setAttribute("user", user);
-        request.getSession().setAttribute("authVersion", user.getAuthVersion());
+        persistentSessionManager.establish(request, response, user);
         response.sendRedirect(request.getContextPath() + AccessPolicy.postLoginPath(user.getRole()));
     }
 }
