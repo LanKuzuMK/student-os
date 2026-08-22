@@ -38,9 +38,11 @@
 
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
-html { background: var(--canvas); }
+html { width: 100%; overflow-x: hidden; background: var(--canvas); }
 body {
+    width: 100%;
     min-height: 100vh;
+    overflow-x: hidden;
     color: var(--ink);
     background:
         radial-gradient(circle at 76% -12%, rgba(101, 105, 238, .17) 0, transparent 29rem),
