@@ -1,4 +1,4 @@
-<%@ page isErrorPage="true" %>
+<%@ page contentType="text/html;charset=UTF-8" language="java" isErrorPage="true" %>
 <% Object trace = request.getAttribute("requestTraceId"); %>
 <!DOCTYPE html>
 <html lang="en">

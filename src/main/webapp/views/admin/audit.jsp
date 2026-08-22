@@ -1,4 +1,5 @@
 <%-- Design direction: calm editorial control room with strong operational traceability. --%>
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ page import="java.util.*" %>
 <%@ page import="com.studentos.util.HtmlUtil" %>
 <%

@@ -1,4 +1,5 @@
 <%-- Design direction: calm editorial control room with focused case review and safe staff-aware actions. --%>
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ page import="java.util.Map,java.util.List" %>
 <%@ page import="com.studentos.util.HtmlUtil" %>
 <%@ page import="com.studentos.model.User" %>
