@@ -74,7 +74,7 @@ button, input, textarea, select { font: inherit; }
     flex-direction: column;
     width: 282px;
     height: 100vh;
-    padding: 24px 17px 18px;
+    padding: 21px 17px 16px;
     background: rgba(255, 255, 255, .86);
     border-right: 1px solid rgba(220, 226, 239, .92);
     box-shadow: 12px 0 42px rgba(26, 42, 71, .025);
@@ -87,7 +87,7 @@ button, input, textarea, select { font: inherit; }
     align-items: center;
     gap: 11px;
     min-height: 48px;
-    margin: 0 9px 31px;
+    margin: 0 9px 21px;
     color: #111f3b;
     font-family: 'Plus Jakarta Sans', sans-serif;
     font-size: 16px;
@@ -106,9 +106,9 @@ button, input, textarea, select { font: inherit; }
     filter: drop-shadow(0 8px 14px rgba(51, 73, 222, .24));
 }
 .sidebar-logo .logo-mark { display: none; }
-.nav-group { margin-bottom: 23px; }
+.nav-group { margin-bottom: 15px; }
 .nav-title {
-    margin: 0 11px 8px;
+    margin: 0 11px 6px;
     color: #a0a9b9;
     font-size: 10px;
     font-weight: 800;
@@ -118,9 +118,9 @@ button, input, textarea, select { font: inherit; }
 .nav-link {
     display: flex;
     align-items: center;
-    min-height: 42px;
-    margin: 3px 0;
-    padding: 10px 12px;
+    min-height: 38px;
+    margin: 2px 0;
+    padding: 8px 12px;
     border: 1px solid transparent;
     border-radius: 12px;
     color: #53617a;
@@ -137,8 +137,9 @@ button, input, textarea, select { font: inherit; }
     box-shadow: inset 3px 0 0 var(--brand);
 }
 .nav-link-danger, .nav-link[style*="--danger"] { color: var(--danger) !important; }
-.sidebar-footer, .sidebar > div[style*="margin-top:auto"] { position: relative; margin-top: auto; padding-top: 15px; border-top: 1px solid var(--border); }
-.sidebar-footer::before, .sidebar > div[style*="margin-top:auto"]::before { display: block; padding: 11px 12px; margin: 0 1px 10px; color: #4c4fbd; content: 'MKV TEAM  ·  STUDENT COMMUNITY'; background: linear-gradient(115deg, #f2f1ff, #f7faff); border: 1px solid #e4e4fb; border-radius: 12px; font-size: 10px; font-weight: 800; letter-spacing: .08em; }
+.sidebar-footer, .sidebar > div[style*="margin-top:auto"] { position: relative; display: flex; flex: 0 0 auto; flex-direction: column; gap: 7px; margin-top: auto; padding-top: 12px; border-top: 1px solid var(--border); }
+.sidebar-footer::before, .sidebar > div[style*="margin-top:auto"]::before { display: block; order: 0; padding: 9px 11px; margin: 0 1px; color: #4c4fbd; content: 'MKV TEAM  ·  STUDENT COMMUNITY'; background: linear-gradient(115deg, #f2f1ff, #f7faff); border: 1px solid #e4e4fb; border-radius: 11px; font-size: 9px; font-weight: 800; letter-spacing: .08em; }
+.sidebar-footer .theme-control, .sidebar > div[style*="margin-top:auto"] .theme-control { order: 1; margin: 0; }.sidebar-footer .account-chip, .sidebar > div[style*="margin-top:auto"] .account-chip { order: 2; }.sidebar-footer .nav-link-danger, .sidebar > div[style*="margin-top:auto"] .nav-link-danger { order: 3; min-height: 36px; margin: 0; }
 .account-chip {
     display: flex;
     align-items: center;
