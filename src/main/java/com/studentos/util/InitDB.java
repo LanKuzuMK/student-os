@@ -54,6 +54,8 @@ public final class InitDB {
                 "CREATE UNIQUE INDEX IF NOT EXISTS uq_collaboration_pending_request ON collaboration_requests(requester_id, recipient_id, title) WHERE status = 'PENDING'",
                 "CREATE INDEX IF NOT EXISTS idx_collaboration_recipient_status ON collaboration_requests(recipient_id, status, created_at DESC)",
                 "CREATE INDEX IF NOT EXISTS idx_collaboration_requester_status ON collaboration_requests(requester_id, status, created_at DESC)",
+                "CREATE TABLE IF NOT EXISTS saved_items (id SERIAL PRIMARY KEY, owner_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE, target_type VARCHAR(20) NOT NULL, target_id INTEGER NOT NULL, created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP, CHECK (target_type IN ('PROFILE', 'SKILL', 'SERVICE', 'JOB')), UNIQUE(owner_id, target_type, target_id))",
+                "CREATE INDEX IF NOT EXISTS idx_saved_items_owner_created ON saved_items(owner_id, created_at DESC)",
                 "ALTER TABLE user_skills ADD COLUMN IF NOT EXISTS moderation_status VARCHAR(20) NOT NULL DEFAULT 'VISIBLE'",
                 "ALTER TABLE user_skills ADD COLUMN IF NOT EXISTS moderation_note VARCHAR(1000)",
                 "ALTER TABLE jobs ADD COLUMN IF NOT EXISTS moderation_status VARCHAR(20) NOT NULL DEFAULT 'VISIBLE'",
