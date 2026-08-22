@@ -35,6 +35,25 @@ public final class InitDB {
                         + "attempts INTEGER NOT NULL DEFAULT 0, "
                         + "issued_at TIMESTAMP NOT NULL"
                         + ")",
+                "ALTER TABLE user_skills ADD COLUMN IF NOT EXISTS moderation_status VARCHAR(20) NOT NULL DEFAULT 'VISIBLE'",
+                "ALTER TABLE user_skills ADD COLUMN IF NOT EXISTS moderation_note VARCHAR(1000)",
+                "ALTER TABLE jobs ADD COLUMN IF NOT EXISTS moderation_status VARCHAR(20) NOT NULL DEFAULT 'VISIBLE'",
+                "ALTER TABLE jobs ADD COLUMN IF NOT EXISTS moderation_note VARCHAR(1000)",
+                "ALTER TABLE services ADD COLUMN IF NOT EXISTS moderation_status VARCHAR(20) NOT NULL DEFAULT 'VISIBLE'",
+                "ALTER TABLE services ADD COLUMN IF NOT EXISTS moderation_note VARCHAR(1000)",
+                "CREATE TABLE IF NOT EXISTS moderation_reports ("
+                        + "id SERIAL PRIMARY KEY, reporter_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE, "
+                        + "target_type VARCHAR(20) NOT NULL, target_id INTEGER NOT NULL, reason VARCHAR(80) NOT NULL, details VARCHAR(1000), "
+                        + "status VARCHAR(20) NOT NULL DEFAULT 'OPEN', reviewed_by INTEGER REFERENCES users(id) ON DELETE SET NULL, "
+                        + "resolution_note VARCHAR(1000), created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP, reviewed_at TIMESTAMP"
+                        + ")",
+                "CREATE UNIQUE INDEX IF NOT EXISTS idx_open_moderation_report_per_reporter ON moderation_reports(reporter_id, target_type, target_id) WHERE status = 'OPEN'",
+                "CREATE INDEX IF NOT EXISTS idx_moderation_reports_status ON moderation_reports(status, created_at DESC)",
+                "CREATE TABLE IF NOT EXISTS moderation_audit_log ("
+                        + "id SERIAL PRIMARY KEY, admin_id INTEGER REFERENCES users(id) ON DELETE SET NULL, action VARCHAR(80) NOT NULL, "
+                        + "target_type VARCHAR(30) NOT NULL, target_id INTEGER NOT NULL, reason VARCHAR(1000), created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP"
+                        + ")",
+                "CREATE INDEX IF NOT EXISTS idx_moderation_audit_created_at ON moderation_audit_log(created_at DESC)",
                 "CREATE TABLE IF NOT EXISTS profiles ("
                         + "user_id INTEGER PRIMARY KEY REFERENCES users(id) ON DELETE CASCADE, "
                         + "first_name VARCHAR(100), "

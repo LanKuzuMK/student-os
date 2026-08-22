@@ -18,6 +18,7 @@
     <main class="main-content">
         <header class="page-header"><div><p class="eyebrow">Student marketplace</p><h1 class="page-title">Freelance jobs</h1><p class="page-subtitle">Find small opportunities, see who posted them, and contact the right student with context.</p></div><button class="btn btn-primary" type="button" onclick="document.getElementById('jobModal').style.display='flex'">Post a job</button></header>
         <c:if test="${param.error eq 'invalid'}"><div class="alert alert-error">Enter a title, description, and a valid non-negative budget.</div></c:if>
+        <c:if test="${param.report eq '1'}"><div class="alert alert-success">Thank you. Your report is now in the StudentOS review queue.</div></c:if><c:if test="${param.report eq '0'}"><div class="alert alert-error">That report could not be submitted. You can report each item once while it is open.</div></c:if>
         <section class="grid-2">
             <c:choose>
                 <c:when test="${empty jobs}"><div class="card">No jobs are available right now.</div></c:when>
@@ -29,7 +30,7 @@
                             <p class="owner-meta">Posted by <strong><c:out value="${job.ownerName}"/></strong> · <c:out value="${job.status}"/></p>
                             <div class="owner-actions">
                                 <a href="/profile/view?id=<c:out value='${job.userId}'/>" class="btn btn-secondary">View profile</a>
-                                <c:if test="${job.userId ne currentUserId}"><a href="/messages?toEmail=<c:out value='${job.ownerEmail}'/>" class="btn btn-primary">Message owner</a></c:if>
+                                <c:if test="${job.userId ne currentUserId}"><a href="/messages?toEmail=<c:out value='${job.ownerEmail}'/>" class="btn btn-primary">Message owner</a><details><summary class="text-action">Report</summary><form action="/reports/new" method="post"><input type="hidden" name="csrfToken" value="<c:out value='${csrfToken}'/>"><input type="hidden" name="targetType" value="JOB"><input type="hidden" name="targetId" value="<c:out value='${job.id}'/>"><input type="hidden" name="returnTo" value="/freelance"><select name="reason" required><option value="SPAM">Spam</option><option value="HARASSMENT">Harassment</option><option value="INAPPROPRIATE">Inappropriate</option><option value="MISLEADING">Misleading</option><option value="OTHER">Other</option></select><input name="details" maxlength="1000" placeholder="Optional context"><button class="text-action text-action-danger" type="submit">Submit report</button></form></details></c:if>
                             </div>
                         </article>
                     </c:forEach>

@@ -11,6 +11,7 @@
     int totalMessages = stats.getOrDefault("totalMessages", 0);
     int totalGoals    = stats.getOrDefault("totalGoals",    0);
     int totalTasks    = stats.getOrDefault("totalTasks",    0);
+    int openReports   = stats.getOrDefault("openReports",   0);
 %>
 <!DOCTYPE html>
 <html lang="en">
@@ -53,6 +54,8 @@
             <a href="/admin/users">Users</a>
             <a href="/admin/content">Content</a>
             <a href="/admin/messages">Messages</a>
+            <a href="/admin/reports">Reports</a>
+            <a href="/admin/audit">Audit log</a>
             <a href="/dashboard">Back to App</a>
         </nav>
         <div class="admin-rail-footer"><a href="/auth/logout">Logout</a></div>
@@ -71,12 +74,15 @@
             <div class="stat-card"><div class="val"><%=totalMessages%></div><div class="lbl">Messages Sent</div></div>
             <div class="stat-card"><div class="val"><%=totalGoals%></div><div class="lbl">Goals</div></div>
             <div class="stat-card"><div class="val"><%=totalTasks%></div><div class="lbl">Tasks</div></div>
+            <div class="stat-card danger"><div class="val"><%=openReports%></div><div class="lbl">Open Reports</div></div>
         </div>
         <p class="admin-section-title">Quick Actions</p>
         <div class="quick-links">
             <a class="quick-link" href="/admin/users">Manage Users</a>
             <a class="quick-link" href="/admin/content">Moderate Content</a>
             <a class="quick-link" href="/admin/messages">View Messages</a>
+            <a class="quick-link" href="/admin/reports">Review Reports (<%=openReports%>)</a>
+            <a class="quick-link" href="/admin/audit">Audit History</a>
         </div>
         <footer class="mkv-footer" style="margin-top:60px;">© 2026 MKV Team</footer>
     </main>

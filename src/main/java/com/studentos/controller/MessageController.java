@@ -42,6 +42,7 @@ public class MessageController extends HttpServlet {
             request.setAttribute("recipientEmail", recipientEmail);
         }
         request.setAttribute("messages", messageDAO.getMessagesForUser(user.getId()));
+        request.setAttribute("currentUserId", user.getId());
         messageDAO.markMessagesReadForUser(user.getId());
         request.setAttribute("unreadMessageCount", 0);
         request.getRequestDispatcher("/views/messages/index.jsp").forward(request, response);

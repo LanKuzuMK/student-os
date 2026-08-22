@@ -25,6 +25,7 @@
         <c:if test="${param.error eq '1'}"><div class="alert alert-error">Enter a valid classmate email and a message before sending.</div></c:if>
         <c:if test="${param.cleared eq '1'}"><div class="alert alert-success">That conversation was removed from your history.</div></c:if>
         <c:if test="${param.clearError eq '1'}"><div class="alert alert-error">We could not remove that conversation. Try again.</div></c:if>
+        <c:if test="${param.report eq '1'}"><div class="alert alert-success">Thank you. Your report is now in the StudentOS review queue.</div></c:if><c:if test="${param.report eq '0'}"><div class="alert alert-error">That message could not be reported. You can report a received message once while it is open.</div></c:if>
 
         <div class="messages-layout">
             <section class="compose-card">
@@ -48,7 +49,7 @@
                                 <article class="message-item">
                                     <div class="message-avatar">S</div>
                                     <div class="message-content"><div class="message-meta"><strong><c:out value="${msg.counterpartEmail}"/></strong><span>Student conversation</span></div><p><c:out value="${msg.content}"/></p></div>
-                                    <c:if test="${msg.counterpartEmail ne previousCounterpart}"><form class="message-clear-form" action="/messages" method="post" onsubmit="return confirm('Remove this entire conversation from your history? The other student will keep their copy.');"><input type="hidden" name="action" value="clear"><input type="hidden" name="counterpartEmail" value="<c:out value='${msg.counterpartEmail}'/>"><input type="hidden" name="csrfToken" value="<c:out value='${csrfToken}'/>"><button class="message-clear" type="submit">Delete history</button></form></c:if>
+                                    <c:if test="${msg.counterpartEmail ne previousCounterpart}"><form class="message-clear-form" action="/messages" method="post" onsubmit="return confirm('Remove this entire conversation from your history? The other student will keep their copy.');"><input type="hidden" name="action" value="clear"><input type="hidden" name="counterpartEmail" value="<c:out value='${msg.counterpartEmail}'/>"><input type="hidden" name="csrfToken" value="<c:out value='${csrfToken}'/>"><button class="message-clear" type="submit">Delete history</button></form></c:if><c:if test="${msg.senderId ne currentUserId}"><details><summary class="text-action">Report message</summary><form action="/reports/new" method="post"><input type="hidden" name="csrfToken" value="<c:out value='${csrfToken}'/>"><input type="hidden" name="targetType" value="MESSAGE"><input type="hidden" name="targetId" value="<c:out value='${msg.id}'/>"><input type="hidden" name="returnTo" value="/messages"><select name="reason" required><option value="HARASSMENT">Harassment</option><option value="SPAM">Spam</option><option value="INAPPROPRIATE">Inappropriate</option><option value="OTHER">Other</option></select><input name="details" maxlength="1000" placeholder="Optional context"><button class="text-action text-action-danger" type="submit">Submit report</button></form></details></c:if>
                                 </article>
                                 <c:set var="previousCounterpart" value="${msg.counterpartEmail}" />
                             </c:forEach>

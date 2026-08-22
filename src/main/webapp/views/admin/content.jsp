@@ -60,7 +60,7 @@
 
         <p class="section-title">Skills (<%=skills.size()%>)</p>
         <table class="admin-table">
-            <thead><tr><th>ID</th><th>Owner</th><th>Skill</th><th>Level</th><th>Type</th><th>Action</th></tr></thead>
+            <thead><tr><th>ID</th><th>Owner</th><th>Skill</th><th>Level</th><th>Type</th><th>Visibility</th><th>Action</th></tr></thead>
             <tbody>
             <% for (Map<String,Object> r : skills) { %>
             <tr>
@@ -69,7 +69,8 @@
                 <td><%=HtmlUtil.escapeHtml(r.get("skill_name"))%></td>
                 <td><%=HtmlUtil.escapeHtml(r.get("skill_level"))%></td>
                 <td><%=HtmlUtil.escapeHtml(r.get("type"))%></td>
-                <td><form method="post" action="/admin/content/delete-skill" style="margin:0">
+                <td><span class="badge <%= "HIDDEN".equals(r.get("moderation_status")) ? "badge-banned" : "badge-active" %>"><%=HtmlUtil.escapeHtml(r.get("moderation_status"))%></span></td>
+                <td><form method="post" action="/admin/content/<%= "HIDDEN".equals(r.get("moderation_status")) ? "restore" : "hide" %>" style="margin:0 0 6px"><input type="hidden" name="targetType" value="SKILL"><input type="hidden" name="targetId" value="<%=r.get("id")%>"><input type="hidden" name="reason" value="Manual moderation review"><input type="hidden" name="csrfToken" value="<%=csrfToken%>"><button class="btn-sm <%= "HIDDEN".equals(r.get("moderation_status")) ? "btn-unban" : "btn-ban" %>"><%= "HIDDEN".equals(r.get("moderation_status")) ? "Restore" : "Hide" %></button></form><form method="post" action="/admin/content/delete-skill" style="margin:0">
                     <input type="hidden" name="id" value="<%=r.get("id")%>">
                     <input type="hidden" name="csrfToken" value="<%=csrfToken%>">
                     <button class="btn-sm" onclick="return confirm('Delete this skill?')">Delete</button>
@@ -81,7 +82,7 @@
 
         <p class="section-title">Freelance Jobs (<%=jobs.size()%>)</p>
         <table class="admin-table">
-            <thead><tr><th>ID</th><th>Owner</th><th>Title</th><th>Status</th><th>Action</th></tr></thead>
+            <thead><tr><th>ID</th><th>Owner</th><th>Title</th><th>Status</th><th>Visibility</th><th>Action</th></tr></thead>
             <tbody>
             <% for (Map<String,Object> r : jobs) { %>
             <tr>
@@ -89,7 +90,8 @@
                 <td><%=HtmlUtil.escapeHtml(r.get("email"))%></td>
                 <td><%=HtmlUtil.escapeHtml(r.get("title"))%></td>
                 <td><%=HtmlUtil.escapeHtml(r.get("status"))%></td>
-                <td><form method="post" action="/admin/content/delete-job" style="margin:0">
+                <td><span class="badge <%= "HIDDEN".equals(r.get("moderation_status")) ? "badge-banned" : "badge-active" %>"><%=HtmlUtil.escapeHtml(r.get("moderation_status"))%></span></td>
+                <td><form method="post" action="/admin/content/<%= "HIDDEN".equals(r.get("moderation_status")) ? "restore" : "hide" %>" style="margin:0 0 6px"><input type="hidden" name="targetType" value="JOB"><input type="hidden" name="targetId" value="<%=r.get("id")%>"><input type="hidden" name="reason" value="Manual moderation review"><input type="hidden" name="csrfToken" value="<%=csrfToken%>"><button class="btn-sm <%= "HIDDEN".equals(r.get("moderation_status")) ? "btn-unban" : "btn-ban" %>"><%= "HIDDEN".equals(r.get("moderation_status")) ? "Restore" : "Hide" %></button></form><form method="post" action="/admin/content/delete-job" style="margin:0">
                     <input type="hidden" name="id" value="<%=r.get("id")%>">
                     <input type="hidden" name="csrfToken" value="<%=csrfToken%>">
                     <button class="btn-sm" onclick="return confirm('Delete this job?')">Delete</button>
@@ -101,14 +103,15 @@
 
         <p class="section-title">Services (<%=services.size()%>)</p>
         <table class="admin-table">
-            <thead><tr><th>ID</th><th>Owner</th><th>Title</th><th>Action</th></tr></thead>
+            <thead><tr><th>ID</th><th>Owner</th><th>Title</th><th>Visibility</th><th>Action</th></tr></thead>
             <tbody>
             <% for (Map<String,Object> r : services) { %>
             <tr>
                 <td><%=r.get("id")%></td>
                 <td><%=HtmlUtil.escapeHtml(r.get("email"))%></td>
                 <td><%=HtmlUtil.escapeHtml(r.get("title"))%></td>
-                <td><form method="post" action="/admin/content/delete-service" style="margin:0">
+                <td><span class="badge <%= "HIDDEN".equals(r.get("moderation_status")) ? "badge-banned" : "badge-active" %>"><%=HtmlUtil.escapeHtml(r.get("moderation_status"))%></span></td>
+                <td><form method="post" action="/admin/content/<%= "HIDDEN".equals(r.get("moderation_status")) ? "restore" : "hide" %>" style="margin:0 0 6px"><input type="hidden" name="targetType" value="SERVICE"><input type="hidden" name="targetId" value="<%=r.get("id")%>"><input type="hidden" name="reason" value="Manual moderation review"><input type="hidden" name="csrfToken" value="<%=csrfToken%>"><button class="btn-sm <%= "HIDDEN".equals(r.get("moderation_status")) ? "btn-unban" : "btn-ban" %>"><%= "HIDDEN".equals(r.get("moderation_status")) ? "Restore" : "Hide" %></button></form><form method="post" action="/admin/content/delete-service" style="margin:0">
                     <input type="hidden" name="id" value="<%=r.get("id")%>">
                     <input type="hidden" name="csrfToken" value="<%=csrfToken%>">
                     <button class="btn-sm" onclick="return confirm('Delete this service?')">Delete</button>

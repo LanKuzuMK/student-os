@@ -33,7 +33,7 @@ public class SkillDAO {
         String sql = "SELECT us.*, u.email AS owner_email, "
                 + "COALESCE(NULLIF(TRIM(CONCAT_WS(' ', p.first_name, p.last_name)), ''), u.email) AS owner_name "
                 + "FROM user_skills us JOIN users u ON u.id = us.user_id "
-                + "LEFT JOIN profiles p ON p.user_id = us.user_id ORDER BY us.created_at DESC";
+                + "LEFT JOIN profiles p ON p.user_id = us.user_id WHERE COALESCE(us.moderation_status, 'VISIBLE') = 'VISIBLE' ORDER BY us.created_at DESC";
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql);
              ResultSet rs = ps.executeQuery()) {

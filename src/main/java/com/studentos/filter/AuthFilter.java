@@ -10,7 +10,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import java.io.IOException;
 
-@WebFilter(urlPatterns = {"/dashboard", "/dashboard/*", "/schedule", "/goals", "/tasks", "/tasks/*", "/skills", "/skills/*", "/freelance", "/freelance/*", "/messages", "/messages/*", "/profile", "/profile/*", "/account", "/account/*", "/admin", "/admin/*"})
+@WebFilter(urlPatterns = {"/dashboard", "/dashboard/*", "/schedule", "/goals", "/tasks", "/tasks/*", "/skills", "/skills/*", "/freelance", "/freelance/*", "/messages", "/messages/*", "/profile", "/profile/*", "/account", "/account/*", "/reports", "/reports/*", "/admin", "/admin/*"})
 public class AuthFilter implements Filter {
     private final UserDAO userDAO = new UserDAO();
 

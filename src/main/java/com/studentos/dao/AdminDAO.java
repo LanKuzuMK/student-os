@@ -24,10 +24,11 @@ public class AdminDAO {
             "SELECT COUNT(*) FROM services",
             "SELECT COUNT(*) FROM messages",
             "SELECT COUNT(*) FROM goals",
-            "SELECT COUNT(*) FROM tasks"
+            "SELECT COUNT(*) FROM tasks",
+            "SELECT COUNT(*) FROM moderation_reports WHERE status = 'OPEN'"
         };
         String[] keys = {"totalUsers","bannedUsers","totalSkills","totalJobs",
-                         "totalServices","totalMessages","totalGoals","totalTasks"};
+                         "totalServices","totalMessages","totalGoals","totalTasks","openReports"};
         try (Connection conn = DBConnection.getConnection()) {
             for (int i = 0; i < queries.length; i++) {
                 try (PreparedStatement ps = conn.prepareStatement(queries[i]);
@@ -118,23 +119,23 @@ public class AdminDAO {
 
     public List<Map<String, Object>> getAllSkills() {
         return fetchRows(
-            "SELECT us.id, u.email, us.skill_name, us.skill_level, us.type, us.created_at " +
+            "SELECT us.id, u.email, us.skill_name, us.skill_level, us.type, us.moderation_status, us.moderation_note, us.created_at " +
             "FROM user_skills us JOIN users u ON us.user_id = u.id ORDER BY us.id DESC",
-            "id","email","skill_name","skill_level","type","created_at");
+            "id","email","skill_name","skill_level","type","moderation_status","moderation_note","created_at");
     }
 
     public List<Map<String, Object>> getAllJobs() {
         return fetchRows(
-            "SELECT j.id, u.email, j.title, j.description, j.status, j.created_at " +
+            "SELECT j.id, u.email, j.title, j.description, j.status, j.moderation_status, j.moderation_note, j.created_at " +
             "FROM jobs j JOIN users u ON j.user_id = u.id ORDER BY j.id DESC",
-            "id","email","title","description","status","created_at");
+            "id","email","title","description","status","moderation_status","moderation_note","created_at");
     }
 
     public List<Map<String, Object>> getAllServices() {
         return fetchRows(
-            "SELECT s.id, u.email, s.title, s.description, s.created_at " +
+            "SELECT s.id, u.email, s.title, s.description, s.moderation_status, s.moderation_note, s.created_at " +
             "FROM services s JOIN users u ON s.user_id = u.id ORDER BY s.id DESC",
-            "id","email","title","description","created_at");
+            "id","email","title","description","moderation_status","moderation_note","created_at");
     }
 
     public boolean deleteSkill(int id) {

@@ -1,0 +1,20 @@
+<%@ page import="java.util.*" %>
+<%@ page import="com.studentos.util.HtmlUtil" %>
+<%
+List<Map<String,Object>> reports = (List<Map<String,Object>>) request.getAttribute("reports");
+String csrfToken = (String) request.getAttribute("csrfToken");
+String msg = request.getParameter("msg");
+%>
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Moderation reports - StudentOS</title><link rel="stylesheet" href="/css/main.css"><link rel="icon" type="image/png" href="/favicon.png"></head>
+<body><div class="admin-shell"><aside class="admin-rail"><div class="admin-brand">StudentOS <span>Admin</span></div><nav><a href="/admin">Dashboard</a><a href="/admin/users">Users</a><a href="/admin/content">Content</a><a href="/admin/messages">Messages</a><a href="/admin/reports" class="active">Reports</a><a href="/admin/audit">Audit log</a><a href="/dashboard">Back to App</a></nav><div class="admin-rail-footer"><a href="/auth/logout">Logout</a></div></aside>
+<main class="admin-main"><div class="admin-header"><div><p class="eyebrow">Moderation workflow</p><h1>Report review queue</h1><p class="page-subtitle">Open reports stay visible until an administrator dismisses or resolves them with a reason.</p></div><a href="/admin/audit" class="btn btn-secondary">View audit log</a></div>
+<% if (msg != null) { %><div class="toast">Action completed: <%=HtmlUtil.escapeHtml(msg.replace("_", " "))%></div><% } %>
+<table class="admin-table"><thead><tr><th>Report</th><th>Target</th><th>Reporter</th><th>Reason</th><th>Status</th><th>Review</th></tr></thead><tbody>
+<% for (Map<String,Object> report : reports) { boolean open = "OPEN".equals(report.get("status")); %>
+<tr><td>#<%=report.get("id")%><br><small><%=report.get("created_at")%></small></td><td><strong><%=HtmlUtil.escapeHtml(report.get("target_type"))%> #<%=report.get("target_id")%></strong><br><%=HtmlUtil.escapeHtml(report.get("target_summary"))%><br><small><%=HtmlUtil.escapeHtml(report.get("target_owner_email"))%></small></td><td><%=HtmlUtil.escapeHtml(report.get("reporter_email"))%><% if (report.get("details") != null) { %><br><small><%=HtmlUtil.escapeHtml(report.get("details"))%></small><% } %></td><td><%=HtmlUtil.escapeHtml(report.get("reason"))%></td><td><span class="badge <%=open ? "badge-todo" : "badge-completed"%>"><%=HtmlUtil.escapeHtml(report.get("status"))%></span><% if (report.get("resolution_note") != null) { %><br><small><%=HtmlUtil.escapeHtml(report.get("resolution_note"))%></small><% } %></td><td>
+<% if (open) { %>
+<% if ("MESSAGE".equals(report.get("target_type"))) { %><form method="post" action="/admin/reports/resolve" style="margin:0 0 8px"><input type="hidden" name="reportId" value="<%=report.get("id")%>"><input type="hidden" name="csrfToken" value="<%=csrfToken%>"><input name="reason" maxlength="1000" placeholder="Resolution note" required><button class="btn-sm btn-ban">Resolve report</button></form><% } else { %><form method="post" action="/admin/reports/hide" style="margin:0 0 8px"><input type="hidden" name="reportId" value="<%=report.get("id")%>"><input type="hidden" name="targetType" value="<%=HtmlUtil.escapeHtml(report.get("target_type"))%>"><input type="hidden" name="targetId" value="<%=report.get("target_id")%>"><input type="hidden" name="csrfToken" value="<%=csrfToken%>"><input name="reason" maxlength="1000" placeholder="Resolution note" required><button class="btn-sm btn-ban" onclick="return confirm('Hide this content and resolve the report?')">Hide & resolve</button></form><% } %>
+<form method="post" action="/admin/reports/dismiss" style="margin:0"><input type="hidden" name="reportId" value="<%=report.get("id")%>"><input type="hidden" name="csrfToken" value="<%=csrfToken%>"><input name="reason" maxlength="1000" placeholder="Dismissal note" required><button class="btn-sm btn-unban">Dismiss</button></form>
+<% } else { %><small>Reviewed by <%=HtmlUtil.escapeHtml(report.get("reviewer_email"))%></small><% } %>
+</td></tr><% } %></tbody></table><footer class="mkv-footer" style="margin-top:60px;">© 2026 MKV Team</footer></main></div></body></html>

@@ -17,6 +17,7 @@
     </aside>
     <main class="main-content">
         <header class="page-header"><div><p class="eyebrow">Student network</p><h1 class="page-title">Discover talent</h1><p class="page-subtitle">Explore what classmates are ready to teach or learn, then see who is behind the skill.</p></div><a href="/profile" class="btn btn-secondary">Complete my profile</a></header>
+        <c:if test="${param.report eq '1'}"><div class="alert alert-success">Thank you. Your report is now in the StudentOS review queue.</div></c:if><c:if test="${param.report eq '0'}"><div class="alert alert-error">That report could not be submitted. You can report each item once while it is open.</div></c:if>
         <section class="grid-2">
             <c:choose>
                 <c:when test="${empty allSkills}"><div class="card">No skills exist in the community yet.</div></c:when>
@@ -28,7 +29,7 @@
                             <p class="owner-meta">Shared by <strong><c:out value="${skill.ownerName}"/></strong></p>
                             <div class="owner-actions">
                                 <a href="/profile/view?id=<c:out value='${skill.userId}'/>" class="btn btn-secondary">View profile</a>
-                                <c:if test="${skill.userId ne currentUserId}"><a href="/messages?toEmail=<c:out value='${skill.ownerEmail}'/>" class="btn btn-primary">Message</a></c:if>
+                                <c:if test="${skill.userId ne currentUserId}"><a href="/messages?toEmail=<c:out value='${skill.ownerEmail}'/>" class="btn btn-primary">Message</a><details><summary class="text-action">Report</summary><form action="/reports/new" method="post"><input type="hidden" name="csrfToken" value="<c:out value='${csrfToken}'/>"><input type="hidden" name="targetType" value="SKILL"><input type="hidden" name="targetId" value="<c:out value='${skill.id}'/>"><input type="hidden" name="returnTo" value="/skills/discover"><select name="reason" required><option value="SPAM">Spam</option><option value="HARASSMENT">Harassment</option><option value="INAPPROPRIATE">Inappropriate</option><option value="MISLEADING">Misleading</option><option value="OTHER">Other</option></select><input name="details" maxlength="1000" placeholder="Optional context"><button class="text-action text-action-danger" type="submit">Submit report</button></form></details></c:if>
                             </div>
                         </article>
                     </c:forEach>

@@ -16,7 +16,7 @@ public class JobDAO {
         String sql = "SELECT j.*, u.email AS owner_email, "
                 + "COALESCE(NULLIF(TRIM(CONCAT_WS(' ', p.first_name, p.last_name)), ''), u.email) AS owner_name "
                 + "FROM jobs j JOIN users u ON u.id = j.user_id "
-                + "LEFT JOIN profiles p ON p.user_id = j.user_id ORDER BY j.created_at DESC";
+                + "LEFT JOIN profiles p ON p.user_id = j.user_id WHERE COALESCE(j.moderation_status, 'VISIBLE') = 'VISIBLE' ORDER BY j.created_at DESC";
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql);
              ResultSet rs = ps.executeQuery()) {
