@@ -148,6 +148,8 @@ public final class InitDB {
                         + "title VARCHAR(120) NOT NULL, description VARCHAR(500), url VARCHAR(500) NOT NULL, created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP"
                         + ")",
                 "CREATE INDEX IF NOT EXISTS idx_profile_projects_user_id ON profile_projects(user_id)",
+                "CREATE INDEX IF NOT EXISTS idx_profiles_availability ON profiles(availability_status)",
+                "CREATE INDEX IF NOT EXISTS idx_user_skills_discovery ON user_skills(moderation_status, type, skill_level, created_at DESC)",
                 "CREATE INDEX IF NOT EXISTS idx_tasks_user_id ON tasks(user_id)",
                 "CREATE INDEX IF NOT EXISTS idx_user_skills_user_id ON user_skills(user_id)",
                 "CREATE INDEX IF NOT EXISTS idx_jobs_created_at ON jobs(created_at DESC)",

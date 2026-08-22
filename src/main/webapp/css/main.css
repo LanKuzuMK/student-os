@@ -462,6 +462,21 @@ textarea.form-control { resize: vertical; }
 .owner-meta { margin: 12px 0 0; color: var(--text-secondary); font-size: 13px; }
 .owner-actions { display: flex; flex-wrap: wrap; gap: 9px; margin-top: 16px; }
 .owner-actions .btn { padding: 9px 12px; font-size: 12px; }
+.discovery-filter-card { margin-bottom: 24px; }
+.discovery-filter-grid { display: grid; grid-template-columns: 1.7fr repeat(4, minmax(130px, 1fr)); gap: 12px; align-items: end; }
+.discovery-filter-grid .form-group { margin: 0; }
+.discovery-results-heading { display: flex; align-items: flex-end; justify-content: space-between; gap: 18px; margin: 28px 0 16px; }
+.discovery-results-heading h2 { margin: 3px 0 0; color: var(--text-primary); font-family: 'Plus Jakarta Sans', sans-serif; font-size: 21px; letter-spacing: -.03em; }
+.discovery-results-heading > p { margin: 0; color: var(--text-secondary); font-size: 13px; }
+.discovery-card { display: flex; flex-direction: column; min-height: 255px; }
+.discovery-card .owner-actions { margin-top: auto; padding-top: 17px; }
+.discovery-badge-row { display: flex; flex-wrap: wrap; gap: 7px; margin-top: 12px; }
+.discovery-academic, .discovery-preferences { margin: 12px 0 0; color: var(--text-secondary); font-size: 13px; line-height: 1.55; }
+.discovery-preferences { padding-left: 11px; border-left: 3px solid #e2e4ff; color: #59607c; }
+.discovery-empty { grid-column: 1 / -1; text-align: left; padding: 34px; }
+.discovery-empty h3 { margin: 0 0 8px; color: var(--text-primary); font-family: 'Plus Jakarta Sans', sans-serif; }
+.discovery-empty p { max-width: 540px; margin: 0 0 18px; color: var(--text-secondary); line-height: 1.65; }
+.discovery-pagination { display: flex; align-items: center; justify-content: center; gap: 13px; margin-top: 26px; }
 .profile-link-manager { margin-top: 0; }
 .custom-link-add-form { display: grid; grid-template-columns: 1fr 1fr auto; gap: 12px; align-items: flex-end; padding: 18px 0; border-bottom: 1px solid #edf0f6; }
 .custom-link-add-form .form-group { margin: 0; }
@@ -477,7 +492,7 @@ textarea.form-control { resize: vertical; }
   .profile-identity-card, .public-profile-hero { align-items: flex-start; flex-direction: column; padding: 22px; }
   .public-profile-actions { align-self: stretch; width: 100%; }
   .public-profile-actions .btn { display: flex; justify-content: center; }
-  .profile-field-grid, .public-profile-grid { grid-template-columns: 1fr; }
+  .profile-field-grid, .public-profile-grid, .discovery-filter-grid { grid-template-columns: 1fr; }
   .profile-section-heading, .profile-save-row { align-items: flex-start; flex-direction: column; }
   .profile-section-heading > p { text-align: left; }
 }
