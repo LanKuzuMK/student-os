@@ -38,6 +38,6 @@
     });
   };
 
-  updateTheme(preferredTheme());
   document.querySelectorAll('.sidebar, .admin-rail').forEach(createControl);
+  updateTheme(preferredTheme());
 })();
