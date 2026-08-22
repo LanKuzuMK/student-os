@@ -13,8 +13,8 @@
         <div>
             <div class="eyebrow">StudentOS</div>
             <h1 class="page-title">Something went wrong.</h1>
-            <p class="page-subtitle" style="margin-inline:auto;">Your information was not changed. Please return to the previous page and try again.</p>
-            <a href="javascript:history.back()" class="btn btn-primary" style="margin-top:20px;">Go back</a>
+            <p class="page-subtitle" style="margin-inline:auto;">The page could not finish loading. Refresh once, or return to your workspace and try again.</p>
+            <div style="display:flex;justify-content:center;gap:10px;flex-wrap:wrap;margin-top:20px;"><a href="" class="btn btn-primary">Try again</a><a href="/dashboard" class="btn btn-secondary">Go to workspace</a></div>
         </div>
         <footer class="mkv-footer" style="width:100%;">© 2026 MKV Team</footer>
     </main>

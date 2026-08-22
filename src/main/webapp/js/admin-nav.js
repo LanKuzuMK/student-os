@@ -7,6 +7,10 @@
   themeScript.src = '/js/theme-toggle.js?v=theme-control-1';
   document.head.append(themeScript);
 
+  const accessibilityScript = document.createElement('script');
+  accessibilityScript.src = '/js/accessibility.js?v=accessibility-1';
+  document.head.append(accessibilityScript);
+
   const toggle = document.createElement('button');
   toggle.type = 'button';
   toggle.className = 'admin-menu-toggle';
@@ -28,6 +32,7 @@
     document.body.classList.add('admin-nav-open');
     toggle.setAttribute('aria-label', 'Close administrator navigation');
     toggle.setAttribute('aria-expanded', 'true');
+    rail.querySelector('a')?.focus();
   };
 
   toggle.addEventListener('click', () => document.body.classList.contains('admin-nav-open') ? close() : open());

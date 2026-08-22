@@ -6,6 +6,10 @@
   themeScript.src = '/js/theme-toggle.js?v=theme-control-1';
   document.head.append(themeScript);
 
+  const accessibilityScript = document.createElement('script');
+  accessibilityScript.src = '/js/accessibility.js?v=accessibility-1';
+  document.head.append(accessibilityScript);
+
   const toggle = document.createElement('button');
   toggle.type = 'button';
   toggle.className = 'mobile-nav-toggle';
@@ -28,6 +32,7 @@
     document.body.classList.add('mobile-nav-open');
     toggle.setAttribute('aria-expanded', 'true');
     toggle.setAttribute('aria-label', 'Close navigation');
+    sidebar.querySelector('a')?.focus();
   };
 
   toggle.addEventListener('click', () => {
