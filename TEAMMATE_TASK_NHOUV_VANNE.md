@@ -21,43 +21,13 @@ Use your own phone or tablet to check the StudentOS website. Record what you act
 
 ## Your Real Deliverable
 
-Create a new file named:
+Complete the prepared file:
 
 ```text
 docs/mobile-usability-review.md
 ```
 
-Use this honest template:
-
-```md
-# Mobile Usability Review
-
-**Reviewer:** Nhouv Vanne  
-**Device:** [example: Android phone / iPhone / tablet]  
-**Browser:** [example: Chrome / Safari]  
-**Review date:** [date]  
-
-## Checks
-
-| Check | Result | Notes |
-| --- | --- | --- |
-| Public home page readable | Pass / Issue | [What you observed] |
-| Navigation drawer opens and closes | Pass / Issue | [What you observed] |
-| Navigation link works | Pass / Issue | [What you observed] |
-| Theme setting persists across a page change | Pass / Issue | [What you observed] |
-| Dashboard is readable | Pass / Issue | [What you observed] |
-| Schedule is readable | Pass / Issue | [What you observed] |
-| Messages is readable | Pass / Issue | [What you observed] |
-| Notifications is readable | Pass / Issue | [What you observed] |
-
-## One Strength
-
-[Describe one real thing that worked well.]
-
-## One Improvement Idea
-
-[Describe one real improvement. If you found no issue, write “No major issue observed in this review.”]
-```
+The file already contains checkboxes, device details, public-page checks, signed-in navigation checks, workspace checks, optional accessibility checks, and an honest summary section. Fill it only after the real review.
 
 ## GitHub Steps
 
