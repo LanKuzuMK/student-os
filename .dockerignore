@@ -1,0 +1,8 @@
+# Publish only the files required by the StudentOS Docker build.
+# This protects local notes, archives, environment files, and other non-source artifacts.
+*
+!Dockerfile
+!docker-entrypoint.sh
+!pom.xml
+!src/
+!src/**
