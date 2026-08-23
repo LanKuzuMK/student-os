@@ -14,7 +14,7 @@ This record covers non-disruptive supply-chain and container-runtime hardening a
 | Package publication | Container publishing runs only for a published GitHub Release. | Prevents an ordinary branch push or ad hoc workflow dispatch from changing the public package. |
 | Image transparency | The release build generates provenance and an SBOM. | Gives consumers metadata about how the registry image was built and what it contains. |
 | Container verification | A separate GitHub Actions workflow builds the Docker image on main-branch changes and pull requests without pushing it. | Detects Dockerfile build regressions before a future release is eligible to publish an image. |
-| Continuous review | Dependabot configuration reviews Maven, Docker, and GitHub Actions dependencies weekly. | Surfaces available dependency updates for human review. |
+| Continuous review | Dependabot reviews Maven, Docker, and GitHub Actions dependencies weekly; vulnerability alerts and automated security-fix pull requests are enabled in GitHub. | Surfaces available dependency updates and available security patches for human review. |
 | Static analysis | CodeQL analyzes Java and workflow configuration on main-branch changes, pull requests, and a weekly schedule. | Adds automated detection for supported code and workflow risks. |
 
 ## Operator Controls That Remain Essential
