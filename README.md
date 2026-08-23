@@ -2,124 +2,154 @@
 
 ![StudentOS](src/main/webapp/assets/studentos-logo-transparent.png)
 
-> A Java web platform made for students to manage their work, grow their skills, and connect with other students.
+> **StudentOS is a Java web platform for student planning, profiles, skills discovery, communication, collaboration, and role-aware community administration.**
 
 [![Java 17](https://img.shields.io/badge/Java-17-1f6feb?style=flat-square&logo=openjdk&logoColor=white)](https://openjdk.org/)
 [![Jakarta EE](https://img.shields.io/badge/Jakarta_EE-Servlets_%2B_JSP-5d5ce2?style=flat-square)](https://jakarta.ee/)
 [![PostgreSQL](https://img.shields.io/badge/PostgreSQL-Neon-336791?style=flat-square&logo=postgresql&logoColor=white)](https://neon.tech/)
 [![Tomcat 11](https://img.shields.io/badge/Tomcat-11-f8dc75?style=flat-square&logo=apachetomcat&logoColor=black)](https://tomcat.apache.org/)
 [![Maven](https://img.shields.io/badge/Maven-WAR-C71A36?style=flat-square&logo=apachemaven&logoColor=white)](https://maven.apache.org/)
-[![Render](https://img.shields.io/badge/Deployed_on-Render-46E3B7?style=flat-square&logo=render&logoColor=white)](https://student-os-v2.onrender.com/)
+[![Render](https://img.shields.io/badge/Hosted_on-Render-46E3B7?style=flat-square&logo=render&logoColor=white)](https://student-os-v2.onrender.com/)
 
-[Live Demo](https://student-os-v2.onrender.com/) · [Setup Guide](SETUP.md) · [Database Notes](DATABASE.md) · [Contributing](CONTRIBUTING.md)
+[Live Application](https://student-os-v2.onrender.com/) · [Setup](SETUP.md) · [Local Development](LOCAL_DEVELOPMENT.md) · [Database Notes](DATABASE.md) · [Contributing](CONTRIBUTING.md) · [Security](SECURITY.md)
 
 ---
 
-## About the Project
+## Purpose
 
-StudentOS is a university web project built to put common student activities in one simple platform. Instead of keeping study tasks, goals, skill notes, and contacts in different places, students can use one dashboard to plan their work and meet classmates.
+StudentOS brings common student activities into one structured workspace. Students can plan work, track goals, build a visible profile, discover classmates with relevant skills, communicate safely, save opportunities, and collaborate through project-oriented features. Staff users have separate protected tools for moderation, audit review, account oversight, and a non-sensitive health check.
 
-I built this project with Java, Jakarta Servlets, JSP, PostgreSQL, and Apache Tomcat. The project follows a simple MVC structure, so the controller, data access, models, and pages are separated. This makes the project easier to understand, improve, and present as a second-year student project.
+The project is designed as a **strong Tier 3 pilot foundation**: it has real cloud persistence, role-aware access control, production-readiness checks, and an honest roadmap for further real-device and multi-user validation. It is not described as an enterprise platform.
 
-## What Students Can Do
+## Core Capabilities
 
-| Area | Main functions |
-|---|---|
-| Dashboard | View current tasks, progress, and quick student activity in one workspace. |
-| Tasks and goals | Create tasks, finish tasks, manage goals, update goal progress, and remove completed tasks from the schedule. |
-| Skills | Add personal skills, discover other student skills, and find classmates for collaboration. |
-| Messages | Contact another student by email, see unread-message badges, and delete private conversation history. |
-| Freelance area | Browse student freelance jobs and services in the same platform. |
-| Accounts | Register, verify an account with the demo OTP flow, sign in, and sign out safely. |
+| Area | Current capability |
+| --- | --- |
+| Personal workspace | Dashboard, tasks, schedule, goals, progress tracking, and completed-task cleanup. |
+| Profiles and discovery | Student profiles, skills, social links, saved items, and discovery of relevant classmates or opportunities. |
+| Communication | Email-based recipient lookup, inbox, unread state, notifications, conversation controls, blocking, and reporting. |
+| Collaboration | Project spaces and student-focused collaboration context. |
+| Account safety | Registration, emailed verification and recovery flows, password changes, session revocation, and persistent sessions with an inactivity boundary. |
+| Governance | Protected staff routes, reports, moderation controls, audit search, paginated administration, and a read-only health diagnostic. |
+| Responsive experience | Mobile navigation drawer, saved light/dark appearance, keyboard-focus support, and clear empty states. |
 
-## Main Technology
+## Technology and Architecture
 
-| Layer | Tools used |
-|---|---|
-| Backend | Java 17, Jakarta Servlets, JSP |
-| Build | Apache Maven with WAR packaging |
-| Server | Apache Tomcat 11 |
-| Database | PostgreSQL on Neon |
-| Database pool | HikariCP |
-| Security | jBCrypt password hashing |
-| Frontend | JSP, JSTL, CSS, SVG icons |
-| Hosting | Docker and Render |
+| Layer | Technology | Responsibility |
+| --- | --- | --- |
+| Web interface | JSP, JSTL, CSS, JavaScript | Server-rendered pages, responsive layout, accessibility, and visual design. |
+| Application layer | Java 17, Jakarta Servlets | Routes, validation, role checks, request handling, and page responses. |
+| Data access | JDBC, DAO pattern, HikariCP | Parameterized PostgreSQL queries and connection management. |
+| Database | PostgreSQL on Neon | Relational storage for users, workspaces, communication, reports, and audit data. |
+| Security | BCrypt, CSRF validation, access filters | Password protection, request safety, ownership checks, role boundaries, and session control. |
+| Delivery | Maven, WAR, Docker, Tomcat 11, Render | Repeatable build, containerized deployment, and managed hosting. |
+| Email | Brevo HTTPS transactional delivery | Account verification and recovery messages. |
+
+StudentOS follows a practical MVC-style structure:
+
+```text
+Browser / JSP page
+        ↓
+Servlet controller and request filters
+        ↓
+Validation, ownership, and role checks
+        ↓
+DAO layer and parameterized JDBC queries
+        ↓
+PostgreSQL on Neon
+        ↓
+Updated JSP response
+```
+
+## Security and Operational Boundaries
+
+- Passwords are verified with BCrypt hashes; they are never stored as readable text.
+- Protected actions validate the signed-in user, role, ownership, and CSRF token where applicable.
+- Staff administration is separated from the student workspace by protected server-side routes.
+- Persistent sessions are revocable on logout, password changes, account-status changes, and authentication-version changes. A valid session uses a rolling inactivity boundary.
+- The staff health page performs a read-only availability check and does not expose credentials, connection strings, reset codes, or secrets.
+- Profile-photo processing is intentionally constrained to keep database storage appropriate for the free Neon tier. Media-heavy features such as video uploads are not part of the current scope.
+
+See [SECURITY.md](SECURITY.md) for responsible reporting guidance.
 
 ## Project Structure
 
 ```text
 student-os/
 ├── src/main/java/com/studentos/
-│   ├── config/       # application startup configuration
-│   ├── controller/   # servlet controllers and routes
-│   ├── dao/          # PostgreSQL queries and data access
-│   ├── filter/       # authentication and unread-message helpers
-│   ├── model/        # Java data models
-│   ├── service/      # business logic
-│   └── util/         # database connection and migrations
+│   ├── controller/     # servlet routes and request handling
+│   ├── dao/            # PostgreSQL queries and data access
+│   ├── filter/         # authentication, request, and UI-support filters
+│   ├── model/          # Java domain models
+│   ├── service/        # business services such as email delivery
+│   └── util/           # database, migrations, sessions, and shared utilities
 ├── src/main/webapp/
-│   ├── WEB-INF/      # servlet and filter mappings
-│   ├── assets/       # logo and SVG icon assets
-│   ├── css/          # StudentOS design system
-│   └── views/        # JSP pages
-├── database/          # reference database schema
-├── Dockerfile         # Maven build and Tomcat runtime image
-├── render.yaml        # Render service configuration
-└── pom.xml            # Maven dependencies and WAR build settings
+│   ├── WEB-INF/        # servlet, filter, and error configuration
+│   ├── assets/         # StudentOS brand assets
+│   ├── css/            # shared light/dark responsive design system
+│   ├── js/             # navigation, accessibility, and theme behavior
+│   └── views/          # JSP pages
+├── database/           # reference schema
+├── docs/               # public project documentation
+├── Dockerfile          # Maven build and Tomcat runtime image
+├── render.yaml         # Render service configuration
+└── pom.xml             # Maven dependencies and WAR build configuration
 ```
 
-## Run It Locally
+## Local Development
 
-### 1. Requirements
+### Requirements
 
-Install Java 17, Apache Maven, Docker, and a PostgreSQL database. Neon PostgreSQL is recommended because it matches the deployed project.
+Install Java 17, Apache Maven, Docker, and access to a PostgreSQL database. The deployed system uses Neon PostgreSQL, but a compatible local PostgreSQL database may also be used for development.
 
-### 2. Configure the database
+### Configure environment variables
 
-Copy the example environment file and add your own Neon connection string. Do not commit the real `.env` file.
+Copy the example environment file and add **your own** database connection details. Never commit real environment files, passwords, reset codes, API keys, or production connection strings.
 
 ```bash
 cp .env.example .env
 ```
 
-Set `DATABASE_URL` in `.env` with the full Neon pooled connection string. Keep the `sslmode=require` parameters supplied by Neon.
-
-### 3. Build the application
+### Build and test
 
 ```bash
-mvn clean package
+mvn -q test
+mvn -q package
 ```
 
-Maven creates the deployable file at `target/student-os.war`.
+The deployable WAR is created at `target/student-os.war`.
 
-### 4. Run with Docker
+### Run with Docker
 
 ```bash
 docker build -t student-os .
 docker run --rm --env-file .env -p 8080:8080 student-os
 ```
 
-Open [http://localhost:8080](http://localhost:8080) in your browser.
+Open [http://localhost:8080](http://localhost:8080) in a browser.
 
-## Deploy on Render
+## Deployment
 
-This repository includes `render.yaml` for the Docker web service. In Render, add `DATABASE_URL` as a secret environment variable and use the full Neon connection string. The container reads the port assigned by Render and starts Tomcat on that port.
+The repository includes `render.yaml` for the Docker web service. Configure production secrets through the hosting environment rather than storing them in the repository. The current hosted application is available at [student-os-v2.onrender.com](https://student-os-v2.onrender.com/).
 
-The current live project is available at [student-os-v2.onrender.com](https://student-os-v2.onrender.com/).
+Before a broader rollout, validate the system with real devices and at least two independent student accounts. The current project has completed owner-controlled browser, route-boundary, workflow-cleanup, source-build, and controlled-restart checks.
 
-## Demo Account
+## Team and Planned Responsibilities
 
-For a quick project review, use the following demo account:
+StudentOS is a university project maintained under the **MKV Team** name. The table below describes planned team responsibilities; it does **not** claim completed code authorship or testing that has not yet happened.
 
-```text
-Email: mong@example.com
-Password: password
-```
+| Team member | Planned responsibility | Planned contribution outcome |
+| --- | --- | --- |
+| **[Project owner]** | Application development, architecture, and deployment coordination | Maintains the Java application, deployment workflow, and technical direction. |
+| **Khon Sokkheng** | Quality assurance and user-acceptance testing | Reviews student workflows, records real findings, and helps prioritize usability fixes. |
+| **Nhouv Vanne** | Mobile usability and documentation review | Reviews responsive behavior on real devices and helps improve clear project documentation. |
 
-## Notes for the Project
+When a team member completes real work, document the specific contribution through their own commit or pull request and update this section accordingly.
 
-This project was designed and developed by **MKV Team** as a university project. The goal is not only to make a nice interface, but also to practice real Java web development topics such as MVC structure, authentication, JSP rendering, database connections, CRUD operations, and deployment.
+## Contributing
+
+Please read [CONTRIBUTING.md](CONTRIBUTING.md). Keep changes focused, test the affected behavior, use your own account for your contributions, and do not commit secrets or personal test data.
 
 ## License
 
-StudentOS is available under the [MIT License](LICENSE). Copyright © 2026 MKV Team.
+StudentOS is available under the [MIT License](LICENSE). Copyright © 2026 **MKV Team**.
