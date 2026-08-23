@@ -15,6 +15,7 @@ This record covers non-disruptive supply-chain and container-runtime hardening a
 | Image transparency | The release build generates provenance and an SBOM. | Gives consumers metadata about how the registry image was built and what it contains. |
 | Container verification | A separate GitHub Actions workflow builds the Docker image on main-branch changes and pull requests without pushing it. | Detects Dockerfile build regressions before a future release is eligible to publish an image. |
 | Continuous review | Dependabot reviews Maven, Docker, and GitHub Actions dependencies weekly; vulnerability alerts and automated security-fix pull requests are enabled in GitHub. | Surfaces available dependency updates and available security patches for human review. |
+| Runtime dependency patch | PostgreSQL JDBC was upgraded from `42.7.2` to the patched `42.7.13` release after Dependabot reported the affected version range. | Removes the reported SCRAM authentication CPU-exhaustion exposure in the application’s PostgreSQL driver. |
 | Static analysis | CodeQL analyzes Java and workflow configuration on main-branch changes, pull requests, and a weekly schedule. | Adds automated detection for supported code and workflow risks. |
 
 ## Operator Controls That Remain Essential
