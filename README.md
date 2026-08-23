@@ -11,7 +11,7 @@
 [![Maven](https://img.shields.io/badge/Maven-WAR-C71A36?style=flat-square&logo=apachemaven&logoColor=white)](https://maven.apache.org/)
 [![Render](https://img.shields.io/badge/Hosted_on-Render-46E3B7?style=flat-square&logo=render&logoColor=white)](https://student-os-v2.onrender.com/)
 
-[Live Application](https://student-os-v2.onrender.com/) · [Setup](SETUP.md) · [Local Development](LOCAL_DEVELOPMENT.md) · [Database Notes](DATABASE.md) · [Contributing](CONTRIBUTING.md) · [Security](SECURITY.md)
+[Live Application](https://student-os-v2.onrender.com/) · [Setup](SETUP.md) · [Local Development](LOCAL_DEVELOPMENT.md) · [Database Notes](DATABASE.md) · [Render Credential Guide](docs/RENDER_CREDENTIAL_MANAGEMENT.md) · [Contributing](CONTRIBUTING.md) · [Security](SECURITY.md)
 
 ---
 
@@ -161,6 +161,8 @@ For a source-level build instead of the published image, use the preceding **Run
 ## Deployment
 
 The repository includes `render.yaml` for the Docker web service. Configure production secrets through the hosting environment rather than storing them in the repository. The current hosted application is available at [student-os-v2.onrender.com](https://student-os-v2.onrender.com/).
+
+The service’s production database URL is deliberately supplied only through Render runtime configuration. Read [Render Credential Management](docs/RENDER_CREDENTIAL_MANAGEMENT.md) before changing deployment variables, rotating credentials, or working with the published Docker image.
 
 Before a broader rollout, validate the system with real devices and at least two independent student accounts. The current project has completed owner-controlled browser, route-boundary, workflow-cleanup, source-build, and controlled-restart checks.
 

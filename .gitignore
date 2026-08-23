@@ -9,6 +9,39 @@ tomcat.log
 maven.zip
 maven/
 cloudflared.exe
+# Local environment and machine-specific configuration.
+# Keep only explicitly safe templates under version control.
 .env
 .env.*
+*.env
+.envrc
 !.env.example
+!.env.*.example
+!*.env.example
+
+# Private application configuration and developer overrides.
+config/local/
+config/private/
+config/secrets/
+config/overrides/
+*.local.*
+*.private.*
+*.secret.*
+*-local.*
+*-private.*
+*-secret.*
+application-local.*
+application-private.*
+application-secret.*
+docker-compose.override.yml
+docker-compose.override.yaml
+compose.override.yml
+compose.override.yaml
+
+# Credential containers and local key material.
+*.pem
+*.key
+*.p12
+*.pfx
+*.jks
+*.keystore
