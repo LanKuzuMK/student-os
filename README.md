@@ -140,7 +140,7 @@ StudentOS is a university project maintained under the **MKV Team** name. The ta
 
 | Team member | Planned responsibility | Planned contribution outcome |
 | --- | --- | --- |
-| **[Project owner]** | Application development, architecture, and deployment coordination | Maintains the Java application, deployment workflow, and technical direction. |
+| **MK** | Application development, architecture, and deployment coordination | Maintains the Java application, deployment workflow, and technical direction. |
 | **Khon Sokkheng** | Quality assurance and user-acceptance testing | Reviews student workflows, records real findings, and helps prioritize usability fixes. |
 | **Nhouv Vanne** | Mobile usability and documentation review | Reviews responsive behavior on real devices and helps improve clear project documentation. |
 
