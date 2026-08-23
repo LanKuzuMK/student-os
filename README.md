@@ -128,6 +128,36 @@ docker run --rm --env-file .env -p 8080:8080 student-os
 
 Open [http://localhost:8080](http://localhost:8080) in a browser.
 
+### Run the published Docker package
+
+The versioned StudentOS image is published through [GitHub Container Registry](https://github.com/LanKuzuMK/student-os/pkgs/container/student-os). Use the fixed release tag for a reproducible local review; `latest` may change when a later release is published.
+
+| Requirement | What to use |
+| --- | --- |
+| Container image | `ghcr.io/lankuzumk/student-os:v1.0.0-mkvteam` |
+| Environment file | Your private, untracked `.env` file created from `.env.example` |
+| Database | A PostgreSQL database you control for local development or testing |
+| Browser address | `http://localhost:8080` after the container starts |
+
+Create a local environment file and replace only its placeholder values with **your own** connection details. The image does not include an `.env` file, application accounts, or a database dump.
+
+```bash
+cp .env.example .env
+# Edit .env locally. Keep it out of Git and use a local or test database.
+```
+
+Then pull and run the published image:
+
+```bash
+docker pull ghcr.io/lankuzumk/student-os:v1.0.0-mkvteam
+docker run --rm --env-file .env -p 8080:8080 \
+  ghcr.io/lankuzumk/student-os:v1.0.0-mkvteam
+```
+
+> **Safety boundary:** Never place a production Neon URL, Render secret, password, reset code, or production user data in a local `.env` file. A container can access whichever database its environment variables point to, so use an isolated local or test database unless you deliberately intend otherwise.
+
+For a source-level build instead of the published image, use the preceding **Run with Docker** section. For more database setup detail, see [LOCAL_DEVELOPMENT.md](LOCAL_DEVELOPMENT.md).
+
 ## Deployment
 
 The repository includes `render.yaml` for the Docker web service. Configure production secrets through the hosting environment rather than storing them in the repository. The current hosted application is available at [student-os-v2.onrender.com](https://student-os-v2.onrender.com/).
