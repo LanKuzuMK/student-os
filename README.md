@@ -72,6 +72,8 @@ Updated JSP response
 
 See [SECURITY.md](SECURITY.md) for responsible reporting guidance.
 
+For the current supply-chain and container-runtime safeguards, see [Security Hardening Record](docs/SECURITY_HARDENING_2026-08.md).
+
 ## Project Structure
 
 ```text

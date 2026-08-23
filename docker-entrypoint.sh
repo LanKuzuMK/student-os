@@ -1,5 +1,6 @@
 #!/usr/bin/env sh
 set -eu
+umask 027
 
 : "${PORT:=8080}"
 case "$PORT" in
@@ -8,6 +9,11 @@ case "$PORT" in
     exit 1
     ;;
 esac
+
+if [ "$PORT" -lt 1 ] || [ "$PORT" -gt 65535 ]; then
+  echo "PORT must be between 1 and 65535" >&2
+  exit 1
+fi
 
 SERVER_XML="$CATALINA_HOME/conf/server.xml"
 
