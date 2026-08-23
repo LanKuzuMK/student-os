@@ -136,7 +136,7 @@ The versioned StudentOS image is published through [GitHub Container Registry](h
 
 | Requirement | What to use |
 | --- | --- |
-| Container image | `ghcr.io/lankuzumk/student-os:v1.0.0-mkvteam` |
+| Container image | `ghcr.io/lankuzumk/student-os:v1.0.1-mkvteam` |
 | Environment file | Your private, untracked `.env` file created from `.env.example` |
 | Database | A PostgreSQL database you control for local development or testing |
 | Browser address | `http://localhost:8080` after the container starts |
@@ -151,9 +151,9 @@ cp .env.example .env
 Then pull and run the published image:
 
 ```bash
-docker pull ghcr.io/lankuzumk/student-os:v1.0.0-mkvteam
+docker pull ghcr.io/lankuzumk/student-os:v1.0.1-mkvteam
 docker run --rm --env-file .env -p 8080:8080 \
-  ghcr.io/lankuzumk/student-os:v1.0.0-mkvteam
+  ghcr.io/lankuzumk/student-os:v1.0.1-mkvteam
 ```
 
 > **Safety boundary:** Never place a production Neon URL, Render secret, password, reset code, or production user data in a local `.env` file. A container can access whichever database its environment variables point to, so use an isolated local or test database unless you deliberately intend otherwise.
