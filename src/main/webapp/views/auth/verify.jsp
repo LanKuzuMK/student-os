@@ -37,6 +37,7 @@
                     <p>Enter the six-digit code sent to <strong><c:out value="${sessionScope.pendingEmail}"/></strong>.</p>
                     <c:if test="${param.error eq 'invalid'}"><div class="alert alert-error">That code is invalid, expired, or has reached its attempt limit. Start registration again to receive a new code.</div></c:if>
                     <form action="/auth/verify" method="POST" style="margin-top:18px;">
+                        <input type="hidden" name="csrfToken" value="<c:out value='${csrfToken}'/>">
                         <div class="form-group"><label class="form-label" for="otp">Verification code</label><input id="otp" type="text" inputmode="numeric" pattern="[0-9]{6}" name="otp" placeholder="123456" required maxlength="6" autocomplete="one-time-code" class="form-control verify-otp"></div>
                         <button type="submit" class="btn btn-primary" style="width:100%;">Verify account</button>
                     </form>

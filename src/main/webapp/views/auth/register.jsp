@@ -1,4 +1,5 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib uri="jakarta.tags.core" prefix="c" %>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -24,6 +25,7 @@
                 <div class="error-msg">We could not send a verification code. Check your details and try again shortly.</div>
             <% } %>
             <form action="/auth/register" method="POST">
+                <input type="hidden" name="csrfToken" value="<c:out value='${csrfToken}'/>">
                 <div class="form-group">
                     <label class="form-label" for="registerEmail">Email</label>
                     <input id="registerEmail" type="email" name="email" class="form-control" required autocomplete="email" placeholder="name@university.edu">

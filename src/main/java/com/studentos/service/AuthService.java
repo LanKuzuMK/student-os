@@ -23,7 +23,7 @@ public class AuthService {
             return null;
         }
         User user = userDAO.findByEmail(email.trim().toLowerCase());
-        if (user == null || "BANNED".equals(user.getStatus())) {
+        if (user == null || !"ACTIVE".equals(user.getStatus())) {
             return null;
         }
 
@@ -41,6 +41,19 @@ public class AuthService {
             return null;
         }
 
+        return registerUserWithPasswordHash(normalizedEmail, BCrypt.hashpw(password, BCrypt.gensalt()), firstName, lastName);
+    }
+
+    public String hashPasswordForPendingRegistration(String password) {
+        return InputValidator.isValidPassword(password) ? BCrypt.hashpw(password, BCrypt.gensalt()) : null;
+    }
+
+    public User registerUserWithPasswordHash(String email, String passwordHash, String firstName, String lastName) {
+        String normalizedEmail = email == null ? null : email.trim().toLowerCase();
+        if (!InputValidator.isValidEmail(normalizedEmail) || !isBcryptHash(passwordHash)) {
+            return null;
+        }
+
         String insertUser = "INSERT INTO users (email, password_hash, role) VALUES (?, ?, 'STUDENT') "
                 + "RETURNING id, email, role, status, auth_version, created_at";
         String insertProfile = "INSERT INTO profiles (user_id, first_name, last_name) VALUES (?, ?, ?)";
@@ -48,7 +61,7 @@ public class AuthService {
             connection.setAutoCommit(false);
             try (PreparedStatement userStatement = connection.prepareStatement(insertUser)) {
                 userStatement.setString(1, normalizedEmail);
-                userStatement.setString(2, BCrypt.hashpw(password, BCrypt.gensalt()));
+                userStatement.setString(2, passwordHash);
                 try (ResultSet result = userStatement.executeQuery()) {
                     if (!result.next()) {
                         connection.rollback();
@@ -80,6 +93,10 @@ public class AuthService {
         } catch (SQLException exception) {
             return null;
         }
+    }
+
+    private boolean isBcryptHash(String value) {
+        return value != null && value.matches("^\\$2[aby]\\$.{56}$");
     }
 
     public boolean startEmailVerification(String email) {

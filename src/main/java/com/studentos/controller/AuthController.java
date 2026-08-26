@@ -2,9 +2,10 @@ package com.studentos.controller;
 
 import com.studentos.model.User;
 import com.studentos.service.AuthService;
+import com.studentos.util.AccessPolicy;
+import com.studentos.util.AuthAttemptLimiter;
 import com.studentos.util.CsrfUtil;
 import com.studentos.util.InputValidator;
-import com.studentos.util.AccessPolicy;
 import com.studentos.util.PersistentSessionManager;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -15,58 +16,41 @@ import jakarta.servlet.http.HttpSession;
 
 import java.io.IOException;
 
-/**
- * Handles the application's explicit authentication endpoints.
- * Exact mappings avoid relying on a wildcard-path resolution in the deployed container.
- */
+/** Handles explicit authentication endpoints with request-forgery and abuse protections. */
 @WebServlet(
         name = "authController",
         urlPatterns = {
-                "/auth/login",
-                "/auth/register",
-                "/auth/verify",
-                "/auth/forgot",
-                "/auth/reset",
-                "/auth/logout"
+                "/auth/login", "/auth/register", "/auth/verify", "/auth/forgot", "/auth/reset", "/auth/logout"
         }
 )
 public class AuthController extends HttpServlet {
-    private final AuthService authService = new AuthService();
-    private final PersistentSessionManager persistentSessionManager = new PersistentSessionManager();
     private static final String PENDING_EMAIL = "pendingEmail";
-    private static final String PENDING_PASSWORD = "pendingPassword";
+    private static final String PENDING_PASSWORD_HASH = "pendingPasswordHash";
     private static final String PENDING_FIRST_NAME = "pendingFirstName";
     private static final String PENDING_LAST_NAME = "pendingLastName";
     private static final String RESET_EMAIL = "resetEmail";
+
+    private final AuthService authService = new AuthService();
+    private final PersistentSessionManager persistentSessionManager = new PersistentSessionManager();
+    private final AuthAttemptLimiter authAttempts = new AuthAttemptLimiter();
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         String route = getRoute(request);
-
         switch (route) {
-            case "/auth/login" ->
-                    request.getRequestDispatcher("/views/auth/login.jsp").forward(request, response);
-            case "/auth/register" ->
-                    request.getRequestDispatcher("/views/auth/register.jsp").forward(request, response);
-            case "/auth/verify" -> request.getRequestDispatcher("/views/auth/verify.jsp").forward(request, response);
-            case "/auth/forgot" -> {
-                CsrfUtil.getOrCreateToken(request);
-                request.getRequestDispatcher("/views/auth/forgot.jsp").forward(request, response);
-            }
+            case "/auth/login" -> forwardWithCsrf(request, response, "/views/auth/login.jsp");
+            case "/auth/register" -> forwardWithCsrf(request, response, "/views/auth/register.jsp");
+            case "/auth/verify" -> forwardWithCsrf(request, response, "/views/auth/verify.jsp");
+            case "/auth/forgot" -> forwardWithCsrf(request, response, "/views/auth/forgot.jsp");
             case "/auth/reset" -> {
                 if (request.getSession(false) == null || request.getSession(false).getAttribute(RESET_EMAIL) == null) {
                     response.sendRedirect(request.getContextPath() + "/auth/forgot?error=expired");
                     return;
                 }
-                CsrfUtil.getOrCreateToken(request);
-                request.getRequestDispatcher("/views/auth/reset.jsp").forward(request, response);
+                forwardWithCsrf(request, response, "/views/auth/reset.jsp");
             }
-            case "/auth/logout" -> {
-                persistentSessionManager.revokeCurrent(request, response);
-                request.getSession().invalidate();
-                response.sendRedirect(request.getContextPath() + "/auth/signin");
-            }
+            case "/auth/logout" -> response.sendRedirect(request.getContextPath() + "/auth/signin");
             default -> response.sendError(HttpServletResponse.SC_NOT_FOUND, "Authentication route not found");
         }
     }
@@ -75,6 +59,10 @@ public class AuthController extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         String route = getRoute(request);
+        if (requiresCsrf(route) && !CsrfUtil.hasValidToken(request)) {
+            response.sendError(HttpServletResponse.SC_FORBIDDEN);
+            return;
+        }
 
         switch (route) {
             case "/auth/login" -> handleLogin(request, response);
@@ -82,11 +70,7 @@ public class AuthController extends HttpServlet {
             case "/auth/verify" -> handleVerification(request, response);
             case "/auth/forgot" -> handleForgotPassword(request, response);
             case "/auth/reset" -> handlePasswordReset(request, response);
-            case "/auth/logout" -> {
-                persistentSessionManager.revokeCurrent(request, response);
-                request.getSession().invalidate();
-                response.sendRedirect(request.getContextPath() + "/auth/signin");
-            }
+            case "/auth/logout" -> handleLogout(request, response);
             default -> response.sendError(HttpServletResponse.SC_NOT_FOUND, "Authentication route not found");
         }
     }
@@ -97,56 +81,85 @@ public class AuthController extends HttpServlet {
         if (route != null && contextPath != null && route.startsWith(contextPath)) {
             route = route.substring(contextPath.length());
         }
-        return route == null ? "" : route.trim().replaceAll("[\\u200B-\\u200D\\uFEFF]", "");
+        return route == null ? "" : route.trim().replaceAll("[\u200B-\u200D\uFEFF]", "");
+    }
+
+    private boolean requiresCsrf(String route) {
+        return switch (route) {
+            case "/auth/login", "/auth/register", "/auth/verify", "/auth/forgot", "/auth/reset", "/auth/logout" -> true;
+            default -> false;
+        };
+    }
+
+    private void forwardWithCsrf(HttpServletRequest request, HttpServletResponse response, String view)
+            throws ServletException, IOException {
+        CsrfUtil.getOrCreateToken(request);
+        request.getRequestDispatcher(view).forward(request, response);
     }
 
     private void handleLogin(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        User user = authService.login(request.getParameter("email"), request.getParameter("password"));
-        if (user != null) {
-            establishAuthenticatedSession(request, response, user);
-            response.sendRedirect(request.getContextPath() + AccessPolicy.postLoginPath(user.getRole()));
-        } else {
-            response.sendRedirect(request.getContextPath() + "/auth/signin?error=1");
+        String email = request.getParameter("email");
+        String remoteAddress = request.getRemoteAddr();
+        if (!authAttempts.isAllowed("login", remoteAddress, email)) {
+            redirectToLoginError(request, response);
+            return;
         }
+        User user = authService.login(email, request.getParameter("password"));
+        if (user == null) {
+            authAttempts.recordFailure("login", remoteAddress, email);
+            redirectToLoginError(request, response);
+            return;
+        }
+        authAttempts.recordSuccess("login", remoteAddress, email);
+        establishAuthenticatedSession(request, response, user);
+        response.sendRedirect(request.getContextPath() + AccessPolicy.postLoginPath(user.getRole()));
     }
 
     private void handleRegistrationRequest(HttpServletRequest request, HttpServletResponse response) throws IOException {
         String email = request.getParameter("email");
         String password = request.getParameter("password");
+        String remoteAddress = request.getRemoteAddr();
+        if (!authAttempts.isAllowed("registration", remoteAddress, email)) {
+            response.sendRedirect(request.getContextPath() + "/auth/register?error=throttled");
+            return;
+        }
         if (!InputValidator.isValidEmail(email) || !InputValidator.isValidPassword(password)) {
+            authAttempts.recordFailure("registration", remoteAddress, email);
             response.sendRedirect(request.getContextPath() + "/auth/register?error=invalid");
             return;
         }
 
         String normalizedEmail = email.trim().toLowerCase();
         if (!authService.startEmailVerification(normalizedEmail)) {
+            authAttempts.recordFailure("registration", remoteAddress, normalizedEmail);
             response.sendRedirect(request.getContextPath() + "/auth/register?error=delivery");
             return;
         }
         HttpSession session = request.getSession();
         session.setAttribute(PENDING_EMAIL, normalizedEmail);
-        session.setAttribute(PENDING_PASSWORD, password);
+        session.setAttribute(PENDING_PASSWORD_HASH, authService.hashPasswordForPendingRegistration(password));
         session.setAttribute(PENDING_FIRST_NAME, request.getParameter("firstName"));
         session.setAttribute(PENDING_LAST_NAME, request.getParameter("lastName"));
+        authAttempts.recordSuccess("registration", remoteAddress, normalizedEmail);
         response.sendRedirect(request.getContextPath() + "/auth/verify");
     }
 
     private void handleVerification(HttpServletRequest request, HttpServletResponse response) throws IOException {
         HttpSession session = request.getSession(false);
-        if (session == null || session.getAttribute(PENDING_EMAIL) == null || session.getAttribute(PENDING_PASSWORD) == null) {
+        if (session == null || session.getAttribute(PENDING_EMAIL) == null
+                || session.getAttribute(PENDING_PASSWORD_HASH) == null) {
             response.sendRedirect(request.getContextPath() + "/auth/register?error=expired");
             return;
         }
         String email = (String) session.getAttribute(PENDING_EMAIL);
-        String code = request.getParameter("otp");
-        if (!authService.verifyEmailCode(email, code)) {
+        if (!authService.verifyEmailCode(email, request.getParameter("otp"))) {
             response.sendRedirect(request.getContextPath() + "/auth/verify?error=invalid");
             return;
         }
 
-        User user = authService.registerUser(
+        User user = authService.registerUserWithPasswordHash(
                 email,
-                (String) session.getAttribute(PENDING_PASSWORD),
+                (String) session.getAttribute(PENDING_PASSWORD_HASH),
                 (String) session.getAttribute(PENDING_FIRST_NAME),
                 (String) session.getAttribute(PENDING_LAST_NAME)
         );
@@ -157,31 +170,31 @@ public class AuthController extends HttpServlet {
         establishAuthenticatedSession(request, response, user);
         HttpSession authenticatedSession = request.getSession();
         authenticatedSession.removeAttribute(PENDING_EMAIL);
-        authenticatedSession.removeAttribute(PENDING_PASSWORD);
+        authenticatedSession.removeAttribute(PENDING_PASSWORD_HASH);
         authenticatedSession.removeAttribute(PENDING_FIRST_NAME);
         authenticatedSession.removeAttribute(PENDING_LAST_NAME);
         response.sendRedirect(request.getContextPath() + "/dashboard");
     }
 
     private void handleForgotPassword(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        if (!CsrfUtil.hasValidToken(request)) {
-            response.sendError(HttpServletResponse.SC_FORBIDDEN);
-            return;
-        }
         HttpSession session = request.getSession();
         session.removeAttribute(RESET_EMAIL);
         String email = request.getParameter("email");
+        String remoteAddress = request.getRemoteAddr();
+        if (!authAttempts.isAllowed("password-reset", remoteAddress, email)) {
+            response.sendRedirect(request.getContextPath() + "/auth/forgot?sent=1");
+            return;
+        }
         if (InputValidator.isValidEmail(email) && authService.startPasswordReset(email)) {
             session.setAttribute(RESET_EMAIL, email.trim().toLowerCase());
+            authAttempts.recordSuccess("password-reset", remoteAddress, email);
+        } else {
+            authAttempts.recordFailure("password-reset", remoteAddress, email);
         }
         response.sendRedirect(request.getContextPath() + "/auth/forgot?sent=1");
     }
 
     private void handlePasswordReset(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        if (!CsrfUtil.hasValidToken(request)) {
-            response.sendError(HttpServletResponse.SC_FORBIDDEN);
-            return;
-        }
         HttpSession session = request.getSession(false);
         String email = session == null ? null : (String) session.getAttribute(RESET_EMAIL);
         String newPassword = request.getParameter("newPassword");
@@ -194,8 +207,20 @@ public class AuthController extends HttpServlet {
         response.sendRedirect(request.getContextPath() + "/auth/signin?reset=1");
     }
 
+    private void handleLogout(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        persistentSessionManager.revokeCurrent(request, response);
+        HttpSession session = request.getSession(false);
+        if (session != null) {
+            session.invalidate();
+        }
+        response.sendRedirect(request.getContextPath() + "/auth/signin");
+    }
+
+    private void redirectToLoginError(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        response.sendRedirect(request.getContextPath() + "/auth/signin?error=1");
+    }
+
     private void establishAuthenticatedSession(HttpServletRequest request, HttpServletResponse response, User user) {
         persistentSessionManager.establish(request, response, user);
     }
-
 }

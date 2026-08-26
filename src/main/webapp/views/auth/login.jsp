@@ -1,4 +1,5 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib uri="jakarta.tags.core" prefix="c" %>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -28,6 +29,7 @@
                 <div class="success-msg">Your password was reset. Sign in with your new password.</div>
             <% } %>
             <form action="/auth/signin" method="POST">
+                <input type="hidden" name="csrfToken" value="<c:out value='${csrfToken}'/>">
                 <div class="form-group">
                     <label class="form-label">Email</label>
                     <input type="email" name="email" class="form-control" required placeholder="name@university.edu">

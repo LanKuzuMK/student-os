@@ -20,6 +20,9 @@ Provide only the minimum information needed to reproduce the issue safely:
 - BCrypt password verification.
 - Server-side authentication, role, ownership, and protected-route checks.
 - CSRF validation for relevant state-changing requests.
+- Request-forgery protection for sign-in, registration, verification, password-reset, and logout requests.
+- Generic in-memory abuse throttling for sign-in, registration, and password-reset initiation.
+- Browser security headers, including Content Security Policy, frame protection, content-type protection, referrer policy, permissions policy, and transport-security guidance.
 - Parameterized database access through JDBC and DAO classes.
 - Persistent session revocation on logout, password changes, account-status changes, and related authentication updates.
 - Read-only staff health diagnostics that do not expose secret connection details.
