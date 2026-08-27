@@ -810,3 +810,46 @@ body { background: var(--canvas); }
 html[data-theme="dark"] .card, html[data-theme="dark"] .panel, html[data-theme="dark"] .profile-form-card, html[data-theme="dark"] .goal-workspace, html[data-theme="dark"] .goal-manager, html[data-theme="dark"] .schedule-manager, html[data-theme="dark"] .dashboard-snapshot-card, html[data-theme="dark"] .goal-card, html[data-theme="dark"] .schedule-task-card, html[data-theme="dark"] .notification-row { background: #142038; border-color: #263853; }
 html[data-theme="dark"] .dashboard-activity-panel, html[data-theme="dark"] .network-card, html[data-theme="dark"] .project-team-note, html[data-theme="dark"] .goals-overview { background: #142038; border-color: #263853; }
 html[data-theme="dark"] .dashboard-activity-row { background: #172641; border-color: #2a3c58; }
+
+/* Stronger dashboard editorial treatment: preserve the existing structure and actions, reduce repeated large-card styling. */
+.dashboard-next-action { position: relative; min-height: 142px; padding: 27px 31px; background: #1b2b49; border: 1px solid #263d64; border-left: 5px solid #50c8b2; border-radius: 12px; box-shadow: 0 14px 28px rgba(25,40,70,.13); }
+.dashboard-next-action::before { position: absolute; top: 0; right: 0; bottom: 0; width: 31%; background: rgba(255,255,255,.035); content: ''; pointer-events: none; }
+.dashboard-next-action > * { position: relative; z-index: 1; }
+.dashboard-next-action .section-kicker { color: #71ddca; }
+.dashboard-next-action h2 { max-width: 680px; letter-spacing: -.8px; }
+.dashboard-next-action .btn-primary { color: #1d3150; background: #fff; box-shadow: none; }
+.dashboard-next-action .btn-primary:hover { color: #1d3150; background: #edf6f5; }
+.onboarding-card { padding: 28px 0 24px; background: transparent; border: 0; border-top: 1px solid #dfe6f0; border-radius: 0; box-shadow: none; }
+.onboarding-heading { margin-bottom: 17px; }
+.onboarding-heading h2 { max-width: 600px; font-size: 24px; letter-spacing: -.85px; }
+.onboarding-count { align-self: flex-start; padding: 6px 9px; color: #5561b6; background: #eef0fb; border-radius: 6px; }
+.onboarding-progress { height: 4px; margin-bottom: 17px; border-radius: 0; background: #e7ecf3; }
+.onboarding-progress i { border-radius: 0; background: #4e58bf; }
+.onboarding-steps { gap: 0; border: 1px solid #dfe6ee; border-radius: 10px; overflow: hidden; }
+.onboarding-step { min-height: 88px; padding: 16px 17px; background: #fff; border: 0; border-right: 1px solid #e1e7ee; border-radius: 0; }
+.onboarding-step:last-child { border-right: 0; }
+.onboarding-step:hover { background: #f8faff; transform: none; }
+.onboarding-step.is-complete { background: #f4fbf8; }
+.onboarding-state { width: 22px; height: 22px; border-radius: 5px; }
+.dashboard-snapshot-grid { gap: 0; padding: 19px 0; border-top: 1px solid #dfe6ef; border-bottom: 1px solid #dfe6ef; }
+.dashboard-snapshot-card { min-height: 92px; padding: 6px 22px; background: transparent; border: 0; border-right: 1px solid #dfe6ef; border-radius: 0; }
+.dashboard-snapshot-card:first-child { padding-left: 0; }
+.dashboard-snapshot-card:last-child { border-right: 0; }
+.dashboard-snapshot-card strong { color: #25375a; font-size: 29px; }
+.dashboard-snapshot-card a { color: #4f58ba; }
+.dashboard-personal-grid { margin-top: 28px; }
+.dashboard-focus-panel, .dashboard-activity-panel { border-top: 2px solid #5160bb; border-radius: 10px; box-shadow: none; }
+.dashboard-activity-panel { border-top-color: #5bbfad; background: #f7fafb; }
+.dashboard-goals-section { padding-top: 28px; background: transparent; border: 0; border-top: 1px solid #dfe6ef; border-radius: 0; box-shadow: none; }
+html[data-theme="dark"] .dashboard-next-action { background: #101d34; border-color: #304a75; border-left-color: #64d2bd; }
+html[data-theme="dark"] .dashboard-next-action .btn-primary { color: #dce7f7; background: #263b60; }
+html[data-theme="dark"] .onboarding-card, html[data-theme="dark"] .dashboard-snapshot-grid, html[data-theme="dark"] .dashboard-goals-section { border-color: #2b3b57; }
+html[data-theme="dark"] .onboarding-steps { border-color: #2b3b57; }
+html[data-theme="dark"] .onboarding-step { background: #14213a; border-color: #2b3b57; }
+html[data-theme="dark"] .onboarding-step:hover { background: #182843; }
+html[data-theme="dark"] .onboarding-step.is-complete { background: #15362f; }
+html[data-theme="dark"] .dashboard-snapshot-card { border-color: #2b3b57; }
+html[data-theme="dark"] .dashboard-snapshot-card strong { color: #e7edf9; }
+html[data-theme="dark"] .dashboard-activity-panel { background: #142038; }
+@media (max-width: 900px) { .onboarding-step { border-right: 0; border-bottom: 1px solid #e1e7ee; }.onboarding-step:nth-last-child(-n+2) { border-bottom: 0; }.dashboard-snapshot-card { padding: 11px 16px; }.dashboard-snapshot-card:first-child { padding-left: 16px; } }
+@media (max-width: 620px) { .dashboard-next-action { padding: 23px; }.dashboard-next-action::before { display: none; }.onboarding-card { padding-top: 23px; }.onboarding-steps { grid-template-columns: 1fr; }.onboarding-step, .onboarding-step:nth-last-child(-n+2) { border-right: 0; border-bottom: 1px solid #e1e7ee; }.onboarding-step:last-child { border-bottom: 0; }.dashboard-snapshot-grid { gap: 14px 0; }.dashboard-snapshot-card { min-height: 0; padding: 4px 16px; } }
