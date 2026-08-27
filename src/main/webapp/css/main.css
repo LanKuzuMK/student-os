@@ -1317,3 +1317,52 @@ html[data-theme="dark"] .account-chip::before { background-color: #1f3b67; backg
   .onboarding-step { min-height: 82px; padding: 16px; }
   .dashboard-snapshot-grid { margin-top: 4px; padding-top: 20px; }
 }
+
+/* Administrator light rail: override the original dark-first control-room selectors so the rail is one continuous, readable light surface. */
+.admin-shell { color: #17243c; background: var(--workspace-canvas); }
+.admin-rail {
+  color: #28354e;
+  background: #fff;
+  border-right: 1px solid #dfe3e9;
+  box-shadow: none;
+}
+.admin-rail::before { background: #dfe3e9; }
+.admin-rail-logo, .admin-brand { color: #101b35; border-bottom-color: #dfe3e9; }
+.admin-rail-logo::before, .admin-brand::before { filter: none; }
+.admin-rail-logo span, .admin-brand span { color: #34488f; background: #edf0fb; border-color: #dce2f6; }
+.admin-nav::before, .admin-rail nav::before { color: #778197; }
+.admin-nav a, .admin-rail nav a { color: #2f3b54; }
+.admin-nav a::before, .admin-rail nav a::before { color: #8490a4; opacity: .7; }
+.admin-nav a:hover, .admin-rail nav a:hover { color: #182f82; background: #f0f3fa; border-color: #e2e6ef; transform: none; }
+.admin-nav a.active, .admin-rail nav a.active { color: #182f82; background: #e8edfb; border-color: #d6ddf6; box-shadow: inset 3px 0 0 #263daa; }
+.admin-nav a[href="/dashboard"], .admin-rail nav a[href="/dashboard"] { color: #3e5297; border-top-color: #dfe3e9; border-radius: 0; }
+.admin-rail-footer { background: #fff; border-top-color: #dfe3e9; }
+.admin-rail-footer::before { color: #747f93; }
+.admin-rail-footer a { color: #b13d51; border-radius: 4px; }
+.admin-rail-footer a:hover { color: #8e2c40; background: #fff1f3; }
+.admin-rail .theme-control { color: #27344d; background: #f5f7fa; border-color: #e0e5ec; box-shadow: none; }
+.admin-rail .theme-control-eyebrow { color: #7d8799; }
+.admin-rail .theme-control-copy strong { color: #1a2740; }
+.admin-rail .theme-toggle { background: #c9d2df; border-color: #b8c3d2; }
+.admin-rail .theme-toggle[aria-pressed="true"] { background: #263daa; border-color: #263daa; }
+
+html[data-theme="dark"] .admin-shell { color: #e7eef9; background: var(--workspace-canvas); }
+html[data-theme="dark"] .admin-rail { color: var(--rail-ink); background: var(--rail-bg); border-right-color: var(--rail-rule); }
+html[data-theme="dark"] .admin-rail::before { background: var(--rail-rule); }
+html[data-theme="dark"] .admin-rail-logo, html[data-theme="dark"] .admin-brand { color: #f4f7ff; border-bottom-color: var(--rail-rule); }
+html[data-theme="dark"] .admin-rail-logo span, html[data-theme="dark"] .admin-brand span { color: #c7d3ff; background: #1a3260; border-color: #35527e; }
+html[data-theme="dark"] .admin-nav::before, html[data-theme="dark"] .admin-rail nav::before { color: #91a3c2; }
+html[data-theme="dark"] .admin-nav a, html[data-theme="dark"] .admin-rail nav a { color: #c6d2e6; }
+html[data-theme="dark"] .admin-nav a::before, html[data-theme="dark"] .admin-rail nav a::before { color: #9cafcf; }
+html[data-theme="dark"] .admin-nav a:hover, html[data-theme="dark"] .admin-rail nav a:hover { color: #fff; background: var(--rail-hover); border-color: #2a476f; }
+html[data-theme="dark"] .admin-nav a.active, html[data-theme="dark"] .admin-rail nav a.active { color: #fff; background: var(--rail-active); border-color: #365789; box-shadow: inset 3px 0 0 var(--workspace-teal); }
+html[data-theme="dark"] .admin-nav a[href="/dashboard"], html[data-theme="dark"] .admin-rail nav a[href="/dashboard"] { color: #c6d4f9; border-top-color: var(--rail-rule); }
+html[data-theme="dark"] .admin-rail-footer { background: var(--rail-bg); border-top-color: var(--rail-rule); }
+html[data-theme="dark"] .admin-rail-footer::before { color: #91a3c2; }
+html[data-theme="dark"] .admin-rail-footer a { color: #f2a1ac; }
+html[data-theme="dark"] .admin-rail-footer a:hover { color: #ffd7dc; background: rgba(177,61,81,.16); }
+html[data-theme="dark"] .admin-rail .theme-control { color: #e6effb; background: #102440; border-color: #2c466c; }
+html[data-theme="dark"] .admin-rail .theme-control-eyebrow { color: #9bafd0; }
+html[data-theme="dark"] .admin-rail .theme-control-copy strong { color: #f2f6fc; }
+html[data-theme="dark"] .admin-rail .theme-toggle { background: #344965; border-color: #526a88; }
+html[data-theme="dark"] .admin-rail .theme-toggle[aria-pressed="true"] { background: #5acbb7; border-color: #5acbb7; }
