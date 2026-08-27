@@ -2,7 +2,7 @@ services:
   - type: web
     name: student-os
     runtime: docker
-    healthCheckPath: /
+    healthCheckPath: /health
     envVars:
       - key: DATABASE_URL
         sync: false

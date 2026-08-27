@@ -12,7 +12,8 @@ This document records a focused Student OS readiness upgrade that improves secur
 | Request integrity | CSRF tokens are required for sign-in, registration, verification, password-reset, and logout POST requests. | Prevents cross-site request forgery on sensitive account actions. |
 | Registration privacy | The temporary registration session keeps a BCrypt password hash rather than the raw password. | Reduces exposure if server-side session data is inspected or logged incorrectly. |
 | Account status | Login accepts only active accounts. | Prevents a disabled or unverified account from receiving a new authenticated session. |
-| Browser hardening | Global Content Security Policy, frame protection, content-type protection, referrer policy, permissions policy, and HSTS headers. | Reduces browser-side attack surface and clickjacking risk. |
+| Browser hardening | Global Content Security Policy, frame protection, content-type protection, referrer policy, permissions policy, HSTS, and no-store caching for authenticated or account-related responses. | Reduces browser-side attack surface, clickjacking risk, and sensitive browser-cache exposure. |
+| Deployment readiness | Public minimal `/health` endpoint checks service readiness and database reachability without exposing diagnostic details. | Allows the host to stop routing traffic to a service that cannot reach its data store. |
 | Regression protection | Automated test coverage for authentication-attempt throttling. | Helps prevent future changes from silently removing the throttle behavior. |
 
 ## Operator checklist before a real-user release
@@ -38,4 +39,3 @@ Hosted protection against denial-of-service attacks, infrastructure compromise, 
 ## Safe project claim
 
 > Student OS uses layered application security controls and is being strengthened through automated checks, controlled releases, secure session handling, request protection, and operational review. It remains a university project that requires continued testing before any broader production use.
-

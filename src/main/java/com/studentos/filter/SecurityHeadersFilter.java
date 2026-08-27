@@ -6,6 +6,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.ServletRequest;
 import jakarta.servlet.ServletResponse;
 import jakarta.servlet.annotation.WebFilter;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
@@ -23,6 +24,7 @@ public class SecurityHeadersFilter implements Filter {
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
             throws IOException, ServletException {
+        HttpServletRequest httpRequest = (HttpServletRequest) request;
         HttpServletResponse httpResponse = (HttpServletResponse) response;
         httpResponse.setHeader("Content-Security-Policy", CONTENT_SECURITY_POLICY);
         httpResponse.setHeader("X-Content-Type-Options", "nosniff");
@@ -30,6 +32,16 @@ public class SecurityHeadersFilter implements Filter {
         httpResponse.setHeader("Referrer-Policy", "strict-origin-when-cross-origin");
         httpResponse.setHeader("Permissions-Policy", "camera=(), geolocation=(), microphone=()");
         httpResponse.setHeader("Strict-Transport-Security", "max-age=31536000; includeSubDomains");
+        if (isSensitiveResponse(httpRequest)) {
+            httpResponse.setHeader("Cache-Control", "private, no-store, max-age=0");
+            httpResponse.setHeader("Pragma", "no-cache");
+        }
         chain.doFilter(request, response);
+    }
+
+    private boolean isSensitiveResponse(HttpServletRequest request) {
+        String path = request.getRequestURI();
+        return request.getSession(false) != null
+                || (path != null && (path.contains("/auth/") || path.endsWith("/health")));
     }
 }
