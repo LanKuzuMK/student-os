@@ -1379,7 +1379,9 @@ html[data-theme="dark"] .admin-rail .theme-toggle[aria-pressed="true"] { backgro
 .theme-control-eyebrow, .admin-rail .theme-control-eyebrow { display: block; margin: 0 0 7px; color: #718097; font-size: 8px; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; }
 .theme-segmented-control { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 3px; width: 100%; padding: 3px; background: #e9edf2; border: 1px solid #d6dde7; border-radius: 999px; }
 .theme-segment { display: inline-flex; align-items: center; justify-content: center; gap: 6px; min-height: 31px; padding: 6px 8px; color: #3e4b62; background: transparent; border: 0; border-radius: 999px; cursor: pointer; font-size: 11px; font-weight: 800; line-height: 1; }
-.theme-segment-symbol { display: inline-block; width: 12px; color: currentColor; font-size: 13px; font-weight: 800; line-height: 1; text-align: center; }
+.theme-segment-symbol { display: inline-block; width: 13px; height: 13px; flex: 0 0 13px; background: currentColor; mask-repeat: no-repeat; mask-position: center; mask-size: contain; -webkit-mask-repeat: no-repeat; -webkit-mask-position: center; -webkit-mask-size: contain; }
+.theme-segment-sun { mask-image: url('/assets/theme-sun.svg'); -webkit-mask-image: url('/assets/theme-sun.svg'); }
+.theme-segment-moon { mask-image: url('/assets/theme-moon.svg'); -webkit-mask-image: url('/assets/theme-moon.svg'); }
 .theme-segment:hover { color: #172c7d; background: rgba(255,255,255,.58); }
 .theme-segment.is-active { color: #fff; background: #2d62a6; box-shadow: 0 1px 2px rgba(24,52,96,.22); }
 .theme-segment:focus-visible { outline: 2px solid #2d62a6; outline-offset: 2px; }

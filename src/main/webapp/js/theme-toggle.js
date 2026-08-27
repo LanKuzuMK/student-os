@@ -37,7 +37,7 @@
     control.className = 'theme-control';
     control.setAttribute('role', 'group');
     control.setAttribute('aria-label', 'Appearance');
-    control.innerHTML = '<span class="theme-control-eyebrow">Appearance</span><div class="theme-segmented-control"><button type="button" class="theme-segment" data-theme-option="light" aria-pressed="true"><span class="theme-segment-symbol" aria-hidden="true">✓</span>Light</button><button type="button" class="theme-segment" data-theme-option="dark" aria-pressed="false"><span class="theme-segment-symbol" aria-hidden="true">☾</span>Dark</button></div>';
+    control.innerHTML = '<span class="theme-control-eyebrow">Appearance</span><div class="theme-segmented-control"><button type="button" class="theme-segment" data-theme-option="light" aria-pressed="true"><span class="theme-segment-symbol theme-segment-sun" aria-hidden="true"></span>Light</button><button type="button" class="theme-segment" data-theme-option="dark" aria-pressed="false"><span class="theme-segment-symbol theme-segment-moon" aria-hidden="true"></span>Dark</button></div>';
     const footer = rail.querySelector('.sidebar-footer, .admin-rail-footer');
     if (footer) footer.insertBefore(control, footer.firstChild); else rail.append(control);
     control.querySelectorAll('[data-theme-option]').forEach((option) => option.addEventListener('click', () => {
