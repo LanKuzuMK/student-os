@@ -1402,13 +1402,13 @@ html[data-theme="dark"] .theme-segment:focus-visible { outline-color: #70d9c6; }
 /* Dashboard metrics: crisp product-data numerals, not display-serif figures, with deliberate label/value rhythm. */
 .dashboard-snapshot-card strong {
   margin: 13px 0 0;
-  color: #142957;
+  color: #172744;
   font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-  font-size: clamp(30px, 2.6vw, 39px);
+  font-size: 31px;
   font-weight: 800;
   font-variant-numeric: lining-nums tabular-nums;
-  letter-spacing: -.065em;
-  line-height: .98;
+  letter-spacing: -1.6px;
+  line-height: 1;
 }
 .dashboard-snapshot-card > span:not(.dashboard-snapshot-label) { margin-top: 8px; color: #657087; font-size: 11px; font-weight: 650; line-height: 1.35; }
 .dashboard-snapshot-card a { margin-top: 14px; color: #304aaf; font-weight: 800; }
