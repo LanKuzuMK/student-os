@@ -3,7 +3,16 @@
   const storageKey = 'studentos-theme';
   const root = document.documentElement;
 
+  const readThemeCookie = () => {
+    const prefix = `${storageKey}=`;
+    const entry = document.cookie.split('; ').find((value) => value.startsWith(prefix));
+    const value = entry?.slice(prefix.length);
+    return value === 'light' || value === 'dark' ? value : null;
+  };
+
   const preferredTheme = () => {
+    const cookieTheme = readThemeCookie();
+    if (cookieTheme) return cookieTheme;
     try {
       const saved = window.localStorage.getItem(storageKey);
       if (saved === 'light' || saved === 'dark') return saved;
@@ -34,10 +43,14 @@
     control.querySelector('[data-theme-toggle]').addEventListener('click', () => {
       const next = root.dataset.theme === 'dark' ? 'light' : 'dark';
       try { window.localStorage.setItem(storageKey, next); } catch (_) { /* Keep the in-page preference if storage is unavailable. */ }
+      document.cookie = `${storageKey}=${next}; Max-Age=31536000; Path=/; SameSite=Lax`;
       updateTheme(next);
     });
   };
 
   document.querySelectorAll('.sidebar, .admin-rail').forEach(createControl);
-  updateTheme(preferredTheme());
+  const initialTheme = preferredTheme();
+  try { window.localStorage.setItem(storageKey, initialTheme); } catch (_) { /* The cookie still keeps the visual preference when storage is unavailable. */ }
+  if (!readThemeCookie()) document.cookie = `${storageKey}=${initialTheme}; Max-Age=31536000; Path=/; SameSite=Lax`;
+  updateTheme(initialTheme);
 })();
