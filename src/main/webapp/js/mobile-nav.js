@@ -3,7 +3,7 @@
   if (!sidebar || document.querySelector('.mobile-nav-toggle')) return;
 
   const themeScript = document.createElement('script');
-  themeScript.src = '/js/theme-toggle.js?v=theme-control-3';
+  themeScript.src = '/js/theme-toggle.js?v=theme-control-4';
   document.head.append(themeScript);
 
   const accessibilityScript = document.createElement('script');

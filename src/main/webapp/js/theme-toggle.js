@@ -24,12 +24,10 @@
     root.dataset.theme = theme;
     const color = theme === 'dark' ? '#0d172a' : '#f5f7fb';
     document.querySelector('meta[name="theme-color"]')?.setAttribute('content', color);
-    document.querySelectorAll('[data-theme-toggle]').forEach((toggle) => {
-      const dark = theme === 'dark';
-      toggle.setAttribute('aria-pressed', String(dark));
-      toggle.setAttribute('aria-label', dark ? 'Switch to light mode' : 'Switch to dark mode');
-      const label = toggle.closest('.theme-control')?.querySelector('[data-theme-label]');
-      if (label) label.textContent = dark ? 'Dark mode' : 'Light mode';
+    document.querySelectorAll('[data-theme-option]').forEach((option) => {
+      const selected = option.dataset.themeOption === theme;
+      option.classList.toggle('is-active', selected);
+      option.setAttribute('aria-pressed', String(selected));
     });
   };
 
@@ -37,15 +35,18 @@
     if (rail.querySelector('.theme-control')) return;
     const control = document.createElement('div');
     control.className = 'theme-control';
-    control.innerHTML = '<div class="theme-control-copy"><span class="theme-control-eyebrow">Appearance</span><strong data-theme-label>Light mode</strong></div><button type="button" class="theme-toggle" data-theme-toggle aria-pressed="false" aria-label="Switch to dark mode"><span class="theme-toggle-track" aria-hidden="true"><span class="theme-toggle-knob"></span></span></button>';
+    control.setAttribute('role', 'group');
+    control.setAttribute('aria-label', 'Appearance');
+    control.innerHTML = '<span class="theme-control-eyebrow">Appearance</span><div class="theme-segmented-control"><button type="button" class="theme-segment" data-theme-option="light" aria-pressed="true"><span class="theme-segment-symbol" aria-hidden="true">✓</span>Light</button><button type="button" class="theme-segment" data-theme-option="dark" aria-pressed="false"><span class="theme-segment-symbol" aria-hidden="true">☾</span>Dark</button></div>';
     const footer = rail.querySelector('.sidebar-footer, .admin-rail-footer');
     if (footer) footer.insertBefore(control, footer.firstChild); else rail.append(control);
-    control.querySelector('[data-theme-toggle]').addEventListener('click', () => {
-      const next = root.dataset.theme === 'dark' ? 'light' : 'dark';
+    control.querySelectorAll('[data-theme-option]').forEach((option) => option.addEventListener('click', () => {
+      const next = option.dataset.themeOption;
+      if (next === root.dataset.theme) return;
       try { window.localStorage.setItem(storageKey, next); } catch (_) { /* Keep the in-page preference if storage is unavailable. */ }
       document.cookie = `${storageKey}=${next}; Max-Age=31536000; Path=/; SameSite=Lax`;
       updateTheme(next);
-    });
+    }));
   };
 
   document.querySelectorAll('.sidebar, .admin-rail').forEach(createControl);
