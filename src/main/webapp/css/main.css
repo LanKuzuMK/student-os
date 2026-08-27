@@ -1251,3 +1251,51 @@ html[data-theme="dark"] .admin-table tbody tr:hover { background: #162944; }
   .dashboard-next-action h2 { font-size: 28px; }
   .goal-workspace, .schedule-manager, .profile-form-card, .profile-detail-card, .project-space-card, .saved-item-card { padding: 19px; }
 }
+
+/* Sidebar micro-refinement: compact utility switch and neutral account identity icon for the editorial StudentOS navigation rail. */
+.theme-control {
+  min-height: 54px;
+  padding: 8px 10px;
+  border-radius: 5px;
+}
+.theme-control-eyebrow { font-size: 8px; letter-spacing: .11em; }
+.theme-control-copy strong { margin-top: 1px; font-size: 12px; }
+.theme-toggle {
+  width: 38px;
+  height: 22px;
+  padding: 2px;
+  background: #c9d2df;
+  border: 1px solid #b8c3d2;
+}
+.theme-toggle-knob {
+  width: 16px;
+  height: 16px;
+  background: #fff;
+  box-shadow: 0 1px 3px rgba(23,35,59,.24);
+}
+.theme-toggle[aria-pressed="true"] { background: #263daa; border-color: #263daa; }
+.theme-toggle[aria-pressed="true"] .theme-toggle-knob { transform: translateX(14px); }
+.theme-toggle:focus-visible { outline: 2px solid #263daa; outline-offset: 3px; }
+.account-chip {
+  gap: 10px;
+  min-height: 54px;
+  padding: 10px;
+  border-radius: 5px;
+}
+.account-chip::before {
+  width: 28px;
+  height: 28px;
+  flex-basis: 28px;
+  content: '';
+  background-color: #e8ecfa;
+  background-image: url('/assets/user-outline.svg');
+  background-position: center;
+  background-size: 17px 17px;
+  background-repeat: no-repeat;
+  border: 1px solid #d6dcf1;
+  border-radius: 50%;
+}
+html[data-theme="dark"] .theme-toggle { background: #344965; border-color: #526a88; }
+html[data-theme="dark"] .theme-toggle[aria-pressed="true"] { background: #5acbb7; border-color: #5acbb7; }
+html[data-theme="dark"] .theme-toggle:focus-visible { outline-color: #70d9c6; }
+html[data-theme="dark"] .account-chip::before { background-color: #1f3b67; background-image: url('/assets/user-outline.svg'); border-color: #345685; }
