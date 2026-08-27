@@ -13,7 +13,7 @@
         <div class="sidebar-footer"><div class="account-chip"><c:out value="${sessionScope.user.email}"/></div><a href="/auth/logout" class="nav-link nav-link-danger">Log out</a></div>
     </aside>
     <main class="main-content">
-        <div class="app-topbar"><div class="breadcrumb"><strong>StudentOS</strong> &nbsp;/&nbsp; Personal workspace</div><div class="topbar-actions"><span class="topbar-date"><span class="status-dot"></span>Private student overview</span></div></div>
+        <div class="app-topbar"><div class="breadcrumb"><strong>StudentOS</strong> &nbsp;/&nbsp; Personal workspace</div></div>
         <header class="page-header"><div><p class="eyebrow">Your personal command center</p><h1 class="page-title">Make today count.</h1><p class="page-subtitle">Your goals, conversations, collaboration, and next move—kept in one focused workspace.</p></div><button class="btn btn-primary" type="button" onclick="document.getElementById('taskModal').style.display='flex'">+ New task</button></header>
 
         <section class="dashboard-next-action" aria-label="Recommended next action"><div><p class="section-kicker"><c:out value="${nextAction.eyebrow}"/></p><h2><c:out value="${nextAction.title}"/></h2><p><c:out value="${nextAction.description}"/></p></div><a class="btn btn-primary" href="<c:out value='${nextAction.url}'/>"><c:out value="${nextAction.label}"/></a></section>
