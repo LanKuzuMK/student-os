@@ -1415,3 +1415,19 @@ html[data-theme="dark"] .theme-segment:focus-visible { outline-color: #70d9c6; }
 html[data-theme="dark"] .dashboard-snapshot-card strong { color: #f2f6ff; }
 html[data-theme="dark"] .dashboard-snapshot-card > span:not(.dashboard-snapshot-label) { color: #aebbd0; }
 html[data-theme="dark"] .dashboard-snapshot-card a { color: #aebcff; }
+
+/* Snapshot spacing: each metric reads as a comfortable statistic cell in both the light and dark workspaces. */
+.dashboard-snapshot-grid { padding: 24px 0 26px; }
+.dashboard-snapshot-card { min-height: 148px; padding: 18px 26px 20px; }
+.dashboard-snapshot-card:first-child { padding-left: 26px; }
+.dashboard-snapshot-card:last-child { padding-right: 26px; }
+.dashboard-snapshot-card strong { margin-top: 17px; }
+.dashboard-snapshot-card > span:not(.dashboard-snapshot-label) { margin-top: 10px; }
+.dashboard-snapshot-card a { margin-top: 18px; }
+@media (max-width: 900px) {
+  .dashboard-snapshot-card, .dashboard-snapshot-card:first-child, .dashboard-snapshot-card:last-child { padding: 18px 20px 20px; }
+}
+@media (max-width: 700px) {
+  .dashboard-snapshot-grid { padding: 20px 0 22px; }
+  .dashboard-snapshot-card, .dashboard-snapshot-card:first-child, .dashboard-snapshot-card:last-child { min-height: 142px; padding: 17px 16px 19px; }
+}
