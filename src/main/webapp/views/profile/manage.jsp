@@ -36,7 +36,7 @@
         <c:if test="${param.projectDeleted eq '1'}"><div class="alert alert-success">The project card was permanently deleted.</div></c:if>
         <c:if test="${param.error eq 'project' or param.error eq 'projectDelete'}"><div class="alert alert-error">Enter a project name and a valid http:// or https:// project link.</div></c:if>
 
-        <form class="profile-editor" action="/profile/save" method="post" enctype="multipart/form-data">
+        <form class="profile-editor" action="/profile/save?csrfToken=<c:out value='${csrfToken}'/>" method="post" enctype="multipart/form-data">
             <input type="hidden" name="csrfToken" value="<c:out value='${csrfToken}'/>">
             <section class="profile-identity-card">
                 <div class="profile-avatar-editor">
