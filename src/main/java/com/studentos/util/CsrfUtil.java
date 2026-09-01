@@ -32,7 +32,23 @@ public final class CsrfUtil {
     public static boolean hasValidToken(HttpServletRequest request) {
         HttpSession session = request.getSession(false);
         String expected = session == null ? null : (String) session.getAttribute(SESSION_ATTRIBUTE);
-        String submitted = request.getParameter(REQUEST_ATTRIBUTE);
+        
+        String submitted = null;
+        try {
+            submitted = request.getParameter(REQUEST_ATTRIBUTE);
+        } catch (Exception e) {
+            // Ignore parse exceptions for unconfigured multipart
+        }
+        
+        if (submitted == null && request.getQueryString() != null) {
+            for (String param : request.getQueryString().split("&")) {
+                if (param.startsWith(REQUEST_ATTRIBUTE + "=")) {
+                    submitted = param.substring(REQUEST_ATTRIBUTE.length() + 1);
+                    break;
+                }
+            }
+        }
+        
         return expected != null && submitted != null && MessageDigest.isEqual(
                 expected.getBytes(StandardCharsets.UTF_8), submitted.getBytes(StandardCharsets.UTF_8));
     }

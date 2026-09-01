@@ -63,7 +63,7 @@ public class ProfileDAO {
                 ps.setBytes(12, compressedAvatar);
                 ps.setString(13, "image/jpeg");
             }
-            return ps.executeUpdate() == 1;
+            return ps.executeUpdate() > 0;
         } catch (SQLException e) {
             System.err.println("Unable to update profile: " + e.getMessage());
             return false;
