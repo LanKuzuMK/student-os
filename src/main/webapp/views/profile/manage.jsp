@@ -35,6 +35,12 @@
         <c:if test="${param.projectAdded eq '1'}"><div class="alert alert-success">Your project card was added.</div></c:if>
         <c:if test="${param.projectDeleted eq '1'}"><div class="alert alert-success">The project card was permanently deleted.</div></c:if>
         <c:if test="${param.error eq 'project' or param.error eq 'projectDelete'}"><div class="alert alert-error">Enter a project name and a valid http:// or https:// project link.</div></c:if>
+        <c:if test="${param.avatarDeleted eq '1'}"><div class="alert alert-success">Your profile photo was deleted successfully.</div></c:if>
+        <c:if test="${param.error eq 'avatarDelete'}"><div class="alert alert-error">Your profile photo could not be deleted.</div></c:if>
+
+        <form id="deleteAvatarForm" action="/profile/avatar/delete" method="post" style="display: none;">
+            <input type="hidden" name="csrfToken" value="<c:out value='${csrfToken}'/>">
+        </form>
 
         <form class="profile-editor" action="/profile/save?csrfToken=<c:out value='${csrfToken}'/>" method="post" enctype="multipart/form-data">
             <input type="hidden" name="csrfToken" value="<c:out value='${csrfToken}'/>">
@@ -45,7 +51,25 @@
                         <c:otherwise><div class="profile-photo-placeholder">S</div></c:otherwise>
                     </c:choose>
                 </div>
-                <div class="profile-avatar-copy"><p class="section-kicker">Profile photo</p><h2>Keep it lightweight</h2><p>JPG and PNG uploads are converted to a compressed JPEG, scaled to a maximum of 256 pixels, and targeted below 75 kB.</p><label class="upload-control" for="avatar">Choose photo<input id="avatar" type="file" name="avatar" accept="image/jpeg,image/png"></label><small>Maximum original upload: 5 MB. Your existing photo is kept if you do not choose a new one.</small></div>
+                <div class="profile-avatar-copy">
+                    <p class="section-kicker">Profile photo</p>
+                    <h2>Keep it lightweight</h2>
+                    <p>JPG and PNG uploads are converted to a compressed JPEG, scaled to a maximum of 256 pixels, and targeted below 75 kB.</p>
+                    
+                    <c:choose>
+                        <c:when test="${profile.hasAvatar}">
+                            <div style="display: flex; gap: 12px; align-items: center; margin-bottom: 8px;">
+                                <label class="upload-control" for="avatar">Change photo<input id="avatar" type="file" name="avatar" accept="image/jpeg,image/png"></label>
+                                <button type="submit" form="deleteAvatarForm" class="btn btn-secondary" style="margin: 0; height: 38px; line-height: 1;" onclick="return confirm('Are you sure you want to permanently delete your profile photo?');">Delete photo</button>
+                            </div>
+                        </c:when>
+                        <c:otherwise>
+                            <label class="upload-control" for="avatar">Choose photo<input id="avatar" type="file" name="avatar" accept="image/jpeg,image/png"></label>
+                        </c:otherwise>
+                    </c:choose>
+                    
+                    <small>Maximum original upload: 5 MB. Your existing photo is kept if you do not choose a new one.</small>
+                </div>
             </section>
 
             <section class="profile-form-card">

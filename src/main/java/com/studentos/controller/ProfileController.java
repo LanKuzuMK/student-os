@@ -66,6 +66,10 @@ public class ProfileController extends HttpServlet {
             deleteProject(request, response, signedInUser);
             return;
         }
+        if ("/avatar/delete".equals(path)) {
+            deleteAvatar(request, response, signedInUser);
+            return;
+        }
         if (!"/save".equals(path)) {
             response.sendError(HttpServletResponse.SC_NOT_FOUND);
             return;
@@ -210,6 +214,14 @@ public class ProfileController extends HttpServlet {
             return null;
         }
         return (link.startsWith("https://") || link.startsWith("http://")) ? link : null;
+    }
+
+    private void deleteAvatar(HttpServletRequest request, HttpServletResponse response, User signedInUser) throws IOException {
+        if (profileDAO.deleteAvatar(signedInUser.getId())) {
+            response.sendRedirect(request.getContextPath() + "/profile?avatarDeleted=1");
+        } else {
+            response.sendRedirect(request.getContextPath() + "/profile?error=avatarDelete");
+        }
     }
 
     private String normalizeAvailability(String value) {

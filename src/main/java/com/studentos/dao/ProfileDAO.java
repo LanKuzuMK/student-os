@@ -69,6 +69,18 @@ public class ProfileDAO {
             return false;
         }
     }
+    
+    public boolean deleteAvatar(int userId) {
+        String sql = "UPDATE profiles SET avatar_data = NULL, avatar_content_type = NULL WHERE user_id = ?";
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, userId);
+            return ps.executeUpdate() > 0;
+        } catch (SQLException e) {
+            System.err.println("Unable to delete avatar: " + e.getMessage());
+            return false;
+        }
+    }
 
     public List<ProfileLink> getLinksByUserId(int userId) {
         String sql = "SELECT id, user_id, label, url FROM profile_links WHERE user_id = ? ORDER BY id ASC";
