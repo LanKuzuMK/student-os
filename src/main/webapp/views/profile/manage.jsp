@@ -24,7 +24,36 @@
             <div class="page-header-actions"><a class="btn btn-secondary" href="/account/password">Change password</a><a class="btn btn-secondary" href="/profile/view?id=<c:out value='${profile.userId}'/>">View public profile</a></div>
         </header>
 
-        <c:if test="${param.saved eq '1'}"><div class="alert alert-success">Your profile was updated successfully.</div></c:if>
+        <style>
+        .progress-bar-container { width: 100%; height: 4px; background-color: #e5eaf1; border-radius: 4px; overflow: hidden; position: relative; display: none; margin-top: 10px; }
+        .progress-bar-indicator { height: 100%; width: 30%; background-color: #4f55c8; border-radius: 4px; position: absolute; left: -30%; animation: indeterminate 1.5s infinite linear; }
+        @keyframes indeterminate { 0% { left: -30%; width: 30%; } 50% { width: 30%; } 100% { left: 100%; width: 30%; } }
+        .toast-notification { position: fixed; bottom: 24px; right: 24px; background: #101828; color: #fff; padding: 16px 24px; border-radius: 12px; box-shadow: 0 12px 24px rgba(0,0,0,0.15); display: flex; align-items: center; gap: 12px; z-index: 9999; opacity: 0; transform: translateY(20px); transition: opacity 0.3s ease, transform 0.3s ease; }
+        .toast-notification.show { opacity: 1; transform: translateY(0); }
+        .toast-icon { width: 24px; height: 24px; background: #12b76a; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
+        .toast-icon svg { width: 14px; height: 14px; fill: none; stroke: #fff; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+        </style>
+
+        <c:if test="${param.saved eq '1'}">
+            <div id="successToast" class="toast-notification">
+                <div class="toast-icon">
+                    <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                </div>
+                <span style="font-weight: 500; font-size: 15px;">Successfully uploaded</span>
+            </div>
+            <script>
+                document.addEventListener("DOMContentLoaded", function() {
+                    const toast = document.getElementById("successToast");
+                    if (toast) {
+                        setTimeout(() => toast.classList.add("show"), 100);
+                        setTimeout(() => {
+                            toast.classList.remove("show");
+                            setTimeout(() => toast.remove(), 300);
+                        }, 4000);
+                    }
+                });
+            </script>
+        </c:if>
         <c:if test="${param.error eq 'photo'}"><div class="alert alert-error">Upload a valid JPG or PNG image smaller than 5 MB.</div></c:if>
         <c:if test="${param.error eq 'save'}"><div class="alert alert-error">Your profile could not be saved. Please try again.</div></c:if>
         <c:if test="${param.linkAdded eq '1'}"><div class="alert alert-success">Your custom link was added.</div></c:if>
@@ -43,17 +72,21 @@
         </form>
 
         <form class="profile-editor" action="/profile/save?csrfToken=<c:out value='${csrfToken}'/>" method="post" enctype="multipart/form-data">
-            <input type="hidden" name="csrfToken" value="<c:out value='${csrfToken}'/>">
-            <section class="profile-identity-card">
-                <div class="profile-avatar-editor">
+            <section class="profile-form-card">
+                <div class="profile-section-heading"><div><p class="section-kicker">Profile picture</p><h2>Put a face to your code</h2></div><p>A friendly, clear photo helps classmates recognize you on campus.</p></div>
+                <div class="profile-field-avatar">
                     <c:choose>
-                        <c:when test="${profile.hasAvatar}"><img src="/profile/avatar?id=<c:out value='${profile.userId}'/>" alt="Your profile photo" class="profile-photo-lg"></c:when>
-                        <c:otherwise><div class="profile-photo-placeholder">S</div></c:otherwise>
+                        <c:when test="${profile.hasAvatar}">
+                            <img src="/profile/avatar?id=<c:out value='${profile.userId}'/>" alt="Current avatar" style="width: 80px; height: 80px; border-radius: 50%; object-fit: cover;">
+                        </c:when>
+                        <c:otherwise>
+                            <div class="avatar-placeholder" style="width: 80px; height: 80px; border-radius: 50%; background: #eef0fb; color: #4e58bf; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 24px;">
+                                <c:out value="${empty profile.firstName ? '?' : profile.firstName.substring(0,1)}"/>
+                            </div>
+                        </c:otherwise>
                     </c:choose>
                 </div>
-                <div class="profile-avatar-copy">
-                    <p class="section-kicker">Profile photo</p>
-                    <h2>Keep it lightweight</h2>
+                <div class="profile-field-avatar-text">
                     <p>JPG and PNG uploads are converted to a compressed JPEG, scaled to a maximum of 256 pixels, and targeted below 75 kB.</p>
                     
                     <c:choose>
@@ -73,12 +106,12 @@
             </section>
 
             <section class="profile-form-card">
-                <div class="profile-section-heading"><div><p class="section-kicker">Public details</p><h2>Introduce yourself</h2></div><p>Short and useful details make collaboration easier.</p></div>
+                <div class="profile-section-heading"><div><p class="section-kicker">Basic info</p><h2>Who you are</h2></div><p>Tell the community what you're studying and what you're good at.</p></div>
                 <div class="profile-field-grid">
-                    <div class="form-group"><label class="form-label" for="firstName">First name</label><input class="form-control" id="firstName" name="firstName" maxlength="100" value="<c:out value='${profile.firstName}'/>" placeholder="Your first name"></div>
-                    <div class="form-group"><label class="form-label" for="lastName">Last name</label><input class="form-control" id="lastName" name="lastName" maxlength="100" value="<c:out value='${profile.lastName}'/>" placeholder="Your last name"></div>
-                    <div class="form-group"><label class="form-label" for="university">University</label><input class="form-control" id="university" name="university" maxlength="255" value="<c:out value='${profile.university}'/>" placeholder="Your university"></div>
-                    <div class="form-group"><label class="form-label" for="major">Major or field</label><input class="form-control" id="major" name="major" maxlength="255" value="<c:out value='${profile.major}'/>" placeholder="For example, Computer Science"></div>
+                    <div class="form-group"><label class="form-label" for="firstName">First name</label><input class="form-control" id="firstName" name="firstName" maxlength="100" required value="<c:out value='${profile.firstName}'/>"></div>
+                    <div class="form-group"><label class="form-label" for="lastName">Last name</label><input class="form-control" id="lastName" name="lastName" maxlength="100" required value="<c:out value='${profile.lastName}'/>"></div>
+                    <div class="form-group"><label class="form-label" for="university">University</label><input class="form-control" id="university" name="university" maxlength="255" required value="<c:out value='${profile.university}'/>"></div>
+                    <div class="form-group"><label class="form-label" for="major">Major or program</label><input class="form-control" id="major" name="major" maxlength="255" required value="<c:out value='${profile.major}'/>"></div>
                 </div>
                 <div class="form-group"><label class="form-label" for="bio">Short description</label><textarea class="form-control" id="bio" name="bio" maxlength="500" rows="5" placeholder="What are you learning, building, or looking to collaborate on?"><c:out value="${profile.bio}"/></textarea><small>Up to 500 characters.</small></div>
                 <div class="profile-field-grid"><div class="form-group"><label class="form-label" for="availabilityStatus">Availability</label><select id="availabilityStatus" name="availabilityStatus" class="form-control"><option value="">Choose later</option><option value="OPEN_TO_COLLABORATE" <c:if test="${profile.availabilityStatus eq 'OPEN_TO_COLLABORATE'}">selected</c:if>>Open to collaborate</option><option value="LOOKING_FOR_TEAM" <c:if test="${profile.availabilityStatus eq 'LOOKING_FOR_TEAM'}">selected</c:if>>Looking for a team</option><option value="AVAILABLE_FOR_FREELANCE" <c:if test="${profile.availabilityStatus eq 'AVAILABLE_FOR_FREELANCE'}">selected</c:if>>Available for freelance work</option><option value="FOCUSED_ON_STUDY" <c:if test="${profile.availabilityStatus eq 'FOCUSED_ON_STUDY'}">selected</c:if>>Focused on study</option></select></div><div class="form-group"><label class="form-label" for="collaborationPreferences">Collaboration preferences</label><textarea class="form-control" id="collaborationPreferences" name="collaborationPreferences" maxlength="500" rows="3" placeholder="For example: weekend study groups, UI design projects, or short freelance tasks."><c:out value="${profile.collaborationPreferences}"/></textarea></div></div>
@@ -92,8 +125,22 @@
                     <div class="form-group"><label class="form-label" for="telegramUrl">Telegram</label><input class="form-control" id="telegramUrl" name="telegramUrl" type="url" maxlength="500" value="<c:out value='${profile.telegramUrl}'/>" placeholder="https://t.me/your-name"></div>
                 </div>
             </section>
-            <div class="profile-save-row"><p>Your StudentOS email is shown only to signed-in students for collaboration.</p><button class="btn btn-primary" type="submit">Save profile</button></div>
+            <div class="profile-save-row">
+                <div style="flex: 1;">
+                    <p>Your StudentOS email is shown only to signed-in students for collaboration.</p>
+                    <div id="uploadProgress" class="progress-bar-container"><div class="progress-bar-indicator"></div></div>
+                </div>
+                <button class="btn btn-primary" type="submit">Save profile</button>
+            </div>
         </form>
+        <script>
+            document.querySelector('.profile-editor').addEventListener('submit', function() {
+                document.getElementById('uploadProgress').style.display = 'block';
+                const submitBtn = this.querySelector('button[type="submit"]');
+                submitBtn.disabled = true;
+                submitBtn.textContent = 'Saving...';
+            });
+        </script>
 
         <section class="profile-form-card profile-link-manager">
             <div class="profile-section-heading"><div><p class="section-kicker">Custom links</p><h2>Add any platform</h2></div><p>Add GitHub, Instagram, Behance, Discord, or any public social-media link classmates can use to find you.</p></div>

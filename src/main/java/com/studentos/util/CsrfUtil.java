@@ -34,10 +34,15 @@ public final class CsrfUtil {
         String expected = session == null ? null : (String) session.getAttribute(SESSION_ATTRIBUTE);
         
         String submitted = null;
-        try {
-            submitted = request.getParameter(REQUEST_ATTRIBUTE);
-        } catch (Exception e) {
-            // Ignore parse exceptions for unconfigured multipart
+        String contentType = request.getContentType();
+        boolean isMultipart = contentType != null && contentType.toLowerCase().startsWith("multipart/form-data");
+        
+        if (!isMultipart) {
+            try {
+                submitted = request.getParameter(REQUEST_ATTRIBUTE);
+            } catch (Exception e) {
+                // Ignore parse exceptions
+            }
         }
         
         if (submitted == null && request.getQueryString() != null) {
