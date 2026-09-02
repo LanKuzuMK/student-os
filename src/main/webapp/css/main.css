@@ -1475,3 +1475,19 @@ html[data-theme="dark"] .dashboard-snapshot-card a { color: #aebcff; }
 .custom-confirm-actions .btn {
   margin: 0; height: 38px; line-height: 1;
 }
+.sidebar, .admin-rail {
+  height: 100vh; /* fallback */
+  height: 100dvh;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Sidebar Scrollbar Formatting */
+.sidebar::-webkit-scrollbar, .admin-rail::-webkit-scrollbar { width: 6px; }
+.sidebar::-webkit-scrollbar-track, .admin-rail::-webkit-scrollbar-track { background: transparent; }
+.sidebar::-webkit-scrollbar-thumb, .admin-rail::-webkit-scrollbar-thumb { background: rgba(120, 135, 160, 0.2); border-radius: 4px; }
+.sidebar::-webkit-scrollbar-thumb:hover, .admin-rail::-webkit-scrollbar-thumb:hover { background: rgba(120, 135, 160, 0.4); }
+
+/* Theme Mode Active Link Refinement */
+.nav-link.active { box-shadow: inset 4px 0 0 var(--workspace-brand); font-weight: 600; }

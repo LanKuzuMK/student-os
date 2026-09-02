@@ -6,7 +6,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>My Profile - StudentOS</title>
-    <link rel="stylesheet" href="/css/main.css?v=mobile-nav-phone-6">
+    <link rel="stylesheet" href="/css/main.css?v=mobile-nav-phone-7">
     <link rel="icon" type="image/png" href="/favicon.png">
 </head>
 <body>
@@ -74,7 +74,7 @@
         <form class="profile-editor" action="/profile/save?csrfToken=<c:out value='${csrfToken}'/>" method="post" enctype="multipart/form-data">
             <section class="profile-form-card">
                 <div class="profile-section-heading"><div><p class="section-kicker">Profile picture</p><h2>Put a face to your code</h2></div><p>A friendly, clear photo helps classmates recognize you on campus.</p></div>
-                <div class="profile-field-avatar">
+                <div class="profile-avatar-row" style="display:flex; align-items:center; gap:24px; margin-bottom:12px;"><div class="profile-field-avatar">
                     <c:choose>
                         <c:when test="${profile.hasAvatar}">
                             <img src="/profile/avatar?id=<c:out value='${profile.userId}'/>" alt="Current avatar" style="width: 80px; height: 80px; border-radius: 50%; object-fit: cover;">
@@ -101,9 +101,7 @@
                         </c:otherwise>
                     </c:choose>
                     
-                    <small>Maximum original upload: 5 MB. Your existing photo is kept if you do not choose a new one.</small>
-                </div>
-            </section>
+                    <small>Maximum original upload: 5 MB. Your existing photo is kept if you do not choose a new one.</small></div></div></section>
 
             <section class="profile-form-card">
                 <div class="profile-section-heading"><div><p class="section-kicker">Basic info</p><h2>Who you are</h2></div><p>Tell the community what you're studying and what you're good at.</p></div>
@@ -181,6 +179,7 @@
         <footer class="mkv-footer">© 2026 MKV Team</footer>
     </main>
 </div>
-    <script src="/js/mobile-nav.js?v=mobile-nav-phone-6" defer></script>
+    <script src="/js/mobile-nav.js?v=mobile-nav-phone-7" defer></script>
 </body>
 </html>
+
