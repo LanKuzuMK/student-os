@@ -1,4 +1,4 @@
-ï»¿<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib uri="jakarta.tags.core" prefix="c" %>
 <!DOCTYPE html>
 <html lang="en">
@@ -40,7 +40,7 @@
                         <article class="card skill-owner-card discovery-card">
                             <div class="card-header"><div><div class="card-title"><c:out value="${skill.skillName}"/></div><p class="owner-meta">Shared by <strong><c:out value="${skill.ownerName}"/></strong></p></div><span class="badge badge-todo"><c:out value="${skill.type}"/></span></div>
                             <div class="discovery-badge-row"><span class="badge badge-completed"><c:out value="${skill.skillLevel}"/></span><c:if test="${not empty skill.availabilityLabel}"><span class="badge badge-todo"><c:out value="${skill.availabilityLabel}"/></span></c:if></div>
-                            <p class="discovery-academic"><c:out value="${skill.major}"/><c:if test="${not empty skill.major and not empty skill.university}"> Â· </c:if><c:out value="${skill.university}"/></p>
+                            <p class="discovery-academic"><c:out value="${skill.major}"/><c:if test="${not empty skill.major and not empty skill.university}"> · </c:if><c:out value="${skill.university}"/></p>
                             <c:if test="${not empty skill.collaborationPreferences}"><p class="discovery-preferences"><c:out value="${skill.collaborationPreferences}"/></p></c:if>
                             <div class="owner-actions"><a href="/profile/view?id=<c:out value='${skill.userId}'/>" class="btn btn-secondary">View profile</a><c:if test="${skill.userId ne currentUserId}"><a href="/messages?toEmail=<c:out value='${skill.ownerEmail}'/>" class="btn btn-primary">Message</a><form action="/saved/add" method="post"><input type="hidden" name="csrfToken" value="<c:out value='${csrfToken}'/>"><c:choose><c:when test="${skill.type eq 'TEACH'}"><input type="hidden" name="targetType" value="SERVICE"></c:when><c:otherwise><input type="hidden" name="targetType" value="SKILL"></c:otherwise></c:choose><input type="hidden" name="targetId" value="<c:out value='${skill.id}'/>"><input type="hidden" name="returnTo" value="/skills/discover"><button class="text-action" type="submit">Save<c:if test="${skill.type eq 'TEACH'}"> service</c:if><c:if test="${skill.type ne 'TEACH'}"> skill</c:if></button></form><details><summary class="text-action">Report</summary><form action="/reports/new" method="post"><input type="hidden" name="csrfToken" value="<c:out value='${csrfToken}'/>"><input type="hidden" name="targetType" value="SKILL"><input type="hidden" name="targetId" value="<c:out value='${skill.id}'/>"><input type="hidden" name="returnTo" value="/skills/discover"><select name="reason" required><option value="SPAM">Spam</option><option value="HARASSMENT">Harassment</option><option value="INAPPROPRIATE">Inappropriate</option><option value="MISLEADING">Misleading</option><option value="OTHER">Other</option></select><input name="details" maxlength="1000" placeholder="Optional context"><button class="text-action text-action-danger" type="submit">Submit report</button></form></details></c:if></div>
                         </article>
@@ -49,9 +49,9 @@
             </c:choose>
         </section>
         <c:if test="${discoverPages gt 1}"><div class="discovery-pagination"><c:if test="${discoverPage gt 1}"><c:url var="previousUrl" value="/skills/discover"><c:param name="q" value="${discoverQuery}"/><c:param name="type" value="${discoverType}"/><c:param name="level" value="${discoverLevel}"/><c:param name="availability" value="${discoverAvailability}"/><c:param name="sort" value="${discoverSort}"/><c:param name="page" value="${discoverPage - 1}"/></c:url><a class="btn btn-secondary" href="${previousUrl}">Previous</a></c:if><span class="page-subtitle">Showing public skills on page <c:out value="${discoverPage}"/></span><c:if test="${discoverPage lt discoverPages}"><c:url var="nextUrl" value="/skills/discover"><c:param name="q" value="${discoverQuery}"/><c:param name="type" value="${discoverType}"/><c:param name="level" value="${discoverLevel}"/><c:param name="availability" value="${discoverAvailability}"/><c:param name="sort" value="${discoverSort}"/><c:param name="page" value="${discoverPage + 1}"/></c:url><a class="btn btn-secondary" href="${nextUrl}">Next</a></c:if></div></c:if>
-        <footer class="mkv-footer">Â© 2026 MKV Team</footer>
+        <footer class="mkv-footer">© 2026 MKV Team</footer>
     </main>
 </div>
-<script src="/js/mobile-nav.js?v=mobile-nav-phone-5" defer></script>
+<script src="/js/mobile-nav.js?v=mobile-nav-phone-6" defer></script>
 </body>
 </html>

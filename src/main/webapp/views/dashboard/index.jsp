@@ -38,6 +38,6 @@
     </main>
 </div>
 <div id="taskModal" class="dashboard-task-modal" style="display:none"><div class="dashboard-task-modal-card"><div><p class="section-kicker">Plan your next move</p><h2>Create a focused task</h2></div><form action="/tasks/create" method="post"><input type="hidden" name="csrfToken" value="<c:out value='${csrfToken}'/>"><div class="form-group"><label class="form-label" for="taskTitle">Task title</label><input id="taskTitle" type="text" name="title" class="form-control" placeholder="For example, review Java Servlet notes" required></div><div class="form-group"><label class="form-label" for="taskDescription">Short description</label><textarea id="taskDescription" name="description" class="form-control" rows="3" placeholder="What does done look like?"></textarea></div><div class="form-group"><label class="form-label" for="taskPriority">Priority</label><select id="taskPriority" name="priority" class="form-control"><option value="LOW">Low</option><option value="MEDIUM" selected>Medium</option><option value="HIGH">High</option><option value="URGENT">Urgent</option></select></div><div class="dashboard-modal-actions"><button type="button" class="btn btn-secondary" onclick="document.getElementById('taskModal').style.display='none'">Cancel</button><button type="submit" class="btn btn-primary">Save task</button></div></form></div></div>
-<script src="/js/mobile-nav.js?v=mobile-nav-phone-5" defer></script>
+<script src="/js/mobile-nav.js?v=mobile-nav-phone-6" defer></script>
 </body>
 </html>

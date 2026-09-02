@@ -7,7 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="theme-color" content="#5a5ce2">
     <title>Goals - StudentOS</title>
-    <link rel="stylesheet" href="/css/main.css?v=mobile-nav-phone-5">
+    <link rel="stylesheet" href="/css/main.css?v=mobile-nav-phone-6">
     <link rel="icon" type="image/png" href="/favicon.png">
 </head>
 <body>
@@ -103,6 +103,6 @@
         </form>
     </div>
 </div>
-    <script src="/js/mobile-nav.js?v=mobile-nav-phone-5" defer></script>
+    <script src="/js/mobile-nav.js?v=mobile-nav-phone-6" defer></script>
 </body>
 </html>

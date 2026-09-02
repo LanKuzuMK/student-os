@@ -1,4 +1,4 @@
-﻿<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -16,7 +16,7 @@
             <p class="page-subtitle" style="margin-inline:auto;">We could not find the page you were looking for.</p>
             <a href="/" class="btn btn-primary" style="margin-top:20px;">Return home</a>
         </div>
-        <footer class="mkv-footer" style="width:100%;">© 2026 MKV Team</footer>
+        <footer class="mkv-footer" style="width:100%;">� 2026 MKV Team</footer>
     </main>
 </body>
 </html>

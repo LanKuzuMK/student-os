@@ -1,4 +1,4 @@
-﻿<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib uri="jakarta.tags.core" prefix="c" %>
 <!DOCTYPE html>
 <html lang="en">
@@ -6,7 +6,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>My Skills - StudentOS</title>
-    <link rel="stylesheet" href="/css/main.css?v=mobile-nav-phone-5">
+    <link rel="stylesheet" href="/css/main.css?v=mobile-nav-phone-6">
     <link rel="icon" type="image/png" href="/favicon.png">
 </head>
 <body>
@@ -55,7 +55,7 @@
                 </c:otherwise>
             </c:choose>
         </section>
-    <footer class="mkv-footer">© 2026 MKV Team</footer>
+    <footer class="mkv-footer">� 2026 MKV Team</footer>
     </main>
 </div>
 
@@ -72,6 +72,6 @@
         </form>
     </div>
 </div>
-    <script src="/js/mobile-nav.js?v=mobile-nav-phone-5" defer></script>
+    <script src="/js/mobile-nav.js?v=mobile-nav-phone-6" defer></script>
 </body>
 </html>

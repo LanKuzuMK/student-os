@@ -1,4 +1,4 @@
-ï»¿<%-- Design direction: calm editorial control room with clear data hierarchy and deliberate actions. --%>
+<%-- Design direction: calm editorial control room with clear data hierarchy and deliberate actions. --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ page import="java.util.Map" %>
 <%
@@ -19,7 +19,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin â€” StudentOS</title>
+    <title>Admin — StudentOS</title>
     <link rel="stylesheet" href="/css/main.css?v=admin-ui-20260822">
     <link rel="icon" type="image/png" href="/favicon.png">
 </head>
@@ -96,7 +96,7 @@
                 <a class="btn btn-secondary" href="/admin/audit">Open audit log</a>
             </article>
         </section>
-        <footer class="mkv-footer">Â© 2026 MKV Team</footer>
+        <footer class="mkv-footer">© 2026 MKV Team</footer>
     </main>
 </div>
 <script src="/js/admin-nav.js?v=20260822"></script>

@@ -62,6 +62,6 @@
         <footer class="mkv-footer">© 2026 MKV Team</footer>
     </main>
 </div>
-    <script src="/js/mobile-nav.js?v=mobile-nav-phone-5" defer></script>
+    <script src="/js/mobile-nav.js?v=mobile-nav-phone-6" defer></script>
 </body>
 </html>
