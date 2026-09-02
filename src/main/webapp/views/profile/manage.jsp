@@ -137,8 +137,10 @@
             document.querySelector('.profile-editor').addEventListener('submit', function() {
                 document.getElementById('uploadProgress').style.display = 'block';
                 const submitBtn = this.querySelector('button[type="submit"]');
-                submitBtn.disabled = true;
-                submitBtn.textContent = 'Saving...';
+                setTimeout(() => {
+                    submitBtn.disabled = true;
+                    submitBtn.textContent = 'Saving...';
+                }, 0);
             });
         </script>
 
