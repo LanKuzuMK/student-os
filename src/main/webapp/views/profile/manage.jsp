@@ -64,44 +64,8 @@
         <c:if test="${param.projectAdded eq '1'}"><div class="alert alert-success">Your project card was added.</div></c:if>
         <c:if test="${param.projectDeleted eq '1'}"><div class="alert alert-success">The project card was permanently deleted.</div></c:if>
         <c:if test="${param.error eq 'project' or param.error eq 'projectDelete'}"><div class="alert alert-error">Enter a project name and a valid http:// or https:// project link.</div></c:if>
-        <c:if test="${param.avatarDeleted eq '1'}"><div class="alert alert-success">Your profile photo was deleted successfully.</div></c:if>
-        <c:if test="${param.error eq 'avatarDelete'}"><div class="alert alert-error">Your profile photo could not be deleted.</div></c:if>
-
-        <form id="deleteAvatarForm" action="/profile/avatar/delete" method="post" style="display: none;">
-            <input type="hidden" name="csrfToken" value="<c:out value='${csrfToken}'/>">
-        </form>
-
-        <form class="profile-editor" action="/profile/save?csrfToken=<c:out value='${csrfToken}'/>" method="post" enctype="multipart/form-data">
-            <section class="profile-form-card">
-                <div class="profile-section-heading"><div><p class="section-kicker">Profile picture</p><h2>Put a face to your code</h2></div><p>A friendly, clear photo helps classmates recognize you on campus.</p></div>
-                <div class="profile-avatar-row" style="display:flex; align-items:center; gap:24px; margin-bottom:12px;"><div class="profile-field-avatar">
-                    <c:choose>
-                        <c:when test="${profile.hasAvatar}">
-                            <img src="/profile/avatar?id=<c:out value='${profile.userId}'/>" alt="Current avatar" style="width: 80px; height: 80px; border-radius: 50%; object-fit: cover;">
-                        </c:when>
-                        <c:otherwise>
-                            <div class="avatar-placeholder" style="width: 80px; height: 80px; border-radius: 50%; background: #eef0fb; color: #4e58bf; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 24px;">
-                                <c:out value="${empty profile.firstName ? '?' : profile.firstName.substring(0,1)}"/>
-                            </div>
-                        </c:otherwise>
-                    </c:choose>
-                </div>
-                <div class="profile-field-avatar-text">
-                    <p>JPG and PNG uploads are converted to a compressed JPEG, scaled to a maximum of 256 pixels, and targeted below 75 kB.</p>
-                    
-                    <c:choose>
-                        <c:when test="${profile.hasAvatar}">
-                            <div style="display: flex; gap: 12px; align-items: center; margin-bottom: 8px;">
-                                <label class="upload-control" for="avatar">Change photo<input id="avatar" type="file" name="avatar" accept="image/jpeg,image/png"></label>
-                                <button type="submit" form="deleteAvatarForm" class="btn btn-secondary" style="margin: 0; height: 38px; line-height: 1;" onclick="return confirm('Are you sure you want to permanently delete your profile photo?');">Delete photo</button>
-                            </div>
-                        </c:when>
-                        <c:otherwise>
-                            <label class="upload-control" for="avatar">Choose photo<input id="avatar" type="file" name="avatar" accept="image/jpeg,image/png"></label>
-                        </c:otherwise>
-                    </c:choose>
-                    
-                    <small>Maximum original upload: 5 MB. Your existing photo is kept if you do not choose a new one.</small></div></div></section>
+        <form class="profile-editor" action="/profile/save?csrfToken=<c:out value='${csrfToken}'/>" method="post" >
+            
 
             <section class="profile-form-card">
                 <div class="profile-section-heading"><div><p class="section-kicker">Basic info</p><h2>Who you are</h2></div><p>Tell the community what you're studying and what you're good at.</p></div>
@@ -182,4 +146,8 @@
     <script src="/js/mobile-nav.js?v=mobile-nav-phone-7" defer></script>
 </body>
 </html>
+
+
+
+
 

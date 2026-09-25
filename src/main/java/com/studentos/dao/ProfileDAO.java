@@ -15,7 +15,6 @@ import java.util.List;
 public class ProfileDAO {
     private static final String PROFILE_SELECT = "SELECT u.id AS user_id, u.email, p.first_name, p.last_name, p.bio, "
             + "p.university, p.major, p.portfolio_url, p.linkedin_url, p.telegram_url, p.availability_status, p.collaboration_preferences, "
-            + "(p.avatar_data IS NOT NULL) AS has_avatar "
             + "FROM users u LEFT JOIN profiles p ON p.user_id = u.id WHERE u.id = ?";
 
     public Profile getByUserId(int userId) {
@@ -31,17 +30,16 @@ public class ProfileDAO {
         }
     }
 
-    public boolean updateProfile(Profile profile, byte[] compressedAvatar) {
+    public boolean updateProfile(Profile profile) {
         String sql = "INSERT INTO profiles (user_id, first_name, last_name, bio, university, major, "
-                + "portfolio_url, linkedin_url, telegram_url, availability_status, collaboration_preferences, avatar_data, avatar_content_type, updated_at) "
-                + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP) "
+                + "portfolio_url, linkedin_url, telegram_url, availability_status, collaboration_preferences, updated_at) "
+                + "VALUES (?, CURRENT_TIMESTAMP) "
                 + "ON CONFLICT (user_id) DO UPDATE SET first_name = EXCLUDED.first_name, "
                 + "last_name = EXCLUDED.last_name, bio = EXCLUDED.bio, university = EXCLUDED.university, "
                 + "major = EXCLUDED.major, portfolio_url = EXCLUDED.portfolio_url, "
                 + "linkedin_url = EXCLUDED.linkedin_url, telegram_url = EXCLUDED.telegram_url, availability_status = EXCLUDED.availability_status, "
                 + "collaboration_preferences = EXCLUDED.collaboration_preferences, "
-                + "avatar_data = COALESCE(EXCLUDED.avatar_data, profiles.avatar_data), "
-                + "avatar_content_type = COALESCE(EXCLUDED.avatar_content_type, profiles.avatar_content_type), "
+                
                 + "updated_at = CURRENT_TIMESTAMP";
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
@@ -56,13 +54,7 @@ public class ProfileDAO {
             ps.setString(9, profile.getTelegramUrl());
             ps.setString(10, profile.getAvailabilityStatus());
             ps.setString(11, profile.getCollaborationPreferences());
-            if (compressedAvatar == null) {
-                ps.setNull(12, java.sql.Types.BINARY);
-                ps.setNull(13, java.sql.Types.VARCHAR);
-            } else {
-                ps.setBytes(12, compressedAvatar);
-                ps.setString(13, "image/jpeg");
-            }
+            
             return ps.executeUpdate() > 0;
         } catch (SQLException e) {
             System.err.println("Unable to update profile: " + e.getMessage());
@@ -70,17 +62,7 @@ public class ProfileDAO {
         }
     }
     
-    public boolean deleteAvatar(int userId) {
-        String sql = "UPDATE profiles SET avatar_data = NULL, avatar_content_type = NULL WHERE user_id = ?";
-        try (Connection conn = DBConnection.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setInt(1, userId);
-            return ps.executeUpdate() > 0;
-        } catch (SQLException e) {
-            System.err.println("Unable to delete avatar: " + e.getMessage());
-            return false;
-        }
-    }
+    
 
     public List<ProfileLink> getLinksByUserId(int userId) {
         String sql = "SELECT id, user_id, label, url FROM profile_links WHERE user_id = ? ORDER BY id ASC";
@@ -105,7 +87,7 @@ public class ProfileDAO {
     }
 
     public boolean addLink(int userId, String label, String url) {
-        String sql = "INSERT INTO profile_links (user_id, label, url) VALUES (?, ?, ?)";
+        String sql = "INSERT INTO profile_links (user_id, label, url) VALUES (?)";
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, userId);
@@ -152,7 +134,7 @@ public class ProfileDAO {
     }
 
     public boolean addProject(int userId, String title, String description, String url) {
-        String sql = "INSERT INTO profile_projects (user_id, title, description, url) VALUES (?, ?, ?, ?)";
+        String sql = "INSERT INTO profile_projects (user_id, title, description, url) VALUES (?, ?)";
         try (Connection conn = DBConnection.getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, userId);
             ps.setString(2, title);
@@ -170,21 +152,7 @@ public class ProfileDAO {
         } catch (SQLException e) { System.err.println("Unable to delete profile project: " + e.getMessage()); return false; }
     }
 
-    public Avatar getAvatar(int userId) {
-        String sql = "SELECT avatar_data, avatar_content_type FROM profiles WHERE user_id = ? AND avatar_data IS NOT NULL";
-        try (Connection conn = DBConnection.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setInt(1, userId);
-            try (ResultSet rs = ps.executeQuery()) {
-                if (rs.next()) {
-                    return new Avatar(rs.getBytes("avatar_data"), rs.getString("avatar_content_type"));
-                }
-            }
-        } catch (SQLException e) {
-            System.err.println("Unable to load avatar: " + e.getMessage());
-        }
-        return null;
-    }
+    
 
     private Profile mapProfile(ResultSet rs) throws SQLException {
         Profile profile = new Profile();
@@ -200,20 +168,14 @@ public class ProfileDAO {
         profile.setTelegramUrl(rs.getString("telegram_url"));
         profile.setAvailabilityStatus(rs.getString("availability_status"));
         profile.setCollaborationPreferences(rs.getString("collaboration_preferences"));
-        profile.setHasAvatar(rs.getBoolean("has_avatar"));
+        
         return profile;
     }
 
-    public static final class Avatar {
-        private final byte[] data;
-        private final String contentType;
-
-        public Avatar(byte[] data, String contentType) {
-            this.data = data;
-            this.contentType = contentType;
-        }
+    
 
         public byte[] getData() { return data; }
         public String getContentType() { return contentType; }
     }
 }
+

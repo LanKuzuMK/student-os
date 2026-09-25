@@ -3,20 +3,13 @@ package com.studentos.controller;
 import com.studentos.dao.ProfileDAO;
 import com.studentos.model.Profile;
 import com.studentos.model.User;
-import com.studentos.util.AvatarCompressor;
 import jakarta.servlet.ServletException;
-import jakarta.servlet.annotation.MultipartConfig;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.http.Part;
-
 import java.io.IOException;
-import java.io.InputStream;
-
 @WebServlet("/profile/*")
-@MultipartConfig(fileSizeThreshold = 1024 * 1024, maxFileSize = 5 * 1024 * 1024, maxRequestSize = 6 * 1024 * 1024)
 public class ProfileController extends HttpServlet {
     private final ProfileDAO profileDAO = new ProfileDAO();
 
@@ -28,10 +21,7 @@ public class ProfileController extends HttpServlet {
         }
 
         String path = request.getPathInfo();
-        if ("/avatar".equals(path)) {
-            serveAvatar(request, response);
-            return;
-        }
+        
         if ("/view".equals(path)) {
             showPublicProfile(request, response, signedInUser);
             return;
@@ -66,10 +56,7 @@ public class ProfileController extends HttpServlet {
             deleteProject(request, response, signedInUser);
             return;
         }
-        if ("/avatar/delete".equals(path)) {
-            deleteAvatar(request, response, signedInUser);
-            return;
-        }
+        
         if (!"/save".equals(path)) {
             response.sendError(HttpServletResponse.SC_NOT_FOUND);
             return;
@@ -88,20 +75,9 @@ public class ProfileController extends HttpServlet {
         profile.setAvailabilityStatus(normalizeAvailability(request.getParameter("availabilityStatus")));
         profile.setCollaborationPreferences(limit(request.getParameter("collaborationPreferences"), 500));
 
-        byte[] avatar = null;
-        try {
-            Part avatarPart = request.getPart("avatar");
-            if (avatarPart != null && avatarPart.getSize() > 0) {
-                try (InputStream input = avatarPart.getInputStream()) {
-                    avatar = AvatarCompressor.compressToJpeg(input, avatarPart.getSize());
-                }
-            }
-        } catch (IllegalArgumentException e) {
-            response.sendRedirect(request.getContextPath() + "/profile?error=photo");
-            return;
-        }
+        
 
-        if (profileDAO.updateProfile(profile, avatar)) {
+        if (profileDAO.updateProfile(profile)) {
             response.sendRedirect(request.getContextPath() + "/profile?saved=1");
         } else {
             response.sendRedirect(request.getContextPath() + "/profile?error=save");
@@ -166,23 +142,6 @@ public class ProfileController extends HttpServlet {
         request.getRequestDispatcher("/views/profile/view.jsp").forward(request, response);
     }
 
-    private void serveAvatar(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        Integer profileId = parseId(request.getParameter("id"));
-        if (profileId == null) {
-            response.sendError(HttpServletResponse.SC_NOT_FOUND);
-            return;
-        }
-        ProfileDAO.Avatar avatar = profileDAO.getAvatar(profileId);
-        if (avatar == null || avatar.getData() == null) {
-            response.sendError(HttpServletResponse.SC_NOT_FOUND);
-            return;
-        }
-        response.setContentType(avatar.getContentType() == null ? "image/jpeg" : avatar.getContentType());
-        response.setContentLength(avatar.getData().length);
-        response.setHeader("Cache-Control", "private, max-age=86400");
-        response.getOutputStream().write(avatar.getData());
-    }
-
     private User getSignedInUser(HttpServletRequest request, HttpServletResponse response) throws IOException {
         User user = (User) request.getSession().getAttribute("user");
         if (user == null) {
@@ -216,14 +175,6 @@ public class ProfileController extends HttpServlet {
         return (link.startsWith("https://") || link.startsWith("http://")) ? link : null;
     }
 
-    private void deleteAvatar(HttpServletRequest request, HttpServletResponse response, User signedInUser) throws IOException {
-        if (profileDAO.deleteAvatar(signedInUser.getId())) {
-            response.sendRedirect(request.getContextPath() + "/profile?avatarDeleted=1");
-        } else {
-            response.sendRedirect(request.getContextPath() + "/profile?error=avatarDelete");
-        }
-    }
-
     private String normalizeAvailability(String value) {
         return switch (value == null ? "" : value) {
             case "OPEN_TO_COLLABORATE", "LOOKING_FOR_TEAM", "AVAILABLE_FOR_FREELANCE", "FOCUSED_ON_STUDY" -> value;
@@ -231,3 +182,5 @@ public class ProfileController extends HttpServlet {
         };
     }
 }
+
+
