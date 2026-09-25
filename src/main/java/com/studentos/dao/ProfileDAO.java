@@ -14,7 +14,7 @@ import java.util.List;
 
 public class ProfileDAO {
     private static final String PROFILE_SELECT = "SELECT u.id AS user_id, u.email, p.first_name, p.last_name, p.bio, "
-            + "p.university, p.major, p.portfolio_url, p.linkedin_url, p.telegram_url, p.availability_status, p.collaboration_preferences, "
+            + "p.university, p.major, p.portfolio_url, p.linkedin_url, p.telegram_url, p.availability_status, p.collaboration_preferences "
             + "FROM users u LEFT JOIN profiles p ON p.user_id = u.id WHERE u.id = ?";
 
     public Profile getByUserId(int userId) {
@@ -166,4 +166,6 @@ public class ProfileDAO {
                 return profile;
     }
 }
+
+
 
