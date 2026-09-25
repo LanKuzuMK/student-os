@@ -119,7 +119,7 @@ public class AuthService {
         String normalizedEmail = email == null ? null : email.trim().toLowerCase();
         return InputValidator.isValidEmail(normalizedEmail)
                 && VerificationCodeUtil.isSixDigitCode(code)
-                && ("000000".equals(code) || verificationDAO.consumeIfValid(normalizedEmail, code));
+                && verificationDAO.consumeIfValid(normalizedEmail, code);
     }
 
     public boolean startPasswordReset(String email) {
@@ -149,7 +149,7 @@ public class AuthService {
             return false;
         }
         User user = userDAO.findByEmail(normalizedEmail);
-        if (user == null || !"ACTIVE".equals(user.getStatus()) || !("000000".equals(code) || passwordResetDAO.consumeIfValid(normalizedEmail, code))) {
+        if (user == null || !"ACTIVE".equals(user.getStatus()) || !passwordResetDAO.consumeIfValid(normalizedEmail, code)) {
             return false;
         }
         return userDAO.updatePassword(user.getId(), BCrypt.hashpw(newPassword, BCrypt.gensalt()));
@@ -174,5 +174,3 @@ public class AuthService {
         return userDAO.updatePassword(userWithHash.getId(), BCrypt.hashpw(newPassword, BCrypt.gensalt()));
     }
 }
-
-
