@@ -33,14 +33,13 @@ public class ProfileDAO {
     public boolean updateProfile(Profile profile) {
         String sql = "INSERT INTO profiles (user_id, first_name, last_name, bio, university, major, "
                 + "portfolio_url, linkedin_url, telegram_url, availability_status, collaboration_preferences, updated_at) "
-                + "VALUES (?, CURRENT_TIMESTAMP) "
+                + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP) "
                 + "ON CONFLICT (user_id) DO UPDATE SET first_name = EXCLUDED.first_name, "
                 + "last_name = EXCLUDED.last_name, bio = EXCLUDED.bio, university = EXCLUDED.university, "
                 + "major = EXCLUDED.major, portfolio_url = EXCLUDED.portfolio_url, "
                 + "linkedin_url = EXCLUDED.linkedin_url, telegram_url = EXCLUDED.telegram_url, availability_status = EXCLUDED.availability_status, "
                 + "collaboration_preferences = EXCLUDED.collaboration_preferences, "
-                
-                + "updated_at = CURRENT_TIMESTAMP";
+                                                + "updated_at = CURRENT_TIMESTAMP";
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, profile.getUserId());
@@ -62,8 +61,6 @@ public class ProfileDAO {
         }
     }
     
-    
-
     public List<ProfileLink> getLinksByUserId(int userId) {
         String sql = "SELECT id, user_id, label, url FROM profile_links WHERE user_id = ? ORDER BY id ASC";
         List<ProfileLink> links = new ArrayList<>();
@@ -87,7 +84,7 @@ public class ProfileDAO {
     }
 
     public boolean addLink(int userId, String label, String url) {
-        String sql = "INSERT INTO profile_links (user_id, label, url) VALUES (?)";
+        String sql = "INSERT INTO profile_links (user_id, label, url) VALUES (?, ?, ?)";
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, userId);
@@ -134,7 +131,7 @@ public class ProfileDAO {
     }
 
     public boolean addProject(int userId, String title, String description, String url) {
-        String sql = "INSERT INTO profile_projects (user_id, title, description, url) VALUES (?, ?)";
+        String sql = "INSERT INTO profile_projects (user_id, title, description, url) VALUES (?, ?, ?, ?)";
         try (Connection conn = DBConnection.getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, userId);
             ps.setString(2, title);
@@ -152,8 +149,6 @@ public class ProfileDAO {
         } catch (SQLException e) { System.err.println("Unable to delete profile project: " + e.getMessage()); return false; }
     }
 
-    
-
     private Profile mapProfile(ResultSet rs) throws SQLException {
         Profile profile = new Profile();
         profile.setUserId(rs.getInt("user_id"));
@@ -168,8 +163,7 @@ public class ProfileDAO {
         profile.setTelegramUrl(rs.getString("telegram_url"));
         profile.setAvailabilityStatus(rs.getString("availability_status"));
         profile.setCollaborationPreferences(rs.getString("collaboration_preferences"));
-        
-        return profile;
+                return profile;
     }
 }
 
