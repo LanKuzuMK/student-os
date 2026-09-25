@@ -171,11 +171,5 @@ public class ProfileDAO {
         
         return profile;
     }
-
-    
-
-        public byte[] getData() { return data; }
-        public String getContentType() { return contentType; }
-    }
 }
 
