@@ -1,169 +1,274 @@
-# StudentOS — Project Structure & Architectural Map
+# StudentOS — Detailed File Structure
 
-StudentOS is a multi-tier, monolithic web application built on the classic **4-Tier MVC Architecture** (Model-View-Controller) using pure Jakarta EE Servlets, JSP/JSTL, and raw JDBC with connection pooling. It runs on Java 17, containerized via Docker on Apache Tomcat, backed by PostgreSQL.
-
----
-
-## 1. High-Level Architectural Flow
-
-```
-[ Browser / Client ]
-        │ HTTP / HTTPS (GET, POST)
-        ▼
-[ Security & Operational Filters ] (AuthFilter, SecurityHeadersFilter, RequestTraceFilter, LoggingFilter)
-        │ Filter Chain Forward
-        ▼
-[ Servlet Controllers ] (src/main/java/com/studentos/controller/)
-        │ Calls Business Logic
-        ▼
-[ Service & Policy Layer ] (src/main/java/com/studentos/service/ & util/)
-        │ Executes Data Operations
-        ▼
-[ Data Access Objects (DAO) ] (src/main/java/com/studentos/dao/)
-        │ SQL via HikariCP Connection Pool (DBConnection.java)
-        ▼
-[ PostgreSQL Database ] (users, profiles, collaborations, skills, tasks, messages, etc.)
-        │ Returns Entity Data / Models (src/main/java/com/studentos/model/)
-        ▼
-[ JSP / JSTL Presentation Layer ] (src/main/webapp/views/)
-        │ Rendered HTML / CSS
-        ▼
-[ Browser Response ]
-```
+> **Stack**: Java 17 · Jakarta EE Servlets · JSP/JSTL · JDBC · HikariCP · PostgreSQL · Apache Tomcat 10 · Docker · Render
 
 ---
-
-## 2. Directory Tree Overview
 
 ```
 student-os/
-├── .github/                      # CI/CD workflows (GitHub Actions)
-├── database/                     # PostgreSQL schema scripts and seed data
-│   ├── schema.sql                # Complete table definitions, foreign keys, and indexes
-│   └── seed.sql                  # Seed fixtures for local testing
-├── docs/                         # Security hardening reports, readiness logs, and release notes
-│   ├── releases/                 # Versioned release notes (v1.0.0, v1.0.1)
-│   └── ...                       # Security hardening & credential management documentation
-├── src/
-│   ├── main/
-│   │   ├── java/com/studentos/   # Backend Java source code (Controllers, DAOs, Models, Services)
-│   │   └── webapp/               # Web frontend (JSP templates, CSS, JS, assets, WEB-INF)
-│   └── test/                     # Unit and integration test suites
-├── Dockerfile                    # Multi-stage production container build (Maven compile -> Tomcat 10)
-├── docker-entrypoint.sh          # Container runtime startup hook
-├── pom.xml                       # Maven project dependencies and build configuration
-├── render.yaml                   # Infrastructure-as-code specification for Render cloud hosting
-└── README.md                     # Project overview and runbook
+|
+|-- .github/                              # CI/CD automation (GitHub Actions)
+|   |-- dependabot.yml                    # Automated dependency update rules
+|   L-- workflows/
+|       |-- codeql.yml                    # Static code security analysis (SAST)
+|       |-- container-verify.yml          # Docker image build verification on PRs
+|       L-- publish-container.yml         # Publishes Docker image to GitHub Container Registry
+|
+|-- .mvn/                                 # Maven wrapper configuration
+|   L-- wrapper/
+|       |-- maven-wrapper.jar             # Embedded Maven bootstrapper
+|       L-- maven-wrapper.properties      # Maven version pinning
+|
+|-- database/                             # Raw PostgreSQL scripts
+|   |-- schema.sql                        # All table definitions, foreign keys, and indexes
+|   L-- seed.sql                          # Seed data for local development and testing
+|
+|-- docs/                                 # Technical documentation and release history
+|   |-- ENTERPRISE_READINESS_EVIDENCE.md  # Evidence log of hardening measures applied
+|   |-- RENDER_CREDENTIAL_MANAGEMENT.md   # Guide for managing secrets on Render
+|   |-- SECURITY_HARDENING_2026-08.md     # Security hardening report (August 2026)
+|   |-- SIX_PRIORITY_RELEASE_2026-08-22.md # Six-feature priority release notes
+|   |-- TIER4_READINESS_2026-08.md        # Tier-4 architecture readiness assessment
+|   L-- releases/
+|       |-- v1.0.0-mkvteam.md             # Release notes — initial launch
+|       L-- v1.0.1-mkvteam.md             # Release notes — first patch
+|
+|-- src/
+|   |-- main/
+|   |   |
+|   |   |-- java/com/studentos/           # === BACKEND JAVA SOURCE ===
+|   |   |   |
+|   |   |   |-- config/                   # Application lifecycle hooks
+|   |   |   |   L-- AppContextListener.java   # Bootstraps DB tables on Tomcat startup via InitDB
+|   |   |   |
+|   |   |   |-- filter/                   # Servlet filters (request middleware pipeline)
+|   |   |   |   |-- AuthFilter.java           # Validates session, role, and auth_version on protected routes
+|   |   |   |   |-- LoggingFilter.java        # Logs method, path, and execution duration per request
+|   |   |   |   |-- RequestTraceFilter.java   # Generates a unique trace ID per request for debugging
+|   |   |   |   |-- SecurityHeadersFilter.java # Injects CSP, HSTS, X-Frame-Options, Referrer-Policy
+|   |   |   |   L-- UnreadMessageFilter.java  # Injects unread message count into all authenticated views
+|   |   |   |
+|   |   |   |-- controller/               # Servlet controllers (HTTP routing layer)
+|   |   |   |   |-- AdminController.java       # Admin dashboard: user management, moderation, reports, audit
+|   |   |   |   |-- AuthController.java        # /auth/login, /register, /verify, /forgot, /reset, /logout
+|   |   |   |   |-- CollaborationController.java # Collaboration proposals: propose, accept, decline, cancel
+|   |   |   |   |-- DashboardController.java   # Student home: tasks summary, goals, notifications, actions
+|   |   |   |   |-- FreelanceController.java   # Campus gig board: job listings and student freelance services
+|   |   |   |   |-- GoalController.java        # Personal goal management and progress tracking
+|   |   |   |   |-- HealthController.java      # /health liveness probe for deployment health checks
+|   |   |   |   |-- MessageController.java     # Student direct messaging, conversation history, block/report
+|   |   |   |   |-- NotificationController.java # In-app notification feed and read state management
+|   |   |   |   |-- PasswordController.java    # Authenticated password change (requires current password)
+|   |   |   |   |-- ProfileController.java     # Profile editor, custom links, showcase projects, public view
+|   |   |   |   |-- ProjectSpaceController.java # Team workspaces, members, milestones, and project tasks
+|   |   |   |   |-- ReportController.java      # Submit abuse/content reports against posts or users
+|   |   |   |   |-- SavedItemController.java   # Bookmark/save profiles, skills, services, and jobs
+|   |   |   |   |-- ScheduleController.java    # Weekly timetable and class schedule management
+|   |   |   |   |-- SignInController.java      # Dedicated /auth/signin endpoint with rate limiting
+|   |   |   |   |-- SkillController.java       # Peer skill directory: list, add, delete (Teach / Learn)
+|   |   |   |   L-- TaskController.java        # Personal Kanban task board (TODO / IN_PROGRESS / DONE)
+|   |   |   |
+|   |   |   |-- service/                  # Business logic layer
+|   |   |   |   |-- AuthService.java          # Login, registration, email OTP, password reset flows (BCrypt)
+|   |   |   |   L-- EmailService.java         # Sends verification/reset codes via Brevo HTTPS REST API
+|   |   |   |
+|   |   |   |-- dao/                      # Data access layer — all SQL via prepared statements (JDBC)
+|   |   |   |   |-- AdminDAO.java             # Platform stats, user search, admin role management
+|   |   |   |   |-- AuthSessionDAO.java       # Persistent login session tokens (Remember Me)
+|   |   |   |   |-- CollaborationRequestDAO.java # Collaboration request state and lookup queries
+|   |   |   |   |-- EmailVerificationDAO.java # OTP hash storage, cooldown, and consumption for registration
+|   |   |   |   |-- GoalDAO.java              # Goal CRUD and progress percentage updates
+|   |   |   |   |-- JobDAO.java               # Freelance job posting CRUD and status queries
+|   |   |   |   |-- MessageDAO.java           # Message threads, sender/receiver delete markers
+|   |   |   |   |-- ModerationDAO.java        # Report records, resolution state, audit log entries
+|   |   |   |   |-- NotificationDAO.java      # Notification records, mark-as-read, unread counts
+|   |   |   |   |-- PasswordResetDAO.java     # Reset code hash storage, cooldown, and consumption
+|   |   |   |   |-- ProfileDAO.java           # Profile data, custom links, and showcase projects
+|   |   |   |   |-- ProjectSpaceDAO.java      # Workspace CRUD, members, milestones, and tasks
+|   |   |   |   |-- SavedItemDAO.java         # Bookmarked item records (PROFILE / SKILL / SERVICE / JOB)
+|   |   |   |   |-- SkillDAO.java             # Skill discovery records (type: TEACH or LEARN)
+|   |   |   |   |-- TaskDAO.java              # Personal student task records and status updates
+|   |   |   |   |-- UserBlockDAO.java         # Inter-user blocking relationships
+|   |   |   |   L-- UserDAO.java              # User lookup by email/ID, creation, password hash updates
+|   |   |   |
+|   |   |   |-- model/                    # Domain entity POJOs (plain Java objects matching DB tables)
+|   |   |   |   |-- CollaborationRequest.java # Peer collaboration proposal entity
+|   |   |   |   |-- DashboardAction.java      # Quick action card shown on the student dashboard
+|   |   |   |   |-- DashboardSummary.java     # Aggregated metrics object for dashboard rendering
+|   |   |   |   |-- Goal.java                 # Student long-term goal entity
+|   |   |   |   |-- Job.java                  # Freelance job posting entity
+|   |   |   |   |-- Message.java              # Direct message entity
+|   |   |   |   |-- Notification.java         # In-app notification entity
+|   |   |   |   |-- Profile.java              # Student profile entity (name, bio, university, links)
+|   |   |   |   |-- ProfileLink.java          # Custom social/portfolio link attached to a profile
+|   |   |   |   |-- ProfileProject.java       # Showcase project card attached to a profile
+|   |   |   |   |-- ProjectMember.java        # Project workspace team member (OWNER / CONTRIBUTOR)
+|   |   |   |   |-- ProjectMilestone.java     # Milestone entry in a project workspace
+|   |   |   |   |-- ProjectSpace.java         # Collaborative team workspace entity
+|   |   |   |   |-- ProjectTask.java          # Task assigned within a project workspace
+|   |   |   |   |-- SavedItem.java            # Bookmarked entity record
+|   |   |   |   |-- Skill.java                # Peer skill entry (name, level, type, owner)
+|   |   |   |   |-- Task.java                 # Personal student task entity
+|   |   |   |   L-- User.java                 # Core user entity (id, email, role, status, authVersion)
+|   |   |   |
+|   |   |   L-- util/                     # Shared utilities, guards, and business rule policies
+|   |   |       |-- AccessPolicy.java         # Post-login redirect paths by role (STUDENT / ADMIN)
+|   |   |       |-- AppHealth.java            # Runtime health check data aggregation
+|   |   |       |-- AuthAttemptLimiter.java   # In-memory sliding-window rate limiter (8 attempts / 15 min)
+|   |   |       |-- BCryptUtil.java           # BCrypt hash and verify wrapper
+|   |   |       |-- CollaborationPolicy.java  # Business rules for collaboration request eligibility
+|   |   |       |-- CsrfUtil.java             # Synchronizer token generation and validation for POST forms
+|   |   |       |-- DashboardCoach.java       # Generates profile completion tips and coaching prompts
+|   |   |       |-- DBConnection.java         # HikariCP PostgreSQL connection pool (5 connections default)
+|   |   |       |-- DiscoveryPolicy.java      # Visibility rules for skill/service discovery feeds
+|   |   |       |-- HtmlUtil.java             # HTML escaping to prevent XSS in JSP output
+|   |   |       |-- InitDB.java               # Idempotent DB schema runner (CREATE TABLE IF NOT EXISTS)
+|   |   |       |-- InputValidator.java       # Email/password/budget validation rules
+|   |   |       |-- ModerationPolicy.java     # Content moderation permission and status rules
+|   |   |       |-- PersistentSessionManager.java # "Remember Me" cookie token management
+|   |   |       |-- ProjectSpacePolicy.java   # Workspace access and permission rules
+|   |   |       |-- SavedItemPolicy.java      # Saved item type validation and ownership rules
+|   |   |       |-- SessionVersionUtil.java   # Detects stale sessions after password changes
+|   |   |       L-- VerificationCodeUtil.java # Cryptographically random 6-digit OTP generator
+|   |   |
+|   |   L-- webapp/                       # === WEB FRONTEND ===
+|   |       |
+|   |       |-- WEB-INF/
+|   |       |   L-- web.xml               # Servlet descriptor: session timeout, error page mappings
+|   |       |
+|   |       |-- assets/                   # Static brand and icon assets
+|   |       |   |-- icons.svg             # SVG sprite sheet for all UI icons
+|   |       |   |-- studentos-logo-transparent.png # Application logo
+|   |       |   |-- theme-moon.svg        # Dark mode toggle icon
+|   |       |   |-- theme-sun.svg         # Light mode toggle icon
+|   |       |   L-- user-outline.svg      # Default user avatar placeholder icon
+|   |       |
+|   |       |-- css/
+|   |       |   L-- main.css              # Global design system: tokens, typography, layout, components
+|   |       |
+|   |       |-- js/
+|   |       |   |-- accessibility.js      # Keyboard navigation and ARIA enhancements
+|   |       |   |-- admin-nav.js          # Admin sidebar navigation behavior
+|   |       |   |-- mobile-nav.js         # Responsive hamburger menu behavior
+|   |       |   L-- theme-toggle.js       # Light/dark mode persistence and switching
+|   |       |
+|   |       |-- favicon.png               # Browser tab favicon
+|   |       |-- index.jsp                 # Root redirect (unauthenticated -> /auth/signin)
+|   |       |
+|   |       L-- views/                    # JSP/JSTL page templates (organized by feature)
+|   |           |
+|   |           |-- admin/                # Admin panel pages (role: ADMIN only)
+|   |           |   |-- audit.jsp         # Moderation action audit log timeline
+|   |           |   |-- content.jsp       # Flagged content moderation queue
+|   |           |   |-- health.jsp        # Platform health metrics dashboard
+|   |           |   |-- index.jsp         # Admin home: user stats, platform overview
+|   |           |   |-- messages.jsp      # Admin message inspection and monitoring
+|   |           |   |-- reports.jsp       # Abuse report queue and resolution panel
+|   |           |   L-- users.jsp         # User list: search, status, role management
+|   |           |
+|   |           |-- auth/                 # Authentication and account recovery pages
+|   |           |   |-- forgot.jsp        # Forgot password: email input form
+|   |           |   |-- login.jsp         # Sign-in form (email + password)
+|   |           |   |-- password.jsp      # Change password form (authenticated)
+|   |           |   |-- register.jsp      # New account registration form
+|   |           |   |-- reset.jsp         # Password reset: OTP code + new password form
+|   |           |   L-- verify.jsp        # Email verification OTP entry form
+|   |           |
+|   |           |-- collaborations/
+|   |           |   L-- index.jsp         # Collaboration proposals inbox and sent list
+|   |           |
+|   |           |-- dashboard/
+|   |           |   L-- index.jsp         # Student hub: focus list, goals, notifications, actions
+|   |           |
+|   |           |-- error/                # Custom HTTP error pages
+|   |           |   |-- 403.jsp           # 403 Forbidden
+|   |           |   |-- 404.jsp           # 404 Not Found
+|   |           |   L-- 500.jsp           # 500 Internal Server Error
+|   |           |
+|   |           |-- freelance/
+|   |           |   |-- index.jsp         # Campus job board: freelance gig listings
+|   |           |   L-- services.jsp      # Student service offerings (marketplace)
+|   |           |
+|   |           |-- life/
+|   |           |   |-- goals.jsp         # Long-term student goals and progress tracker
+|   |           |   L-- schedule.jsp      # Weekly timetable / class schedule view
+|   |           |
+|   |           |-- messages/
+|   |           |   L-- index.jsp         # Student-to-student messaging with block/report actions
+|   |           |
+|   |           |-- notifications/
+|   |           |   L-- index.jsp         # In-app notification feed
+|   |           |
+|   |           |-- profile/
+|   |           |   |-- manage.jsp        # Profile editor: bio, university, skills, links, projects
+|   |           |   L-- view.jsp          # Public student portfolio page (initial-letter avatar)
+|   |           |
+|   |           |-- projects/
+|   |           |   |-- index.jsp         # Project workspaces index: list of joined/owned spaces
+|   |           |   L-- workspace.jsp     # Individual workspace: members, milestones, and tasks
+|   |           |
+|   |           |-- saved/
+|   |           |   L-- index.jsp         # Bookmarked items: profiles, skills, services, jobs
+|   |           |
+|   |           L-- skills/
+|   |               |-- discover.jsp      # Skill discovery feed: browse all student skills and services
+|   |               L-- index.jsp         # Personal skills manager: add/remove own skills
+|   |
+|   L-- test/                             # === TEST SUITE ===
+|       L-- java/com/studentos/
+|           |-- model/
+|           |   |-- ProfileCollaborationTest.java   # Profile + collaboration eligibility unit tests
+|           |   L-- SkillDiscoveryLabelTest.java    # Skill type label rendering tests
+|           |-- service/
+|           |   L-- EmailServiceIntegrationTest.java # Brevo API email delivery integration tests
+|           L-- util/
+|               |-- AccessPolicyTest.java           # Role-based redirect path tests
+|               |-- AuthAttemptLimiterTest.java      # Rate limiter sliding window tests
+|               |-- CollaborationPolicyTest.java     # Collaboration eligibility rule tests
+|               |-- DashboardCoachTest.java          # Profile completion coaching prompt tests
+|               |-- DiscoveryPolicyTest.java         # Content visibility rule tests
+|               |-- HtmlUtilTest.java               # XSS escaping edge case tests
+|               |-- InputValidatorTest.java          # Email and password validation tests
+|               |-- ModerationPolicyTest.java        # Moderation permission rule tests
+|               |-- PasswordPolicyRegressionTest.java # Password policy regression suite
+|               |-- PersistentSessionManagerTest.java # Remember-Me token lifecycle tests
+|               |-- ProjectSpacePolicyTest.java      # Workspace access rule tests
+|               |-- SavedItemPolicyTest.java         # Saved item type validation tests
+|               |-- SessionVersionUtilTest.java      # Auth-version staleness detection tests
+|               L-- VerificationCodeUtilTest.java    # OTP generation randomness/format tests
+|
+|-- .dockerignore                         # Files excluded from Docker build context
+|-- .env.example                          # Template for required environment variables
+|-- .gitignore                            # Git-ignored files (target/, secrets, IDE files)
+|-- CONTRIBUTING.md                       # Contribution guidelines and pull request process
+|-- DATABASE.md                           # Database design decisions and schema reference
+|-- Dockerfile                            # Multi-stage build: Maven compile -> Tomcat 10 runtime
+|-- LICENSE                               # Project open source license
+|-- LOCAL_DEVELOPMENT.md                  # Guide for running StudentOS locally
+|-- PROJECT_STRUCTURE.md                  # High-level architectural reference (this file's companion)
+|-- README.md                             # Project overview, features, and quick start
+|-- SECURITY.md                           # Security policy and responsible disclosure guide
+|-- SETUP.md                              # Environment variable and deployment setup guide
+|-- deploy.ps1                            # Windows PowerShell deployment helper script
+|-- docker-entrypoint.sh                  # Container startup script (sets file permissions)
+|-- mvnw.cmd                              # Maven wrapper executable for Windows
+|-- pom.xml                               # Maven: dependencies, Java 17, WAR packaging, compiler config
+L-- render.yaml                           # Infrastructure-as-code: Render Web Service + PostgreSQL spec
 ```
 
 ---
 
-## 3. Backend Source Breakdown (`src/main/java/com/studentos/`)
+## Layer Summary
 
-The backend codebase is strictly modularized into functional packages:
-
-### `config/` — Lifecycle & Initialization
-* `AppContextListener.java`: ServletContextListener that initializes database tables (`InitDB.init()`) on application startup.
-
-### `filter/` — Middleware & Security Pipeline
-* `AuthFilter.java`: Session validator protecting authenticated routes (`/dashboard`, `/profile`, `/tasks`, `/messages`, etc.) and enforcing active user status and auth-version consistency.
-* `SecurityHeadersFilter.java`: Injects defensive HTTP headers (CSP, HSTS, X-Content-Type-Options, X-Frame-Options, Referrer-Policy).
-* `RequestTraceFilter.java`: Generates unique correlation trace IDs per request for diagnostic tracking.
-* `LoggingFilter.java`: Structured request and response logging with execution duration metrics.
-* `UnreadMessageFilter.java`: Dynamically computes unread message counts across authenticated requests.
-
-### `controller/` — Presentation Controllers (Servlets)
-* `AuthController.java`: Core authentication routes (`/auth/login`, `/auth/register`, `/auth/verify`, `/auth/forgot`, `/auth/reset`, `/auth/logout`).
-* `SignInController.java`: Dedicated endpoint for handling sign-in form submissions and rate-limiting.
-* `PasswordController.java`: Authenticated in-app password changes.
-* `DashboardController.java`: Aggregates active goals, tasks, unread notifications, and quick actions into the student hub.
-* `ProfileController.java`: User profile management, bio editing, links, and public profile views.
-* `CollaborationController.java`: Peer collaboration requests (proposing, accepting, declining, cancelling).
-* `ProjectSpaceController.java`: Team workspaces, contributor management, milestones, and project-specific tasks.
-* `TaskController.java`: Personal student task board (Kanban / status-based task tracking).
-* `GoalController.java`: Long-term student goals and progress percentages.
-* `SkillController.java`: Peer skill-sharing directory and service listings (Teach vs. Learn).
-* `FreelanceController.java`: Campus freelance gig board and student services.
-* `MessageController.java`: Student direct messaging, conversation history, user blocking, and reporting.
-* `NotificationController.java`: In-app notification center.
-* `SavedItemController.java`: Bookmarking system for saving profiles, skills, services, and jobs.
-* `ScheduleController.java`: Weekly timetable and class schedule viewer.
-* `AdminController.java`: Administrative moderation dashboard, user audits, report resolutions, and platform health.
-* `ReportController.java`: Reporting objectionable content or student abuse.
-* `HealthController.java`: Liveness and readiness health-check probe.
-
-### `service/` — Business Logic
-* `AuthService.java`: User credential verification, BCrypt password hashing, registration transaction handling, and password reset flows.
-* `EmailService.java`: Dispatches transactional verification codes and password reset emails via the Brevo REST API.
-
-### `dao/` — Data Access Objects (JDBC)
-All database interactions use parameterized SQL statements to prevent SQL injection:
-* `UserDAO.java`: User lookup, creation, and password hash updates.
-* `ProfileDAO.java`: Profile data, custom links, and showcase projects.
-* `AuthSessionDAO.java`: Persistent login session tokens and expiry tracking.
-* `EmailVerificationDAO.java`: Registration OTP code generation, BCrypt code hashing, and consumption.
-* `PasswordResetDAO.java`: Password reset code generation and consumption.
-* `CollaborationRequestDAO.java`: Peer collaboration proposal states.
-* `ProjectSpaceDAO.java`: Project workspaces, member permissions, milestones, and tasks.
-* `TaskDAO.java`: Personal student task records.
-* `GoalDAO.java`: Goal tracking records.
-* `SkillDAO.java`: Skills exchange records.
-* `JobDAO.java`: Freelance job postings and offers.
-* `MessageDAO.java`: Peer messaging threads and deletion markers.
-* `NotificationDAO.java`: User notification records.
-* `SavedItemDAO.java`: Bookmarked entity records.
-* `UserBlockDAO.java`: Inter-user blocking relationships.
-* `ModerationDAO.java`: Reports, audit trails, and moderation state.
-* `AdminDAO.java`: Platform analytics and administrative user management.
-
-### `model/` — Domain POJOs
-Plain Java objects matching database entities:
-`User`, `Profile`, `ProfileLink`, `ProfileProject`, `Task`, `Goal`, `Skill`, `Job`, `Message`, `Notification`, `CollaborationRequest`, `ProjectSpace`, `ProjectMember`, `ProjectMilestone`, `ProjectTask`, `SavedItem`, `DashboardSummary`, `DashboardAction`.
-
-### `util/` — Utilities, Guards & Policies
-* `DBConnection.java`: PostgreSQL connection management using HikariCP connection pooling.
-* `InitDB.java`: Idempotent table and index creation on application boot.
-* `CsrfUtil.java`: Synchronizer token pattern generation and validation for POST requests.
-* `AuthAttemptLimiter.java`: In-memory sliding-window rate limiter against brute-force attacks.
-* `BCryptUtil.java`: Password hashing wrapper.
-* `InputValidator.java`: Input validation rules for emails, passwords, and numerical bounds.
-* `AccessPolicy.java`, `CollaborationPolicy.java`, `DiscoveryPolicy.java`, `ModerationPolicy.java`, `ProjectSpacePolicy.java`, `SavedItemPolicy.java`: Centralized business rules and permission checks.
-* `SessionVersionUtil.java`: Session invalidation on password change via version bumping.
-* `PersistentSessionManager.java`: "Remember Me" persistent cookie authentication tokens.
-* `VerificationCodeUtil.java`: Secure random 6-digit OTP code generator.
-* `HtmlUtil.java`: HTML escaping utility preventing Cross-Site Scripting (XSS).
-
----
-
-## 4. Web Application Frontend (`src/main/webapp/`)
-
-### `WEB-INF/`
-* `web.xml`: Core servlet descriptor configuring context attributes, session timeout, and error page mappings (`403`, `404`, `500`).
-
-### `views/` — JSP Templates
-View components organized by domain feature:
-* `admin/`: Moderation queues, system audits, platform health, user lists (`index.jsp`, `audit.jsp`, `content.jsp`, `health.jsp`, `messages.jsp`, `reports.jsp`, `users.jsp`).
-* `auth/`: Authentication views (`login.jsp`, `register.jsp`, `verify.jsp`, `forgot.jsp`, `reset.jsp`, `password.jsp`).
-* `collaborations/`: Collaboration proposal inbox and sent views (`index.jsp`).
-* `dashboard/`: Student dashboard home (`index.jsp`).
-* `error/`: Custom HTTP error pages (`403.jsp`, `404.jsp`, `500.jsp`).
-* `freelance/`: Job postings and campus gig listings (`index.jsp`, `services.jsp`).
-* `life/`: Lifestyle productivity views (`goals.jsp`, `schedule.jsp`).
-* `messages/`: Direct messaging chat interface (`index.jsp`).
-* `notifications/`: Notification feed (`index.jsp`).
-* `profile/`: Student profile editor and public portfolio viewer (`manage.jsp`, `view.jsp`).
-* `projects/`: Collaborative workspace project hub (`index.jsp`, `workspace.jsp`).
-* `saved/`: Saved / bookmarked items center (`index.jsp`).
-* `skills/`: Peer skill directory and teacher/learner matching (`index.jsp`, `discover.jsp`).
-
-### `css/`, `js/`, `assets/` — Static Assets
-* `css/main.css`: Global styles, layout grid, typography, and dark/light color tokens.
-* `js/accessibility.js`, `js/mobile-nav.js`, `js/theme-toggle.js`, `js/admin-nav.js`: Client-side UI enhancements.
-* `assets/`: Vector icons (`icons.svg`), theme icons (`theme-sun.svg`, `theme-moon.svg`), and branding logos.
-
----
-
-## 5. Deployment & Runtime Architecture
-
-* **Containerization**: A multi-stage `Dockerfile` uses `maven:3.9-eclipse-temurin-17` to compile the `.war` package, then deploys to `tomcat:10.1-jdk17-temurin` running as an unprivileged user (`studentos:10001`).
-* **Cloud Orchestration**: Configured via `render.yaml` as a Web Service running on Linux containers attached to a managed PostgreSQL database.
+| Layer | Package / Path | What It Does |
+|:---|:---|:---|
+| **Lifecycle** | `config/` | Boots DB schema tables on server start |
+| **Middleware** | `filter/` | Auth guard, security headers, request tracing, logging |
+| **Routing** | `controller/` | 19 Servlets handling HTTP GET/POST for each feature |
+| **Business Logic** | `service/` | Auth flows, BCrypt hashing, email delivery |
+| **Data Access** | `dao/` | 17 DAOs executing parameterized SQL against PostgreSQL |
+| **Domain** | `model/` | 18 plain Java entity classes |
+| **Utilities** | `util/` | CSRF, rate limiting, session management, policies, validation |
+| **Presentation** | `webapp/views/` | 40 JSP/JSTL templates across 13 feature domains |
+| **Static Assets** | `webapp/css/, js/, assets/` | Design system, scripts, icons, branding |
+| **Tests** | `src/test/` | 17 unit test classes covering auth, policy, and utility logic |
